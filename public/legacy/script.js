@@ -60,6 +60,17 @@ const liveMessageDisplay = document.getElementById("liveMessageDisplay");
 const startLiveSessionBtn = document.getElementById("startLiveSessionBtn");
 const endLiveSessionBtn = document.getElementById("endLiveSessionBtn");
 
+// New Module DOM Elements
+const costAnalysisOutput = document.getElementById("costAnalysisOutput");
+const strainNotesOutput = document.getElementById("strainNotesOutput");
+const deviceTrackingOutput = document.getElementById("deviceTrackingOutput");
+
+// Modal DOM Elements
+const loadRecentModal = document.getElementById("loadRecentModal");
+const closeLoadRecentModal = document.getElementById("closeLoadRecentModal");
+const loadRecentList = document.getElementById("loadRecentList");
+const openLoadRecentModalBtn = document.getElementById("openLoadRecentModalBtn");
+
 // ------------------- Fade-In Animation Helper -------------------
 function applyFadeInEffect(element) {
   element.classList.add("fade-in");
@@ -554,6 +565,17 @@ function renderSessions() {
   updateGoalProgress();
   renderCharts();
 
+  // Update filter indicator status
+  const filterIndicator = document.getElementById('filterIndicator');
+  const filtersActive = filterText || filterProduct || filterTag || filterStartDate || filterEndDate;
+  if (filterIndicator) {
+    if (filtersActive) {
+      filterIndicator.classList.add('active');
+    } else {
+      filterIndicator.classList.remove('active');
+    }
+  }
+
   if (viewMode === "daily") {
     dailyView.classList.remove("hidden");
     renderDailyView();
@@ -621,6 +643,12 @@ function renderInventory() {
       details += ` • Purchased: ${item.purchaseDate}`;
     }
 
+    // Low stock check
+    const lowStockThreshold = 1.0;
+    if (item.qty < lowStockThreshold && item.qty > 0) { // Check if low but not empty
+      row.classList.add('low-stock');
+    }
+
     row.innerHTML = `
       <div class="inventory-label">${details}</div>
       <button class="btn btn-small btn-danger" onclick="deleteInventoryItem(${index})">Delete</button>
@@ -630,6 +658,10 @@ function renderInventory() {
     const opt = document.createElement("option");
     opt.value = item.name;
     opt.textContent = `${item.name} (${item.qty.toFixed(2)}g)`;
+    if (item.qty < lowStockThreshold && item.qty > 0) {
+        opt.classList.add('low-stock'); // Add class to option too
+        opt.textContent += ' - Low Stock!';
+    }
     strainSelect.appendChild(opt);
 
     if (!inventoryHistory[item.name]) {
@@ -1199,8 +1231,10 @@ if (importDataBtn) importDataBtn.addEventListener("click", () => { importFileInp
 strainSelect.addEventListener("change", () => {
   const selected = strainSelect.value;
   const found = inventory.find(i => i.name === selected);
-  if (found) {
+  if (found && found.type) { // Add null check for found and type property
     productType.value = found.type;
+  } else if (selected === "") { // Optionally clear if default is selected
+    productType.value = "";
   }
 });
 
@@ -1425,6 +1459,12 @@ function renderGoalAdherenceChart() {
 
 // Initial setup call needs to include reading goals
 document.addEventListener('DOMContentLoaded', () => {
+    // Set initial state for live session box
+    const liveBox = document.getElementById('liveSessionBox');
+    if (liveBox) {
+        liveBox.classList.add('live-inactive');
+    }
+
     loadNotificationSettings(); // Load notification settings on startup
     migrateOldData(); // Attempt to migrate old data format if necessary
     updateGoalProgress(); // Load and apply goals on startup
@@ -1631,6 +1671,10 @@ function startLiveSession() {
     // Start the message cycle after a short delay
     if (liveMessageTimeoutId) clearTimeout(liveMessageTimeoutId);
     liveMessageTimeoutId = setTimeout(showLiveMessage, 10000); // First message after 10s
+
+    // Add active class, remove inactive
+    liveSessionBox.classList.remove('live-inactive');
+    liveSessionBox.classList.add('live-active');
 }
 
 function endLiveSession() {
@@ -1647,4 +1691,104 @@ function endLiveSession() {
     liveMessageDisplay.textContent = "";
     liveMessageDisplay.classList.remove('fade-in', 'fade-out');
     liveSessionBox.style.animationPlayState = 'paused'; // Pause animation
+
+    // Add inactive class, remove active
+    liveSessionBox.classList.remove('live-active');
+    liveSessionBox.classList.add('live-inactive');
 }
+
+// ------------------- Load Recent Session Modal Logic -------------------
+
+function populateLoadRecentModal() {
+  if (!loadRecentList) return;
+  loadRecentList.innerHTML = ''; // Clear previous
+
+  const recentSessions = [...sessions].sort((a, b) => new Date(b.startTime || b.time) - new Date(a.startTime || a.time)).slice(0, 3);
+
+  if (recentSessions.length === 0) {
+    loadRecentList.innerHTML = '<p style="font-size: 0.9em; opacity: 0.7;">No recent sessions to load.</p>';
+    return;
+  }
+
+  recentSessions.forEach(session => {
+    const entryDiv = document.createElement('div');
+    entryDiv.style.padding = '0.75rem 0';
+    entryDiv.style.borderBottom = '1px dashed var(--border-color)';
+    entryDiv.style.display = 'flex';
+    entryDiv.style.justifyContent = 'space-between';
+    entryDiv.style.alignItems = 'center';
+
+    const details = `
+      <span>
+        ${session.strain || 'N/A'} • ${session.product || 'N/A'} • ${session.hit || 'N/A'}
+        <small style="display: block; opacity: 0.7;">${new Date(session.startTime || session.time).toLocaleString()}</small>
+      </span>
+    `;
+
+    const loadBtn = document.createElement('button');
+    loadBtn.textContent = 'Load';
+    loadBtn.className = 'btn btn-small btn-primary';
+    loadBtn.style.marginLeft = '1rem';
+
+    loadBtn.addEventListener('click', () => {
+      // Prefill logic (similar to old quick log)
+      if (inventory.find(inv => inv.name === session.strain)) {
+        strainSelect.value = session.strain;
+        strainInput.value = '';
+      } else {
+        strainSelect.value = '';
+        strainInput.value = session.strain || '';
+      }
+      productType.value = session.product || '';
+      hitType.value = session.hit || '';
+      
+      // Highlight briefly
+      [strainSelect, strainInput, productType, hitType].forEach(el => {
+             el.style.transition = 'background-color 0.5s ease';
+             el.style.backgroundColor = 'color-mix(in srgb, var(--accent-color) 20%, transparent)';
+             setTimeout(() => { el.style.backgroundColor = '' }, 1000);
+      });
+
+      // Close modal
+      if (loadRecentModal) {
+          loadRecentModal.style.display = "none";
+      }
+      console.log('Loaded session details:', session);
+    });
+
+    entryDiv.innerHTML = details;
+    entryDiv.appendChild(loadBtn);
+    loadRecentList.appendChild(entryDiv);
+  });
+
+  // Remove border from last item
+  if(loadRecentList.lastElementChild) {
+      loadRecentList.lastElementChild.style.borderBottom = 'none';
+  }
+}
+
+// Event Listeners for Load Recent Modal
+if (openLoadRecentModalBtn) {
+  openLoadRecentModalBtn.addEventListener('click', () => {
+    populateLoadRecentModal();
+    if (loadRecentModal) {
+      loadRecentModal.style.display = "block";
+      applyFadeInEffect(loadRecentModal.querySelector('.modal-content'));
+    }
+  });
+}
+
+if (closeLoadRecentModal) {
+  closeLoadRecentModal.addEventListener('click', () => {
+    if (loadRecentModal) {
+      loadRecentModal.style.display = "none";
+    }
+  });
+}
+
+// Close modal if clicking outside of it (optional but good UX)
+window.addEventListener('click', (event) => {
+  if (event.target == loadRecentModal) {
+    loadRecentModal.style.display = "none";
+  }
+});

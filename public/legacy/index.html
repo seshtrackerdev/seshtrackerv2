@@ -108,239 +108,296 @@
       </div>
     </div>
 
-    <!-- Stats Module -->
-    <div class="module">
-      <div class="module-header">
-        <h2>Stats</h2>
-        <button class="toggle-button">−</button>
-      </div>
-      <div class="module-content">
-        <div class="bg-card stats-box">
-          <p>🌿 Total Sessions: <span id="sessionCount">0</span></p>
-          <p>⏱️ Time Since Last Session: <span id="elapsed">N/A</span></p>
-          <p>📊 Avg Time Between Sessions: <span id="avgInterval">0</span> min</p>
-        </div>
-      </div>
-    </div>
+    <!-- Main Content Grid -->
+    <div class="main-grid-container">
+      <!-- Left Column: Interactive Elements -->
+      <div class="grid-column-left">
+        <!-- Log Session Module -->
+        <div class="module">
+          <div class="module-header">
+            <h2>Log Session</h2>
+            <button class="toggle-button">−</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card">
+              <select id="strainSelect" class="input">
+                <option value="">No inventory available. Please add one.</option>
+              </select>
+              <input id="strainInput" placeholder="Or custom strain" class="input" />
+              <select id="productType" class="input">
+                <option value="">Product Type</option>
+                <option value="Flower">Flower</option>
+                <option value="Concentrate">Concentrate</option>
+                <option value="Edible">Edible</option>
+                <option value="Kief">Kief</option>
+                <option value="Other">Other</option>
+              </select>
+              <select id="hitType" class="input">
+                <option value="">Hit Type</option>
+                <option value="Joint">Joint</option>
+                <option value="Bowl">Bowl</option>
+                <option value="Bong">Bong</option>
+                <option value="Vape">Vape</option>
+              </select>
+              <input id="amountSmoked" type="number" placeholder="Amount smoked (g)" class="input" />
+              <label for="sessionNotes">Notes (optional)</label>
+              <textarea id="sessionNotes" placeholder="How did it feel? What were you doing?" class="input" rows="3"></textarea>
 
-    <!-- Monthly Limits Module -->
-    <div class="module">
-      <div class="module-header">
-        <h2>Monthly Limits & Forecast</h2>
-        <button class="toggle-button">−</button>
-      </div>
-      <div class="module-content">
-        <div id="goalProgress" class="bg-card stats-box">
-          <div id="dailyProgress"></div>
-          <div id="weeklyProgress"></div>
-          <div id="monthlyProgress"></div>
-        </div>
-        <div class="goal-visualization bg-card stats-box" style="margin-top: 1rem;">
-          <h4>Goal Adherence (Last 30 Days)</h4>
-          <canvas id="goalAdherenceChart"></canvas>
-        </div>
-      </div>
-    </div>
+              <!-- New Feature: Effects Logger -->
+              <div class="form-group">
+                <label>Effects (Select multiple):</label>
+                <div class="checkbox-group" id="effectsCheckboxes">
+                  <label><input type="checkbox" name="effect" value="Relaxed"> Relaxed</label>
+                  <label><input type="checkbox" name="effect" value="Happy"> Happy</label>
+                  <label><input type="checkbox" name="effect" value="Euphoric"> Euphoric</label>
+                  <label><input type="checkbox" name="effect" value="Uplifted"> Uplifted</label>
+                  <label><input type="checkbox" name="effect" value="Creative"> Creative</label>
+                  <label><input type="checkbox" name="effect" value="Focused"> Focused</label>
+                  <label><input type="checkbox" name="effect" value="Energetic"> Energetic</label>
+                  <label><input type="checkbox" name="effect" value="Sleepy"> Sleepy</label>
+                  <label><input type="checkbox" name="effect" value="Hungry"> Hungry</label>
+                </div>
+              </div>
 
-    <!-- Entry Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Inventory Module -->
-      <div class="module">
-        <div class="module-header">
-          <h2>Inventory</h2>
-          <button class="toggle-button">−</button>
-        </div>
-        <div class="module-content">
-          <div class="bg-card">
-            <input id="invName" placeholder="Strain name" class="input" />
-            <select id="invType" class="input">
-              <option value="">Product Type</option>
-              <option value="Flower">Flower</option>
-              <option value="Concentrate">Concentrate</option>
-              <option value="Edible">Edible</option>
-              <option value="Kief">Kief</option>
-              <option value="Other">Other</option>
-            </select>
-            <input id="invQty" type="number" placeholder="Quantity (g)" class="input" />
-            <label for="invPurchaseDate">Purchase Date (optional)</label>
-            <input id="invPurchaseDate" type="date" class="input" />
-            <label for="invCost">Total Cost (optional)</label>
-            <input id="invCost" type="number" placeholder="e.g., 40.00" step="0.01" class="input" />
-            <label for="invPotency">Potency (THC %, optional)</label>
-            <input id="invPotency" type="number" placeholder="e.g., 22.5" step="0.1" class="input" />
-            <div class="button-group">
-              <button id="addInvBtn" class="btn">Add</button>
-              <button id="clearInvBtn" class="btn btn-danger">Clear</button>
+              <!-- New Feature: Set & Setting Tags -->
+              <div class="form-group">
+                <label>Set & Setting (Select multiple):</label>
+                <div class="checkbox-group" id="settingCheckboxes">
+                  <label><input type="checkbox" name="setting" value="Solo"> Solo</label>
+                  <label><input type="checkbox" name="setting" value="Social"> Social</label>
+                  <label><input type="checkbox" name="setting" value="Music"> Music</label>
+                  <label><input type="checkbox" name="setting" value="Movie/TV"> Movie/TV</label>
+                  <label><input type="checkbox" name="setting" value="Gaming"> Gaming</label>
+                  <label><input type="checkbox" name="setting" value="Outdoors"> Outdoors</label>
+                  <label><input type="checkbox" name="setting" value="Creative Work"> Creative Work</label>
+                  <label><input type="checkbox" name="setting" value="Chores"> Chores</label>
+                  <label><input type="checkbox" name="setting" value="Chilling"> Chilling</label>
+                </div>
+              </div>
+
+              <!-- Load Recent Button -->
+              <div style="text-align: center; margin-top: 1rem;">
+                <button id="openLoadRecentModalBtn" class="btn">Load Recent Session</button>
+              </div>
+
+              <!-- New Feature: Session Timer -->
+              <div class="timer-controls">
+                <div id="timerDisplay" class="timer-display">Session Not Started</div>
+                <div class="button-group">
+                  <button id="startTimerBtn" class="btn btn-primary">Start Timer</button>
+                  <button id="endTimerBtn" class="btn" disabled>End & Log Session</button>
+                  <button id="clearLogFormBtn" class="btn btn-danger">Clear Form</button>
+                </div>
+              </div>
             </div>
-            <div id="inventoryList"></div>
           </div>
         </div>
-      </div>
-      <!-- Log Session Module -->
-      <div class="module">
-        <div class="module-header">
-          <h2>Log Session</h2>
-          <button class="toggle-button">−</button>
-        </div>
-        <div class="module-content">
-          <div class="bg-card">
-            <select id="strainSelect" class="input">
-              <option value="">No inventory available. Please add one.</option>
-            </select>
-            <input id="strainInput" placeholder="Or custom strain" class="input" />
-            <select id="productType" class="input">
-              <option value="">Product Type</option>
-              <option value="Flower">Flower</option>
-              <option value="Concentrate">Concentrate</option>
-              <option value="Edible">Edible</option>
-              <option value="Kief">Kief</option>
-              <option value="Other">Other</option>
-            </select>
-            <select id="hitType" class="input">
-              <option value="">Hit Type</option>
-              <option value="Joint">Joint</option>
-              <option value="Bowl">Bowl</option>
-              <option value="Bong">Bong</option>
-              <option value="Vape">Vape</option>
-            </select>
-            <input id="amountSmoked" type="number" placeholder="Amount smoked (g)" class="input" />
-            <label for="sessionNotes">Notes (optional)</label>
-            <textarea id="sessionNotes" placeholder="How did it feel? What were you doing?" class="input" rows="3"></textarea>
 
-            <!-- New Feature: Effects Logger -->
-            <div class="form-group">
-              <label>Effects (Select multiple):</label>
-              <div class="checkbox-group" id="effectsCheckboxes">
-                <label><input type="checkbox" name="effect" value="Relaxed"> Relaxed</label>
-                <label><input type="checkbox" name="effect" value="Happy"> Happy</label>
-                <label><input type="checkbox" name="effect" value="Euphoric"> Euphoric</label>
-                <label><input type="checkbox" name="effect" value="Uplifted"> Uplifted</label>
-                <label><input type="checkbox" name="effect" value="Creative"> Creative</label>
-                <label><input type="checkbox" name="effect" value="Focused"> Focused</label>
-                <label><input type="checkbox" name="effect" value="Energetic"> Energetic</label>
-                <label><input type="checkbox" name="effect" value="Sleepy"> Sleepy</label>
-                <label><input type="checkbox" name="effect" value="Hungry"> Hungry</label>
-              </div>
-            </div>
-
-            <!-- New Feature: Set & Setting Tags -->
-            <div class="form-group">
-              <label>Set & Setting (Select multiple):</label>
-              <div class="checkbox-group" id="settingCheckboxes">
-                <label><input type="checkbox" name="setting" value="Solo"> Solo</label>
-                <label><input type="checkbox" name="setting" value="Social"> Social</label>
-                <label><input type="checkbox" name="setting" value="Music"> Music</label>
-                <label><input type="checkbox" name="setting" value="Movie/TV"> Movie/TV</label>
-                <label><input type="checkbox" name="setting" value="Gaming"> Gaming</label>
-                <label><input type="checkbox" name="setting" value="Outdoors"> Outdoors</label>
-                <label><input type="checkbox" name="setting" value="Creative Work"> Creative Work</label>
-                <label><input type="checkbox" name="setting" value="Chores"> Chores</label>
-                <label><input type="checkbox" name="setting" value="Chilling"> Chilling</label>
-              </div>
-            </div>
-
-            <!-- New Feature: Session Timer -->
-            <div class="timer-controls">
-              <div id="timerDisplay" class="timer-display">Session Not Started</div>
+        <!-- Inventory Module -->
+        <div class="module">
+          <div class="module-header">
+            <h2>Inventory</h2>
+            <button class="toggle-button">−</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card">
+              <input id="invName" placeholder="Strain name" class="input" />
+              <select id="invType" class="input">
+                <option value="">Product Type</option>
+                <option value="Flower">Flower</option>
+                <option value="Concentrate">Concentrate</option>
+                <option value="Edible">Edible</option>
+                <option value="Kief">Kief</option>
+                <option value="Other">Other</option>
+              </select>
+              <input id="invQty" type="number" placeholder="Quantity (g)" class="input" />
+              <label for="invPurchaseDate">Purchase Date (optional)</label>
+              <input id="invPurchaseDate" type="date" class="input" />
+              <label for="invCost">Total Cost (optional)</label>
+              <input id="invCost" type="number" placeholder="e.g., 40.00" step="0.01" class="input" />
+              <label for="invPotency">Potency (THC %, optional)</label>
+              <input id="invPotency" type="number" placeholder="e.g., 22.5" step="0.1" class="input" />
               <div class="button-group">
-                <button id="startTimerBtn" class="btn btn-primary">Start Timer</button>
-                <button id="endTimerBtn" class="btn" disabled>End & Log Session</button>
-                <button id="clearLogFormBtn" class="btn btn-danger">Clear Form</button>
+                <button id="addInvBtn" class="btn">Add</button>
+                <button id="clearInvBtn" class="btn btn-danger">Clear</button>
+              </div>
+              <div id="inventoryList"></div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- End Left Column -->
+
+      <!-- Right Column: Display/Data Elements -->
+      <div class="grid-column-right">
+        <!-- Stats Module -->
+        <div class="module">
+          <div class="module-header">
+            <h2>Stats</h2>
+            <button class="toggle-button">−</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card stats-box">
+              <p>🌿 Total Sessions: <span id="sessionCount">0</span></p>
+              <p>⏱️ Time Since Last Session: <span id="elapsed">N/A</span></p>
+              <p>📊 Avg Time Between Sessions: <span id="avgInterval">0</span> min</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Limits Module -->
+        <div class="module">
+          <div class="module-header">
+            <h2>Monthly Limits & Forecast</h2>
+            <button class="toggle-button">−</button>
+          </div>
+          <div class="module-content">
+            <div id="goalProgress" class="bg-card stats-box">
+              <div id="dailyProgress"></div>
+              <div id="weeklyProgress"></div>
+              <div id="monthlyProgress"></div>
+            </div>
+            <div class="goal-visualization bg-card stats-box" style="margin-top: 1rem;">
+              <h4>Goal Adherence (Last 30 Days)</h4>
+              <canvas id="goalAdherenceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Session History Module -->
+        <div class="module">
+          <div class="module-header">
+            <h2>Session History<span id="filterIndicator" class="filter-indicator">(Filters Active)</span></h2>
+            <button class="toggle-button">−</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card">
+              <div class="calendar-toggles">
+                <button id="calendarDaily" class="btn">Daily</button>
+                <button id="calendarWeekly" class="btn">Weekly</button>
+                <button id="calendarMonthly" class="btn">Monthly</button>
+              </div>
+              <div id="sessionFilters">
+                <input id="filterText" type="text" placeholder="Search sessions (strain, notes...)" class="input" />
+                <select id="filterProduct" class="input">
+                  <option value="">All Products</option>
+                  <option value="Flower">Flower</option>
+                  <option value="Concentrate">Concentrate</option>
+                  <option value="Edible">Edible</option>
+                  <option value="Kief">Kief</option>
+                  <option value="Other">Other</option>
+                </select>
+                <input id="filterTag" type="text" placeholder="Filter by tag" class="input" />
+                <div class="date-filters">
+                  <input id="filterStartDate" type="date" class="input" />
+                  <input id="filterEndDate" type="date" class="input" />
+                </div>
+                <button id="resetFilters" class="btn btn-primary">Reset Filters</button>
+              </div>
+              <div class="session-history-container">
+                <div id="dailyView"></div>
+                <div id="weeklyView" class="hidden"></div>
+                <div id="monthlyView" class="hidden"></div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Session History Module -->
-    <div class="module">
-      <div class="module-header">
-        <h2>Session History</h2>
-        <button class="toggle-button">−</button>
-      </div>
-      <div class="module-content">
-        <div class="bg-card">
-          <div class="calendar-toggles">
-            <button id="calendarDaily" class="btn">Daily</button>
-            <button id="calendarWeekly" class="btn">Weekly</button>
-            <button id="calendarMonthly" class="btn">Monthly</button>
+        <!-- Data Analysis Module -->
+        <div class="module collapsed">
+          <div class="module-header">
+            <h2>Data Analysis</h2>
+            <button class="toggle-button">+</button>
           </div>
-          <div id="sessionFilters">
-            <input id="filterText" type="text" placeholder="Search sessions (strain, notes...)" class="input" />
-            <select id="filterProduct" class="input">
-              <option value="">All Products</option>
-              <option value="Flower">Flower</option>
-              <option value="Concentrate">Concentrate</option>
-              <option value="Edible">Edible</option>
-              <option value="Kief">Kief</option>
-              <option value="Other">Other</option>
-            </select>
-            <input id="filterTag" type="text" placeholder="Filter by tag" class="input" />
-            <div class="date-filters">
-              <input id="filterStartDate" type="date" class="input" />
-              <input id="filterEndDate" type="date" class="input" />
-            </div>
-            <button id="resetFilters" class="btn btn-primary">Reset Filters</button>
-          </div>
-          <div class="session-history-container">
-            <div id="dailyView"></div>
-            <div id="weeklyView" class="hidden"></div>
-            <div id="monthlyView" class="hidden"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Data Analysis Module -->
-    <div class="module">
-      <div class="module-header">
-        <h2>Data Analysis</h2>
-        <button class="toggle-button">−</button>
-      </div>
-      <div class="module-content">
-        <div id="dataAnalysisSection" class="bg-card stats-box">
-          <div class="grid">
-            <div>
-              <h3>Usage Over 24 Hours</h3>
-              <canvas id="usageChart"></canvas>
-            </div>
-            <div>
-              <h3>Product Type Breakdown</h3>
-              <canvas id="productChart"></canvas>
-            </div>
-            <div>
-              <h3>Hit Type Breakdown</h3>
-              <canvas id="hitChart"></canvas>
-            </div>
-            <div>
-              <h3>Inventory History</h3>
-              <canvas id="inventoryChart"></canvas>
+          <div class="module-content">
+            <div id="dataAnalysisSection" class="bg-card stats-box">
+              <div class="grid">
+                <div>
+                  <h3>Usage Over 24 Hours</h3>
+                  <canvas id="usageChart"></canvas>
+                </div>
+                <div>
+                  <h3>Product Type Breakdown</h3>
+                  <canvas id="productChart"></canvas>
+                </div>
+                <div>
+                  <h3>Hit Type Breakdown</h3>
+                  <canvas id="hitChart"></canvas>
+                </div>
+                <div>
+                  <h3>Inventory History</h3>
+                  <canvas id="inventoryChart"></canvas>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Data Summary Module -->
-    <div class="module">
-      <div class="module-header">
-        <h2>Data Summary</h2>
-        <button class="toggle-button">−</button>
-      </div>
-      <div class="module-content">
-        <div class="bg-card">
-          <div class="summary-controls">
-            <label for="summaryStartDate">Start Date:</label>
-            <input id="summaryStartDate" type="date" class="input" />
-            <label for="summaryEndDate">End Date:</label>
-            <input id="summaryEndDate" type="date" class="input" />
-            <button id="generateSummaryBtn" class="btn btn-primary">Generate Summary</button>
+        <!-- Data Summary Module -->
+        <div class="module collapsed">
+          <div class="module-header">
+            <h2>Data Summary</h2>
+            <button class="toggle-button">+</button>
           </div>
-          <div id="summaryOutput" class="summary-output-area">Select a date range and click \"Generate Summary\".</div>
+          <div class="module-content">
+            <div class="bg-card">
+              <div class="summary-controls">
+                <label for="summaryStartDate">Start Date:</label>
+                <input id="summaryStartDate" type="date" class="input" />
+                <label for="summaryEndDate">End Date:</label>
+                <input id="summaryEndDate" type="date" class="input" />
+                <button id="generateSummaryBtn" class="btn btn-primary">Generate Summary</button>
+              </div>
+              <div id="summaryOutput" class="summary-output-area">Select a date range and click "Generate Summary".</div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+
+        <!-- Cost Analysis Module -->
+        <div id="costAnalysisModule" class="module collapsed">
+          <div class="module-header">
+            <h2>💰 Cost Analysis</h2>
+            <button class="toggle-button">+</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card">
+              <p>Cost breakdown based on inventory and sessions.</p>
+              <div id="costAnalysisOutput"></div>
+              <!-- Maybe add charts here later -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Strain Notes Module -->
+        <div id="strainNotesModule" class="module collapsed">
+          <div class="module-header">
+            <h2>📝 Strain Notes</h2>
+            <button class="toggle-button">+</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card">
+              <p>Your personal notes and ratings for different strains.</p>
+              <div id="strainNotesOutput"></div>
+               <!-- Add search/filter/add notes controls here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Device Tracking Module (placeholder) -->
+        <div id="deviceTrackingModule" class="module collapsed">
+          <div class="module-header">
+            <h2>🔧 Device Tracking</h2>
+            <button class="toggle-button">+</button>
+          </div>
+          <div class="module-content">
+            <div class="bg-card">
+              <p>Device management and tracking (e.g., add device input to Log Session, manage devices in Settings).</p>
+              <div id="deviceTrackingOutput"></div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- End Right Column -->
+    </div> <!-- End Main Grid Container -->
 
     <!-- Ad Container -->
     <div class="ad-container">
@@ -436,6 +493,18 @@
   <!-- Notification Container & Sound -->
   <div id="notificationContainer" class="notification-container hidden"></div>
   <audio id="notificationSound" src="beep.mp3" preload="auto"></audio>
+
+  <!-- Load Recent Session Modal -->
+  <div id="loadRecentModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-button" id="closeLoadRecentModal">&times;</span>
+      <h2>Load Recent Session</h2>
+      <div id="loadRecentList">
+        <!-- Recent sessions will be populated here by JS -->
+        <p>Loading recent sessions...</p>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
