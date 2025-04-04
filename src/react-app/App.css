@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +43,136 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #84fab0, #8fd3f4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.old-version-btn {
+  padding: 1em 2em;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.2em;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: #bb86fc;
+  color: #121212;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.old-version-btn:hover {
+  transform: translateY(-2px);
+  background-color: #9d46fc;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.old-version-btn:active {
+  transform: translateY(0);
+}
+
+.info {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #e0e0e0;
+}
+
+.classic-card {
+  margin-top: 2rem;
+  border: 1px solid #bb86fc;
+  border-radius: 8px;
+  background-color: rgba(187, 134, 252, 0.1);
+}
+
+.classic-btn {
+  padding: 0.8em 1.6em;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.1em;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: #bb86fc;
+  color: #121212;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.classic-btn:hover {
+  transform: translateY(-2px);
+  background-color: #9d46fc;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Placeholder Pages Styling */
+.placeholder-page,
+.login-placeholder,
+.classic-redirect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+  background-color: #121212;
+  color: #f8f9fa;
+}
+
+.placeholder-page h2,
+.login-placeholder h2,
+.classic-redirect h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.placeholder-page p,
+.login-placeholder p,
+.classic-redirect p {
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.placeholder-page button,
+.login-placeholder button,
+.classic-redirect button {
+  background: linear-gradient(90deg, #5CFF4A, #40DFFF);
+  color: #121212;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(92, 255, 74, 0.25);
+}
+
+.placeholder-page button:hover,
+.login-placeholder button:hover,
+.classic-redirect button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(92, 255, 74, 0.35);
+}
+
+.placeholder-page button:active,
+.login-placeholder button:active,
+.classic-redirect button:active {
+  transform: translateY(1px);
 }

@@ -11,5 +11,6 @@
   "assets": {
     "binding": "ASSETS",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "custom_domains": ["sesh-tracker.com"]
 }

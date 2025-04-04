@@ -1,0 +1,438 @@
+/* === CSS Variables for Themes === */
+
+/* Neutral Light Theme */
+body.neutral-light {
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --container-color: #ffffff;
+  --border-color: #ced4da;
+  --accent-color: #0d6efd;
+}
+
+/* Neutral Dark Theme */
+body.neutral-dark {
+  --bg-color: #212529;
+  --text-color: #f8f9fa;
+  --container-color: #343a40;
+  --border-color: #495057;
+  --accent-color: #0d6efd;
+}
+
+/* Material Light Theme */
+body.material-light {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --container-color: #f5f5f5;
+  --border-color: #e0e0e0;
+  --accent-color: #6200ee;
+}
+
+/* Material Dark Theme */
+body.material-dark {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --container-color: #1e1e1e;
+  --border-color: #333333;
+  --accent-color: #bb86fc;
+}
+
+/* Ocean Light Theme */
+body.ocean-light {
+  --bg-color: #e0f7fa;
+  --text-color: #006064;
+  --container-color: #ffffff;
+  --border-color: #4dd0e1;
+  --accent-color: #00acc1;
+}
+
+/* Ocean Dark Theme */
+body.ocean-dark {
+  --bg-color: #004d40;
+  --text-color: #e0f7fa;
+  --container-color: #00695c;
+  --border-color: #00897b;
+  --accent-color: #26a69a;
+}
+
+/* Sage Light Theme */
+body.sage-light {
+  --bg-color: #f1f8f5;
+  --text-color: #2e3d32;
+  --container-color: #e8f5e9;
+  --border-color: #c5e1a5;
+  --accent-color: #8bc34a;
+}
+
+/* Sage Dark Theme */
+body.sage-dark {
+  --bg-color: #2e3d32;
+  --text-color: #dcedc8;
+  --container-color: #3e4e3b;
+  --border-color: #607d57;
+  --accent-color: #aed581;
+}
+
+/* Amber Light Theme */
+body.amber-light {
+  --bg-color: #fff8e1;
+  --text-color: #5d4037;
+  --container-color: #fffde7;
+  --border-color: #ffe082;
+  --accent-color: #ffb300;
+}
+
+/* Amber Dark Theme */
+body.amber-dark {
+  --bg-color: #5d4037;
+  --text-color: #fff8e1;
+  --container-color: #4e342e;
+  --border-color: #6d4c41;
+  --accent-color: #ffa000;
+}
+
+/* Tiedye Theme */
+body.tiedye {
+  background: conic-gradient(
+    #ff9a9e,
+    #fad0c4,
+    #fbc2eb,
+    #a18cd1,
+    #84fab0,
+    #8fd3f4,
+    #ff9a9e
+  );
+  background-size: 200% 200%;
+  animation: tieDyeRotate 25s linear infinite;
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --container-color: rgba(255, 255, 255, 0.9);
+  --border-color: #ccc;
+  --accent-color: #ff6ec7;
+}
+@keyframes tieDyeRotate {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+/* === Aggressive Fade-In Animation === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* === Base Styles === */
+* { box-sizing: border-box; }
+html, body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.5s, color 0.5s;
+}
+.container { max-width: 1000px; margin: 0 auto; padding: 1rem; }
+h1, h2, h3, h4 { margin: 0 0 1rem 0; }
+h1 { font-size: 2.5rem; text-align: center; }
+
+/* === Hidden Class === */
+.hidden { display: none; }
+
+/* === Glass-like Settings Button === */
+.open-settings {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 1000;
+  color: #fff;
+}
+.open-settings:hover {
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* === Revamped Settings Menu Styles === */
+.settings-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100%;
+  background-color: var(--container-color);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -4px 0 8px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 2000;
+  overflow-y: auto;
+}
+.settings-menu.active {
+  transform: translateX(0);
+}
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.settings-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.settings-header button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+/* === Settings Tabs Styles === */
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+}
+.tab-button {
+  flex: 1;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-color);
+  transition: background-color 0.3s;
+}
+.tab-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.tab-button.active {
+  border-bottom: 3px solid var(--accent-color);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* === Settings Content === */
+.settings-content {
+  padding: 1rem;
+}
+.settings-content .tab-content.hidden {
+  display: none;
+}
+
+/* === Notification Container Styles === */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--accent-color);
+  color: var(--text-color);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 1500;
+}
+.notification-container.show {
+  opacity: 1;
+}
+.notification-container.hidden {
+  display: none;
+}
+
+/* === Modal Styles for Editing Sessions === */
+.modal {
+  position: fixed;
+  z-index: 2100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+}
+.modal .modal-content {
+  background-color: var(--container-color);
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  position: relative;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.modal .close-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* === Buttons & Inputs === */
+.btn {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin: 0.2rem;
+}
+.btn:hover { transform: translateY(-3px); }
+.btn-danger { background-color: #e53935; color: #fff; }
+.btn-primary { background-color: #3949ab; color: #fff; }
+.btn-small { padding: 0.25rem 0.5rem; font-size: 0.8rem; }
+.input {
+  background-color: var(--container-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  margin: 0.2rem 0;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  outline: none;
+}
+
+/* === Card / Container Styles === */
+.bg-card, .stats-box {
+  background-color: var(--container-color);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* === Module (Collapsible) Styles with Animated Content === */
+.module {
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.module-header {
+  background-color: var(--container-color);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+}
+.module-header h2 { margin: 0; font-size: 1.5rem; }
+.toggle-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: transform 0.3s ease;
+}
+.module.collapsed .toggle-button {
+  transform: rotate(180deg);
+}
+.module-content {
+  overflow: hidden;
+  transition: max-height 0.7s ease, opacity 0.5s ease, padding 0.5s ease;
+  max-height: 1000px;
+  opacity: 1;
+  padding: 1rem;
+}
+.module.collapsed .module-content {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* === Scrollable Session History Container === */
+.session-history-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* === Progress Bars === */
+.progress {
+  position: relative;
+  background-color: var(--border-color);
+  border-radius: 5px;
+  overflow: hidden;
+  height: 16px;
+  margin-top: 4px;
+}
+.progress-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
+  position: relative;
+}
+.progress-bar span.progress-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+/* === Session & Inventory Rows === */
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+.session-label {
+  flex: 1;
+  margin-right: 1rem;
+  overflow-wrap: break-word;
+}
+.session-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inventory-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+.inventory-label {
+  flex: 1;
+  margin-right: 1rem;
+  overflow-wrap: break-word;
+}
+

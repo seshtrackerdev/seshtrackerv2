@@ -1,55 +1,56 @@
 // src/App.tsx
 
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./components/LandingPage";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState("unknown");
+  const openClassicVersion = () => {
+    window.open("/legacy/index.html", "_blank");
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          aria-label="increment"
-        >
-          count is {count}
-        </button>
-        <p>
-          Testing Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div className="card">
-        <button
-          onClick={() => {
-            fetch("/api/")
-              .then((res) => res.json() as Promise<{ name: string }>)
-              .then((data) => setName(data.name));
-          }}
-          aria-label="get name"
-        >
-          Name from API is: {name}
-        </button>
-        <p>
-          Edit <code>api/index.ts</code> to change the name
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={
+          <div className="login-placeholder">
+            <h2>Login Page</h2>
+            <p>This is a placeholder for the login page that will be implemented later.</p>
+            <button onClick={() => window.location.href = '/'}>Back to Home</button>
+          </div>
+        } />
+        <Route path="/sessions" element={
+          <div className="placeholder-page">
+            <h2>Sessions Page</h2>
+            <p>This feature is coming soon!</p>
+            <button onClick={() => window.location.href = '/'}>Back to Home</button>
+          </div>
+        } />
+        <Route path="/inventory" element={
+          <div className="placeholder-page">
+            <h2>Inventory Page</h2>
+            <p>This feature is coming soon!</p>
+            <button onClick={() => window.location.href = '/'}>Back to Home</button>
+          </div>
+        } />
+        <Route path="/analytics" element={
+          <div className="placeholder-page">
+            <h2>Analytics Page</h2>
+            <p>This feature is coming soon!</p>
+            <button onClick={() => window.location.href = '/'}>Back to Home</button>
+          </div>
+        } />
+        <Route path="/classic" element={
+          <div className="classic-redirect">
+            <h2>Redirecting to Classic Version...</h2>
+            <button onClick={openClassicVersion}>
+              Click here if you're not redirected automatically
+            </button>
+          </div>
+        } />
+      </Routes>
+    </Router>
   );
 }
 
