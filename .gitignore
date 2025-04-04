@@ -27,3 +27,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# Backup files and directories
+*.zip
+backups/
+backup-files/

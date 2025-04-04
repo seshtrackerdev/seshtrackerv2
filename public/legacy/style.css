@@ -124,16 +124,22 @@ body.tiedye {
 }
 
 /* === Base Styles === */
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background 0.5s, color 0.5s;
+  line-height: 1.6;
 }
-.container { max-width: 1000px; margin: 0 auto; padding: 1rem; }
-h1, h2, h3, h4 { margin: 0 0 1rem 0; }
-h1 { font-size: 2.5rem; text-align: center; }
+.container { max-width: 1000px; margin: 1rem auto; padding: 1rem; }
+h1, h2, h3, h4 {
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+h1 { font-size: 2.2rem; text-align: center; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.2rem; }
 
 /* === Hidden Class === */
 .hidden { display: none; }
@@ -292,32 +298,101 @@ h1 { font-size: 2.5rem; text-align: center; }
 /* === Buttons & Inputs === */
 .btn {
   background-color: var(--accent-color);
-  color: var(--text-color);
+  color: #ffffff;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  margin: 0.2rem;
+  transition: background-color 0.3s, transform 0.1s ease-out;
+  margin: 0.3rem;
+  font-weight: 600;
+  text-align: center;
+  display: inline-block;
 }
-.btn:hover { transform: translateY(-3px); }
-.btn-danger { background-color: #e53935; color: #fff; }
-.btn-primary { background-color: #3949ab; color: #fff; }
-.btn-small { padding: 0.25rem 0.5rem; font-size: 0.8rem; }
-.input {
-  background-color: var(--container-color);
+.btn:hover { background-color: color-mix(in srgb, var(--accent-color) 85%, black); transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn-danger { background-color: #d32f2f; }
+.btn-danger:hover { background-color: #b71c1c; }
+.btn-primary { background-color: #1976d2; }
+.btn-primary:hover { background-color: #0d47a1; }
+.btn-small { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
+
+.input, select {
+  background-color: var(--bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  border-radius: 6px;
+  padding: 0.6rem;
   width: 100%;
-  margin: 0.2rem 0;
+  margin: 0.3rem 0 0.8rem 0;
   transition: border-color 0.3s, box-shadow 0.3s;
+  font-size: 0.95rem;
 }
-.input:focus {
+select { appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right .7em top 50%; background-size: .65em auto; padding-right: 2.5em; }
+
+.input:focus, select:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 25%, transparent);
   outline: none;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* === New Feature Styles: Checkbox Groups === */
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  margin-bottom: 0.5rem; /* More space for group labels */
+}
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem; /* Row and column gap */
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-color);
+}
+.checkbox-group label {
+  display: inline-flex; /* Align checkbox and text */
+  align-items: center;
+  margin-bottom: 0; /* Reset margin for individual labels */
+  cursor: pointer;
+  font-weight: normal; /* Normal weight for options */
+  font-size: 0.9rem;
+}
+.checkbox-group input[type="checkbox"] {
+  margin-right: 0.4rem;
+  width: auto; /* Override default width */
+}
+
+/* === New Feature Styles: Timer Controls === */
+.timer-controls {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+.timer-display {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.8rem;
+  padding: 0.5rem;
+  background-color: var(--bg-color);
+  border-radius: 6px;
 }
 
 /* === Card / Container Styles === */
@@ -325,9 +400,38 @@ h1 { font-size: 2.5rem; text-align: center; }
   background-color: var(--container-color);
   border: 1px solid var(--border-color);
   padding: 1.5rem;
-  border-radius: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* === Style for the grid holding charts === */
+#dataAnalysisSection .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Keep existing grid layout */
+  gap: 1.5rem;
+}
+
+/* === Constrain chart container height === */
+#dataAnalysisSection .grid > div,
+.goal-visualization /* Apply similar constraints to goal chart container */ {
+  position: relative; /* Needed for Chart.js responsiveness */
+  height: 300px; /* Set an explicit height */
+  background-color: var(--container-color); /* Ensure background consistency if needed */
+  padding: 1rem; /* Add some padding */
+  border-radius: 0.5rem; /* Optional: round corners */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Optional: subtle shadow */
+}
+
+#dataAnalysisSection .grid > div h3 {
+  margin-bottom: 0.5rem; /* Adjust spacing below heading */
+  text-align: center;
+  font-size: 1rem;
+}
+
+#dataAnalysisSection .grid > div canvas,
+.goal-visualization canvas /* Apply to goal chart canvas */ {
+  max-height: 100%; /* Ensure canvas doesn't exceed container */
 }
 
 /* === Module (Collapsible) Styles with Animated Content === */
@@ -404,35 +508,209 @@ h1 { font-size: 2.5rem; text-align: center; }
 }
 
 /* === Session & Inventory Rows === */
-.session-row {
+.session-row, .inventory-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0.5rem;
   border-bottom: 1px solid var(--border-color);
   font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+.session-row:last-child, .inventory-row:last-child {
+  border-bottom: none;
+}
+.session-row:hover, .inventory-row:hover {
+  background-color: color-mix(in srgb, var(--container-color) 90%, var(--text-color));
+}
+.session-main-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 1rem;
 }
 .session-label {
-  flex: 1;
-  margin-right: 1rem;
   overflow-wrap: break-word;
+  margin-bottom: 0.25rem;
+}
+.session-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+}
+.tag {
+  background-color: color-mix(in srgb, var(--accent-color) 20%, transparent);
+  color: color-mix(in srgb, var(--accent-color) 80%, black);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.session-notes {
+  width: 100%;
+  background-color: color-mix(in srgb, var(--bg-color) 95%, var(--text-color));
+  border: 1px dashed var(--border-color);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 100px;
+  transition: all 0.3s ease;
+}
+.session-notes.hidden {
+  display: none;
 }
 .session-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.inventory-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.9rem;
+/* Version indicator */
+.version-indicator {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--border-color);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
 }
-.inventory-label {
-  flex: 1;
-  margin-right: 1rem;
-  overflow-wrap: break-word;
+
+/* === Logo Styles === */
+.logo-container {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.app-logo {
+  max-width: 150px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+.app-logo.scrolled {
+  transform: scale(0.8);
+}
+
+/* === Data Summary Styles === */
+.summary-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.summary-controls label {
+    margin-bottom: 0; /* Remove bottom margin for inline labels */
+    margin-right: 0.25rem;
+}
+
+.summary-controls .input {
+    width: auto; /* Allow inputs to size naturally */
+    flex-grow: 1; /* Allow inputs to grow */
+    margin-bottom: 0; /* Remove bottom margin */
+}
+
+.summary-output-area {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: color-mix(in srgb, var(--bg-color) 95%, var(--text-color)); /* Slightly different bg */
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    min-height: 50px;
+}
+
+.summary-output-area h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.summary-output-area ul {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+}
+
+.summary-output-area li {
+    margin-bottom: 0.5rem;
+}
+
+/* Style different tag types */
+.tag.effect-tag { background-color: color-mix(in srgb, #4caf50 30%, transparent); color: #1b5e20; }
+.tag.setting-tag { background-color: color-mix(in srgb, #2196f3 30%, transparent); color: #0d47a1; }
+.tag.legacy-tag { background-color: color-mix(in srgb, #ff9800 30%, transparent); color: #e65100; }
+/* Dark theme adjustments for tags */
+body.material-dark .tag.effect-tag, body.ocean-dark .tag.effect-tag, body.sage-dark .tag.effect-tag, body.neutral-dark .tag.effect-tag, body.amber-dark .tag.effect-tag {
+  background-color: color-mix(in srgb, #a5d6a7 30%, transparent);
+  color: #e8f5e9;
+}
+body.material-dark .tag.setting-tag, body.ocean-dark .tag.setting-tag, body.sage-dark .tag.setting-tag, body.neutral-dark .tag.setting-tag, body.amber-dark .tag.setting-tag {
+  background-color: color-mix(in srgb, #90caf9 30%, transparent);
+  color: #e3f2fd;
+}
+body.material-dark .tag.legacy-tag, body.ocean-dark .tag.legacy-tag, body.sage-dark .tag.legacy-tag, body.neutral-dark .tag.legacy-tag, body.amber-dark .tag.legacy-tag {
+  background-color: color-mix(in srgb, #ffcc80 30%, transparent);
+  color: #fff3e0;
+}
+
+.session-duration {
+    font-style: italic;
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin-left: 0.25rem;
+}
+
+.session-notes.hidden {
+  display: none;
+}
+
+/* === Live Session Box Styles === */
+.live-session-module {
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--accent-color) 30%, transparent);
+  margin-bottom: 2rem; /* More space below */
+  animation: subtlePulse 5s infinite ease-in-out;
+}
+.live-session-module .module-header h2 {
+  color: var(--accent-color);
+}
+.live-session-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem; /* More padding */
+}
+.live-timer-display {
+  font-size: 1.8rem; /* Larger timer */
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--accent-color);
+}
+.live-message-display {
+  min-height: 2em; /* Reserve space for messages */
+  font-size: 1rem;
+  font-style: italic;
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  transition: opacity 0.5s ease-in-out;
+}
+.live-message-display.fade-out {
+    opacity: 0;
+}
+.live-message-display.fade-in {
+    opacity: 1;
+}
+.live-session-buttons .btn {
+  padding: 0.8rem 1.5rem; /* Larger buttons */
+  font-size: 1rem;
+}
+
+@keyframes subtlePulse {
+  0% { border-color: var(--accent-color); box-shadow: 0 0 10px color-mix(in srgb, var(--accent-color) 20%, transparent); }
+  50% { border-color: color-mix(in srgb, var(--accent-color) 70%, white); box-shadow: 0 0 20px color-mix(in srgb, var(--accent-color) 40%, transparent); }
+  100% { border-color: var(--accent-color); box-shadow: 0 0 10px color-mix(in srgb, var(--accent-color) 20%, transparent); }
 }
 

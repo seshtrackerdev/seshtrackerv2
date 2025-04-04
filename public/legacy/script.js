@@ -6,11 +6,22 @@ let inventory = JSON.parse(localStorage.getItem("seshTrackerInventory")) || [];
 let inventoryHistory = JSON.parse(localStorage.getItem("seshTrackerInventoryHistory")) || {};
 
 // ------------------- Chart Variables -------------------
-let usageChart, productChart, hitChart, inventoryChart;
+let usageChart, productChart, hitChart, inventoryChart, goalAdherenceChart;
+
+// ------------------- Session Timer State -------------------
+let sessionStartTime = null;
+let timerIntervalId = null;
+
+// ------------------- Live Session State -------------------
+let liveSessionActive = false;
+let liveSessionStartTime = null;
+let liveTimerIntervalId = null;
+let liveMessageTimeoutId = null;
 
 // ------------------- Global Filter Variables & View Mode -------------------
 let filterText = "";
 let filterProduct = "";
+let filterTag = "";
 let filterStartDate = "";
 let filterEndDate = "";
 let viewMode = "daily"; // daily, weekly, or monthly
@@ -32,6 +43,22 @@ const inventoryList = document.getElementById("inventoryList");
 const dailyView = document.getElementById("dailyView");
 const weeklyView = document.getElementById("weeklyView");
 const monthlyView = document.getElementById("monthlyView");
+
+// New DOM Elements for logging features
+const effectsCheckboxesContainer = document.getElementById("effectsCheckboxes");
+const settingCheckboxesContainer = document.getElementById("settingCheckboxes");
+const startTimerBtn = document.getElementById("startTimerBtn");
+const endTimerBtn = document.getElementById("endTimerBtn");
+const timerDisplay = document.getElementById("timerDisplay");
+const clearLogFormBtn = document.getElementById("clearLogFormBtn");
+const sessionNotesInput = document.getElementById('sessionNotes'); // Get reference
+
+// Live Session DOM Elements
+const liveSessionBox = document.getElementById("liveSessionBox");
+const liveTimerDisplay = document.getElementById("liveTimerDisplay");
+const liveMessageDisplay = document.getElementById("liveMessageDisplay");
+const startLiveSessionBtn = document.getElementById("startLiveSessionBtn");
+const endLiveSessionBtn = document.getElementById("endLiveSessionBtn");
 
 // ------------------- Fade-In Animation Helper -------------------
 function applyFadeInEffect(element) {
@@ -79,6 +106,21 @@ function getWeekNumber(d) {
   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
 
+// Format duration (milliseconds) into HH:MM:SS or MM:SS
+function formatDuration(ms) {
+  if (!ms || ms < 0) return ''; // Return empty if no duration
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  } else {
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
 // ------------------- Shadow Plugin for Charts -------------------
 const shadowPlugin = {
   id: 'shadowPlugin',
@@ -113,9 +155,17 @@ function renderProgress(labelText, current, goal) {
 
 // ------------------- Goal Progress -------------------
 function updateGoalProgress() {
-  let dailyGoal = document.getElementById("dailyGoal").value || 5;
-  let weeklyGoal = document.getElementById("weeklyGoal").value || 20;
-  let monthlyGoal = document.getElementById("monthlyGoal").value || 80;
+  const dailyGoal = parseFloat(localStorage.getItem("dailyGoal") || "5");
+  const weeklyGoal = parseFloat(localStorage.getItem("weeklyGoal") || "20");
+  const monthlyGoal = parseFloat(localStorage.getItem("monthlyGoal") || "80");
+
+  const dailyGoalInput = document.getElementById("dailyGoal");
+  const weeklyGoalInput = document.getElementById("weeklyGoal");
+  const monthlyGoalInput = document.getElementById("monthlyGoal");
+  if (dailyGoalInput) dailyGoalInput.value = dailyGoal;
+  if (weeklyGoalInput) weeklyGoalInput.value = weeklyGoal;
+  if (monthlyGoalInput) monthlyGoalInput.value = monthlyGoal;
+
   const now = new Date();
   const todayStr = now.toISOString().split("T")[0];
   let dailyTotal = sessions.filter(s => s.time.startsWith(todayStr))
@@ -140,6 +190,22 @@ function updateGoalProgress() {
   document.getElementById("weeklyProgress").innerHTML = renderProgress("Weekly", weeklyTotal, weeklyGoal);
   document.getElementById("monthlyProgress").innerHTML = renderProgress("Monthly", monthlyTotal, monthlyGoal);
 }
+
+// Function to save goals from settings
+function saveGoals() {
+  const dailyGoal = parseFloat(document.getElementById("dailyGoal").value) || 5;
+  const weeklyGoal = parseFloat(document.getElementById("weeklyGoal").value) || 20;
+  const monthlyGoal = parseFloat(document.getElementById("monthlyGoal").value) || 80;
+  localStorage.setItem("dailyGoal", dailyGoal.toString());
+  localStorage.setItem("weeklyGoal", weeklyGoal.toString());
+  localStorage.setItem("monthlyGoal", monthlyGoal.toString());
+  updateGoalProgress(); // Re-render progress bars
+  renderCharts(); // Re-render adherence chart
+  alert("Goals saved!");
+}
+
+// Add listener to save goals button
+document.getElementById("saveGoals")?.addEventListener("click", saveGoals);
 
 // ------------------- Chart Rendering -------------------
 const chartPalette = ["#4e79a7", "#f28e2b", "#e15759", "#76b7b2", "#59a14f"];
@@ -273,26 +339,73 @@ function renderCharts() {
       }
     }
   });
+
+  // Render Goal Adherence Chart
+  renderGoalAdherenceChart();
 }
 
 // ------------------- Daily View Rendering -------------------
 function renderDailyView() {
   dailyView.innerHTML = "";
   const filtered = getFilteredSessions();
-  filtered.forEach((s, index) => {
+  filtered.sort((a, b) => new Date(b.startTime || b.time) - new Date(a.startTime || a.time)); // Sort newest first
+
+  filtered.forEach((s) => {
+    // Find the original index in the main sessions array for editing/deleting
+    const originalIndex = sessions.findIndex(session => session.startTime === s.startTime && session.endTime === s.endTime);
+
     const row = document.createElement("div");
-    row.className = "session-row";
-    const label = `${formatTime(s.time)}${s.strain ? " • " + s.strain : ""}${s.product ? " • " + s.product : ""}${s.hit ? " • " + s.hit : ""}${s.amount ? " • " + s.amount + "g" : ""}`;
+    row.className = "session-row with-details";
+
+    // Combine old tags with new effects and settings for display
+    const allTags = [
+      ...(s.effects || []).map(e => ({ type: 'effect', value: e })),
+      ...(s.settingTags || []).map(t => ({ type: 'setting', value: t })),
+      ...(s.tags || []).map(t => ({ type: 'legacy', value: t })) // Include legacy tags if they exist
+    ];
+    const tagsHTML = allTags.length > 0
+      ? `<div class="session-tags">${allTags.map(tag => `<span class="tag ${tag.type}-tag">${tag.value}</span>`).join('')}</div>`
+      : '';
+
+    const notesHTML = s.notes ? `<div class="session-notes hidden">${s.notes}</div>` : '';
+    const durationText = formatDuration(s.duration);
+    const durationHTML = durationText ? `<span class="session-duration">(${durationText})</span>` : '';
+    const startTime = s.startTime || s.time; // Fallback for older sessions
+    const label = `${formatTime(startTime)} ${durationHTML}${s.strain ? " • " + s.strain : ""}${s.product ? " • " + s.product : ""}${s.hit ? " • " + s.hit : ""}${s.amount ? " • " + s.amount + "g" : ""}`;
+
     row.innerHTML = `
-      <div class="session-label">${label}</div>
-      <div class="session-actions">
-        <button class="btn btn-small" onclick="editSession(${index})">Edit</button>
-        <button class="btn btn-small btn-danger" onclick="deleteSession(${index})">Delete</button>
+      <div class="session-main-info">
+        <div class="session-label">${label}</div>
+        ${tagsHTML}
       </div>
+      <div class="session-actions">
+        ${s.notes ? '<button class="btn btn-small btn-toggle-notes">Notes</button>' : ''}
+        <button class="btn btn-small" onclick="editSession(${originalIndex})">Edit</button>
+        <button class="btn btn-small btn-danger" onclick="deleteSession(${originalIndex})">Delete</button>
+      </div>
+      ${notesHTML}
     `;
+
+    const notesButton = row.querySelector('.btn-toggle-notes');
+    if (notesButton) {
+      notesButton.addEventListener('click', () => {
+        const notesDiv = row.querySelector('.session-notes');
+        notesDiv.classList.toggle('hidden');
+        // Scroll notes into view if they become visible
+        if (!notesDiv.classList.contains('hidden')) {
+            notesDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    }
+
     dailyView.appendChild(row);
-    applyFadeInEffect(row);
+    // Don't apply fade-in on every render, only initial or significant changes
+    // applyFadeInEffect(row);
   });
+   // Apply fade-in to the container once after rendering
+   if (filtered.length > 0) {
+       applyFadeInEffect(dailyView);
+   }
 }
 
 // ------------------- Weekly View Rendering -------------------
@@ -301,14 +414,14 @@ function renderWeeklyView() {
   const filtered = getFilteredSessions();
   let groups = {};
   filtered.forEach(s => {
-    const d = new Date(s.time);
+    const d = new Date(s.startTime || s.time); // Use startTime if available
     const year = d.getFullYear();
     const week = getWeekNumber(d);
     const key = `${year}-W${week}`;
     if (!groups[key]) groups[key] = [];
     groups[key].push(s);
   });
-  Object.keys(groups).forEach(weekKey => {
+  Object.keys(groups).sort().reverse().forEach(weekKey => {
     const container = document.createElement("div");
     container.className = "week-group";
     const header = document.createElement("div");
@@ -316,29 +429,71 @@ function renderWeeklyView() {
     header.textContent = `Week: ${weekKey}`;
     container.appendChild(header);
 
+    // Sort sessions within the week
+    groups[weekKey].sort((a, b) => new Date(b.startTime || b.time) - new Date(a.startTime || a.time));
+
     groups[weekKey].forEach(s => {
+      const originalIndex = sessions.findIndex(session => session.startTime === s.startTime && session.endTime === s.endTime);
       const row = document.createElement("div");
-      row.className = "session-row small";
-      const label = `${formatTime(s.time)}${s.strain ? " • " + s.strain : ""}${s.product ? " • " + s.product : ""}${s.hit ? " • " + s.hit : ""}${s.amount ? " • " + s.amount + "g" : ""}`;
+      row.className = "session-row small with-details";
+
+      // Combine tags for weekly view
+      const allTags = [
+        ...(s.effects || []).map(e => ({ type: 'effect', value: e })),
+        ...(s.settingTags || []).map(t => ({ type: 'setting', value: t })),
+        ...(s.tags || []).map(t => ({ type: 'legacy', value: t })) // Include legacy tags
+      ];
+      const tagsHTML = allTags.length > 0
+        ? `<div class="session-tags">${allTags.map(tag => `<span class="tag ${tag.type}-tag">${tag.value}</span>`).join('')}</div>`
+        : '';
+
+      const notesHTML = s.notes ? `<div class="session-notes hidden">${s.notes}</div>` : '';
+      const durationText = formatDuration(s.duration);
+      const durationHTML = durationText ? `<span class="session-duration">(${durationText})</span>` : '';
+      const startTime = s.startTime || s.time; // Fallback
+      const label = `${formatTime(startTime)} ${durationHTML}${s.strain ? " • " + s.strain : ""}${s.product ? " • " + s.product : ""}${s.hit ? " • " + s.hit : ""}${s.amount ? " • " + s.amount + "g" : ""}`;
+
       row.innerHTML = `
-        <div class="session-label">${label}</div>
-        <div class="session-actions">
-          <button class="btn btn-small" onclick="editSession(${sessions.indexOf(s)})">Edit</button>
-          <button class="btn btn-small btn-danger" onclick="deleteSession(${sessions.indexOf(s)})">Delete</button>
+        <div class="session-main-info">
+          <div class="session-label">${label}</div>
+           ${tagsHTML}
         </div>
+        <div class="session-actions">
+          ${s.notes ? '<button class="btn btn-small btn-toggle-notes">Notes</button>' : ''}
+          <button class="btn btn-small" onclick="editSession(${originalIndex})">Edit</button>
+          <button class="btn btn-small btn-danger" onclick="deleteSession(${originalIndex})">Delete</button>
+        </div>
+         ${notesHTML}
       `;
+
+      const notesButton = row.querySelector('.btn-toggle-notes');
+      if (notesButton) {
+        notesButton.addEventListener('click', () => {
+          const notesDiv = row.querySelector('.session-notes');
+          notesDiv.classList.toggle('hidden');
+          if (!notesDiv.classList.contains('hidden')) {
+            notesDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
+
       container.appendChild(row);
-      applyFadeInEffect(row);
+      // applyFadeInEffect(row); // Avoid excessive animation
     });
     container.style.marginBottom = "1.5rem";
     weeklyView.appendChild(container);
-    applyFadeInEffect(container);
+    // applyFadeInEffect(container); // Avoid excessive animation
   });
+  // Apply fade-in to the container once
+  if (Object.keys(groups).length > 0) {
+      applyFadeInEffect(weeklyView);
+  }
 }
 
 // ------------------- Monthly View Rendering -------------------
 function renderMonthlyView() {
   monthlyView.innerHTML = "";
+  const filtered = getFilteredSessions();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -363,10 +518,17 @@ function renderMonthlyView() {
         html += `<td></td>`;
       } else {
         let dateStr = new Date(year, month, day).toISOString().split("T")[0];
-        let daySessions = getFilteredSessions().filter(s => s.time.startsWith(dateStr));
+        let daySessions = filtered.filter(s => { // Use pre-filtered sessions
+            const sessionDate = new Date(s.startTime || s.time); // Use startTime
+            return sessionDate.toISOString().startsWith(dateStr);
+        });
+        // Sort sessions within the day cell
+        daySessions.sort((a, b) => new Date(a.startTime || a.time) - new Date(b.startTime || b.time));
+
         let sessionsHTML = "";
         daySessions.forEach(s => {
-          sessionsHTML += `<div class="calendar-cell-session">${formatTime(s.time)} - ${s.strain || "N/A"}</div>`;
+          const durationText = formatDuration(s.duration);
+          sessionsHTML += `<div class="calendar-cell-session">${formatTime(s.startTime || s.time)} - ${s.strain || "N/A"} ${durationText ? '(' + durationText + ')' : ''}</div>`;
         });
         html += `<td class="calendar-cell">
           <div class="calendar-cell-date">${day}</div>
@@ -413,7 +575,11 @@ function updateStats() {
     document.title = "Sesh Tracker";
     return;
   }
-  const last = new Date(sessions[sessions.length - 1].time);
+  // Ensure sessions are sorted by startTime for accurate stats
+  const sortedSessions = [...sessions].sort((a, b) => new Date(a.startTime || a.time) - new Date(b.startTime || b.time));
+
+  const lastSession = sortedSessions[sortedSessions.length - 1];
+  const last = new Date(lastSession.startTime || lastSession.time); // Use startTime if available
   const diff = Date.now() - last.getTime();
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
@@ -422,9 +588,9 @@ function updateStats() {
   document.title = `Sesh Tracker - ${h}h ${m}m ${s}s`;
 
   let intervals = [];
-  for (let i = 1; i < sessions.length; i++) {
-    const t1 = new Date(sessions[i - 1].time);
-    const t2 = new Date(sessions[i].time);
+  for (let i = 1; i < sortedSessions.length; i++) {
+    const t1 = new Date(sortedSessions[i - 1].startTime || sortedSessions[i - 1].time);
+    const t2 = new Date(sortedSessions[i].startTime || sortedSessions[i].time);
     intervals.push((t2 - t1) / 60000);
   }
   avgInterval.textContent = intervals.length
@@ -443,22 +609,38 @@ function renderInventory() {
   inventory.forEach((item, index) => {
     const row = document.createElement("div");
     row.className = "inventory-row";
+    let details = `${item.name} • ${item.type} • ${item.qty.toFixed(2)}g`;
+    if (item.cost && item.qty > 0) {
+      const costPerGram = (item.cost / item.qty).toFixed(2);
+      details += ` • ($${costPerGram}/g)`;
+    }
+    if (item.potency) {
+      details += ` • ${item.potency}% THC`;
+    }
+    if (item.purchaseDate) {
+      details += ` • Purchased: ${item.purchaseDate}`;
+    }
+
     row.innerHTML = `
-      <span>${item.name} • ${item.type} • ${item.qty}g</span>
+      <div class="inventory-label">${details}</div>
       <button class="btn btn-small btn-danger" onclick="deleteInventoryItem(${index})">Delete</button>
     `;
     inventoryList.appendChild(row);
 
     const opt = document.createElement("option");
     opt.value = item.name;
-    opt.textContent = `${item.name} (${item.qty}g)`;
+    opt.textContent = `${item.name} (${item.qty.toFixed(2)}g)`;
     strainSelect.appendChild(opt);
 
     if (!inventoryHistory[item.name]) {
-      inventoryHistory[item.name] = [{ x: new Date().toString(), y: item.qty }];
-      localStorage.setItem("seshTrackerInventoryHistory", JSON.stringify(inventoryHistory));
+      inventoryHistory[item.name] = [{ x: item.purchaseDate || new Date().toString(), y: item.qty }];
+    } else {
+      inventoryHistory[item.name].push({ x: item.purchaseDate || new Date().toString(), y: item.qty });
+      inventoryHistory[item.name].sort((a, b) => new Date(a.x) - new Date(b.x));
     }
+    localStorage.setItem("seshTrackerInventoryHistory", JSON.stringify(inventoryHistory));
   });
+  renderCharts();
 }
 window.deleteInventoryItem = (index) => {
   inventory.splice(index, 1);
@@ -471,10 +653,13 @@ function getFilteredSessions() {
   return sessions.filter(s => {
     let include = true;
     if (filterText) {
-      const searchStr = `${s.strain || ""} ${s.product || ""} ${s.hit || ""}`.toLowerCase();
+      const searchStr = `${s.strain || ""} ${s.product || ""} ${s.hit || ""} ${s.notes || ""}`.toLowerCase();
       if (!searchStr.includes(filterText.toLowerCase())) include = false;
     }
     if (filterProduct && s.product !== filterProduct) include = false;
+    if (filterTag && (!s.tags || !s.tags.some(tag => tag.toLowerCase().includes(filterTag.toLowerCase())))) {
+      include = false;
+    }
     const sessionDate = new Date(s.time);
     if (filterStartDate) {
       const start = new Date(filterStartDate);
@@ -490,7 +675,122 @@ function getFilteredSessions() {
 }
 
 // ------------------- Session Event Functions -------------------
+
+// Get selected checkbox values
+function getSelectedCheckboxes(container) {
+  if (!container) return []; // Safety check
+  return Array.from(container.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+}
+
+// Start Timer Function
+function startTimer() {
+  sessionStartTime = new Date();
+  startTimerBtn.disabled = true;
+  endTimerBtn.disabled = false;
+  timerDisplay.textContent = "Session Running: 0:00";
+  timerIntervalId = setInterval(() => {
+    const elapsedMs = Date.now() - sessionStartTime.getTime();
+    timerDisplay.textContent = `Session Running: ${formatDuration(elapsedMs)}`;
+  }, 1000);
+}
+
+// End Timer and Log Session Function (Replaces old logSession)
+function endTimerAndLog() {
+  if (!sessionStartTime) {
+    // Maybe log instantly if timer wasn't started? Or show alert.
+    // For now, let's assume instant log if timer wasn't running.
+    sessionStartTime = new Date(); // Log with current time as start
+    // alert("Timer wasn't started. Logging with current time.");
+    // return;
+  }
+
+  if (timerIntervalId) {
+      clearInterval(timerIntervalId);
+      timerIntervalId = null;
+  }
+  const endTime = new Date();
+  const duration = endTime.getTime() - sessionStartTime.getTime();
+
+  const strain = strainSelect.value || strainInput.value.trim();
+  const product = productType.value;
+  const hit = hitType.value;
+  const amount = parseFloat(amountSmoked.value) || 0;
+  const notes = sessionNotesInput.value.trim();
+  const effects = getSelectedCheckboxes(effectsCheckboxesContainer);
+  const settingTags = getSelectedCheckboxes(settingCheckboxesContainer);
+
+  const session = {
+    startTime: sessionStartTime.toString(), // Store as string
+    endTime: endTime.toString(),       // Store as string
+    duration: duration,                // Store duration in ms
+    strain: strain,
+    product: product,
+    hit: hit,
+    amount: amount,
+    notes: notes,
+    effects: effects,                  // Array of strings
+    settingTags: settingTags           // Array of strings
+    // 'time' field is deprecated but kept for potential backward compatibility checks
+  };
+
+  sessions.push(session);
+  localStorage.setItem("seshTrackerSessions", JSON.stringify(sessions));
+
+  // Update inventory
+  const match = inventory.find(i => i.name === strain);
+  if (match && amount > 0) {
+    match.qty = Math.max(match.qty - amount, 0);
+    localStorage.setItem("seshTrackerInventory", JSON.stringify(inventory));
+    if (!inventoryHistory[strain]) {
+      inventoryHistory[strain] = [];
+    }
+    // Record inventory change at the *end* time of the session
+    inventoryHistory[strain].push({ x: endTime.toString(), y: match.qty });
+    inventoryHistory[strain].sort((a, b) => new Date(a.x) - new Date(b.x)); // Ensure history is sorted
+    localStorage.setItem("seshTrackerInventoryHistory", JSON.stringify(inventoryHistory));
+  }
+
+  clearLogForm(); // Clear the form and reset timer state
+  renderSessions();
+  renderInventory();
+  stopFlashingTab(); // From notification system
+}
+
+// Clear Log Form Function
+function clearLogForm() {
+  // Clear inputs
+  strainSelect.value = "";
+  strainInput.value = "";
+  productType.value = "";
+  hitType.value = "";
+  amountSmoked.value = "";
+  sessionNotesInput.value = "";
+
+  // Clear checkboxes
+  if (effectsCheckboxesContainer) {
+    effectsCheckboxesContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  }
+  if (settingCheckboxesContainer) {
+    settingCheckboxesContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  }
+
+  // Reset timer state
+  if (timerIntervalId) {
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+  sessionStartTime = null;
+  if (timerDisplay) timerDisplay.textContent = "Session Not Started";
+  if (startTimerBtn) startTimerBtn.disabled = false;
+  if (endTimerBtn) endTimerBtn.disabled = true;
+}
+
 window.deleteSession = (index) => {
+  // Ensure index is valid
+  if (index < 0 || index >= sessions.length) {
+      console.error("Invalid index for deleteSession:", index);
+      return;
+  }
   if (confirm("Are you sure you want to delete this session?")) {
     sessions.splice(index, 1);
     localStorage.setItem("seshTrackerSessions", JSON.stringify(sessions));
@@ -503,16 +803,38 @@ let currentEditingIndex = null;
 const editModal = document.getElementById("editModal");
 const closeEditModal = document.getElementById("closeEditModal");
 const editSessionForm = document.getElementById("editSessionForm");
+// Add references for modal checkboxes
+const editEffectsCheckboxesContainer = document.getElementById("editEffectsCheckboxes");
+const editSettingCheckboxesContainer = document.getElementById("editSettingCheckboxes");
 
 window.editSession = (index) => {
   currentEditingIndex = index;
   const session = sessions[index];
-  const date = new Date(session.time);
+  const date = new Date(session.startTime || session.time); // Use startTime preferably
   document.getElementById("editTime").value = date.toISOString().slice(0,16);
   document.getElementById("editStrain").value = session.strain || "";
   document.getElementById("editProduct").value = session.product || "";
   document.getElementById("editHit").value = session.hit || "";
   document.getElementById("editAmount").value = session.amount || 0;
+  document.getElementById("editNotes").value = session.notes || "";
+  // Clear and populate effect checkboxes
+  if (editEffectsCheckboxesContainer) {
+      editEffectsCheckboxesContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      (session.effects || []).forEach(effect => {
+          const cb = editEffectsCheckboxesContainer.querySelector(`input[value="${effect}"]`);
+          if (cb) cb.checked = true;
+      });
+  }
+
+  // Clear and populate setting checkboxes
+  if (editSettingCheckboxesContainer) {
+      editSettingCheckboxesContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      (session.settingTags || []).forEach(tag => {
+          const cb = editSettingCheckboxesContainer.querySelector(`input[value="${tag}"]`);
+          if (cb) cb.checked = true;
+      });
+  }
+
   editModal.style.display = "block";
   const modalContent = editModal.querySelector(".modal-content");
   applyFadeInEffect(modalContent);
@@ -524,18 +846,49 @@ closeEditModal.addEventListener("click", () => {
 
 editSessionForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (currentEditingIndex === null) return;
-  const updatedTime = document.getElementById("editTime").value;
+  if (currentEditingIndex === null || currentEditingIndex >= sessions.length) return; // Add bounds check
+
+  // Get existing session data
+  const originalSession = sessions[currentEditingIndex];
+
+  const updatedStartTimeValue = document.getElementById("editTime").value;
+  const updatedStartTime = new Date(updatedStartTimeValue).toString();
   const updatedStrain = document.getElementById("editStrain").value;
   const updatedProduct = document.getElementById("editProduct").value;
   const updatedHit = document.getElementById("editHit").value;
   const updatedAmount = parseFloat(document.getElementById("editAmount").value) || 0;
+  const updatedNotes = document.getElementById("editNotes").value.trim();
+  const updatedTagsRaw = document.getElementById("editTags").value.trim(); // Still using old tags input
+  const updatedTags = updatedTagsRaw ? updatedTagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [];
+
+  // Preserve original endTime and duration if only startTime is edited
+  let updatedEndTime = originalSession.endTime;
+  let updatedDuration = originalSession.duration;
+  if (originalSession.startTime !== updatedStartTime && updatedEndTime) {
+      // Recalculate duration if start time changed and end time exists
+      updatedDuration = new Date(updatedEndTime).getTime() - new Date(updatedStartTime).getTime();
+  } else if (!updatedEndTime) {
+      // If there was no end time (e.g., old data), keep duration null
+      updatedDuration = null;
+  }
+
+  // Get updated effects and settings from modal checkboxes
+  const updatedEffects = getSelectedCheckboxes(editEffectsCheckboxesContainer);
+  const updatedSettingTags = getSelectedCheckboxes(editSettingCheckboxesContainer);
+
   sessions[currentEditingIndex] = {
-    time: new Date(updatedTime).toString(),
+    // time: updatedStartTime, // Keep original time field maybe? Or remove?
+    startTime: updatedStartTime,
+    endTime: updatedEndTime, // Keep original end time
+    duration: updatedDuration, // Recalculate or keep original duration
     strain: updatedStrain,
     product: updatedProduct,
     hit: updatedHit,
-    amount: updatedAmount
+    amount: updatedAmount,
+    notes: updatedNotes,
+    tags: updatedTags, // Keep old tags for now
+    effects: updatedEffects, // Use preserved or newly edited effects
+    settingTags: updatedSettingTags // Use preserved or newly edited settings
   };
   localStorage.setItem("seshTrackerSessions", JSON.stringify(sessions));
   renderSessions();
@@ -548,7 +901,11 @@ function logSession() {
   const product = productType.value;
   const hit = hitType.value;
   const amount = parseFloat(amountSmoked.value) || 0;
-  const session = { time, strain, product, hit, amount };
+  const notes = document.getElementById('sessionNotes').value.trim();
+  const tagsRaw = document.getElementById('sessionTags').value.trim();
+  const tags = tagsRaw ? tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [];
+
+  const session = { time, strain, product, hit, amount, notes, tags };
   sessions.push(session);
   localStorage.setItem("seshTrackerSessions", JSON.stringify(sessions));
   const match = inventory.find(i => i.name === strain);
@@ -568,13 +925,17 @@ function logSession() {
   productType.value = "";
   hitType.value = "";
   amountSmoked.value = "";
+  document.getElementById('sessionNotes').value = '';
+  document.getElementById('sessionTags').value = '';
 }
 
 function clearSessions() {
-  sessions = [];
-  localStorage.removeItem("seshTrackerSessions");
-  renderSessions();
-  updateGoalProgress();
+  if (confirm("Are you sure you want to delete ALL sessions? This cannot be undone.")) {
+    sessions = [];
+    localStorage.removeItem("seshTrackerSessions");
+    renderSessions();
+    updateGoalProgress();
+  }
 }
 
 // ------------------- Notification System -------------------
@@ -694,16 +1055,38 @@ document.getElementById("notifyInterval").addEventListener("change", updateNotif
 
 // ------------------- Enhanced Export/Import -------------------
 function exportData() {
+  // Ensure goals are read from input fields before exporting
+  const dailyGoalVal = document.getElementById("dailyGoal").value;
+  const weeklyGoalVal = document.getElementById("weeklyGoal").value;
+  const monthlyGoalVal = document.getElementById("monthlyGoal").value;
+
   const state = {
     sessions: sessions,
     inventory: inventory,
     inventoryHistory: inventoryHistory,
     theme: localStorage.getItem("themeColor") || "material-dark",
-    dailyGoal: document.getElementById("dailyGoal").value,
-    weeklyGoal: document.getElementById("weeklyGoal").value,
-    monthlyGoal: document.getElementById("monthlyGoal").value,
-    viewMode: viewMode
+    dailyGoal: dailyGoalVal,
+    weeklyGoal: weeklyGoalVal,
+    monthlyGoal: monthlyGoalVal,
+    viewMode: viewMode,
+    notificationSettings: getNotificationSettings()
   };
+  // Add compatibility check - ensure new fields exist before stringifying
+  state.sessions = state.sessions.map(s => ({
+      startTime: s.startTime || s.time, // Use time as fallback for old sessions
+      endTime: s.endTime || null,
+      duration: s.duration || null,
+      strain: s.strain || '',
+      product: s.product || '',
+      hit: s.hit || '',
+      amount: s.amount || 0,
+      notes: s.notes || '',
+      effects: s.effects || [],
+      settingTags: s.settingTags || [],
+      tags: s.tags || [] // Also include legacy tags if they exist
+      // time: s.time // Optionally keep original time for debugging?
+  }));
+
   const jsonData = JSON.stringify(state, null, 2);
   const blob = new Blob([jsonData], { type: "application/json" });
   const a = document.createElement("a");
@@ -737,6 +1120,20 @@ importFileInput.addEventListener("change", function(event) {
         renderSessions();
         renderInventory();
         updateGoalProgress();
+        // Apply imported notification settings
+        if (data.notificationSettings) {
+            localStorage.setItem("notifyPopup", data.notificationSettings.notifyPopup);
+            localStorage.setItem("notifySound", data.notificationSettings.notifySound);
+            localStorage.setItem("notifyFlash", data.notificationSettings.notifyFlash);
+            localStorage.setItem("notifySystem", data.notificationSettings.notifySystem);
+            localStorage.setItem("notifyInterval", data.notificationSettings.notifyInterval);
+            // Update UI checkboxes/inputs
+            document.getElementById("notifyPopup").checked = data.notificationSettings.notifyPopup;
+            document.getElementById("notifySound").checked = data.notificationSettings.notifySound;
+            document.getElementById("notifyFlash").checked = data.notificationSettings.notifyFlash;
+            document.getElementById("notifySystem").checked = data.notificationSettings.notifySystem;
+            document.getElementById("notifyInterval").value = data.notificationSettings.notifyInterval;
+        }
         alert("Data imported successfully!");
       } else {
         alert("Invalid data format.");
@@ -749,39 +1146,52 @@ importFileInput.addEventListener("change", function(event) {
 });
 
 // ------------------- Button Event Listeners -------------------
-const logBtn = document.getElementById("logBtn");
-const clearBtn = document.getElementById("clearBtn");
 const addInvBtn = document.getElementById("addInvBtn");
 const clearInvBtn = document.getElementById("clearInvBtn");
 const exportDataBtn = document.getElementById("exportData");
 const importDataBtn = document.getElementById("importData");
 
-if (logBtn) logBtn.addEventListener("click", logSession);
-if (clearBtn) clearBtn.addEventListener("click", clearSessions);
 if (addInvBtn) {
   addInvBtn.addEventListener("click", () => {
     const name = invName.value.trim();
     const type = invType.value;
     const qty = parseFloat(invQty.value) || 0;
+    const purchaseDate = document.getElementById('invPurchaseDate').value;
+    const cost = parseFloat(document.getElementById('invCost').value) || null;
+    const potency = parseFloat(document.getElementById('invPotency').value) || null;
+
     if (name && type && qty > 0) {
-      inventory.push({ name, type, qty });
+      const newItem = { name, type, qty, purchaseDate, cost, potency };
+      inventory.push(newItem);
       localStorage.setItem("seshTrackerInventory", JSON.stringify(inventory));
       if (!inventoryHistory[name]) {
-        inventoryHistory[name] = [{ x: new Date().toString(), y: qty }];
-        localStorage.setItem("seshTrackerInventoryHistory", JSON.stringify(inventoryHistory));
+        inventoryHistory[name] = [{ x: purchaseDate || new Date().toString(), y: qty }];
+      } else {
+        inventoryHistory[name].push({ x: purchaseDate || new Date().toString(), y: qty });
+        inventoryHistory[name].sort((a, b) => new Date(a.x) - new Date(b.x));
       }
+      localStorage.setItem("seshTrackerInventoryHistory", JSON.stringify(inventoryHistory));
       renderInventory();
       invName.value = "";
       invType.value = "";
       invQty.value = "";
+      document.getElementById('invPurchaseDate').value = '';
+      document.getElementById('invCost').value = '';
+      document.getElementById('invPotency').value = '';
+    } else {
+      alert('Please enter at least Strain Name, Product Type, and Quantity.');
     }
   });
 }
 if (clearInvBtn) {
   clearInvBtn.addEventListener("click", () => {
-    inventory = [];
-    localStorage.removeItem("seshTrackerInventory");
-    renderInventory();
+    if (confirm("Are you sure you want to clear ALL inventory items? This cannot be undone.")) {
+      inventory = [];
+      inventoryHistory = {};
+      localStorage.removeItem("seshTrackerInventory");
+      localStorage.removeItem("seshTrackerInventoryHistory");
+      renderInventory();
+    }
   });
 }
 if (exportDataBtn) exportDataBtn.addEventListener("click", exportData);
@@ -797,6 +1207,7 @@ strainSelect.addEventListener("change", () => {
 // ------------------- Filter Event Listeners -------------------
 const filterTextInput = document.getElementById("filterText");
 const filterProductSelect = document.getElementById("filterProduct");
+const filterTagInput = document.getElementById("filterTag");
 const filterStartDateInput = document.getElementById("filterStartDate");
 const filterEndDateInput = document.getElementById("filterEndDate");
 const resetFiltersBtn = document.getElementById("resetFilters");
@@ -807,6 +1218,10 @@ filterTextInput.addEventListener("input", () => {
 });
 filterProductSelect.addEventListener("change", () => {
   filterProduct = filterProductSelect.value;
+  renderSessions();
+});
+filterTagInput.addEventListener("input", () => {
+  filterTag = filterTagInput.value;
   renderSessions();
 });
 filterStartDateInput.addEventListener("change", () => {
@@ -820,10 +1235,12 @@ filterEndDateInput.addEventListener("change", () => {
 resetFiltersBtn.addEventListener("click", () => {
   filterText = "";
   filterProduct = "";
+  filterTag = "";
   filterStartDate = "";
   filterEndDate = "";
   filterTextInput.value = "";
   filterProductSelect.value = "";
+  filterTagInput.value = "";
   filterStartDateInput.value = "";
   filterEndDateInput.value = "";
   renderSessions();
@@ -912,10 +1329,153 @@ function initCollapsibles() {
     });
   });
 }
-renderInventory();
-renderSessions();
-initCollapsibles();
-setInterval(updateStats, 1000);
+
+function renderGoalAdherenceChart() {
+  const ctx = document.getElementById('goalAdherenceChart')?.getContext('2d');
+  if (!ctx) return;
+
+  const dailyGoal = parseFloat(localStorage.getItem("dailyGoal") || "5");
+  const labels = [];
+  const data = [];
+  const backgroundColors = [];
+  const today = new Date();
+
+  const dailyTotals = {};
+  sessions.forEach(s => {
+      const dateStr = s.time.split('T')[0]; // Use YYYY-MM-DD
+      dailyTotals[dateStr] = (dailyTotals[dateStr] || 0) + (s.amount || 0);
+  });
+
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    const dayOfMonth = date.getDate();
+    labels.push(dayOfMonth.toString()); // Show day of month
+
+    const total = dailyTotals[dateStr] || 0;
+    data.push(total);
+
+    // Color based on goal achievement
+    if (total === 0) {
+        backgroundColors.push('rgba(150, 150, 150, 0.5)'); // Grey for no data
+    } else if (total <= dailyGoal) {
+        backgroundColors.push('rgba(75, 192, 192, 0.6)'); // Greenish for met/under
+    } else {
+        backgroundColors.push('rgba(255, 99, 132, 0.6)'); // Reddish for over
+    }
+  }
+
+  if (goalAdherenceChart) goalAdherenceChart.destroy();
+
+  goalAdherenceChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Daily Consumption (g)',
+        data: data,
+        backgroundColor: backgroundColors,
+        borderColor: backgroundColors.map(color => color.replace('0.6', '1')), // Slightly darker border
+        borderWidth: 1,
+        borderRadius: 3
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+              display: true,
+              text: 'Grams'
+          }
+        },
+        x: {
+          title: {
+              display: true,
+              text: 'Day of Month (Last 30 Days)'
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false }, // Hide legend as colors show status
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += context.parsed.y.toFixed(2) + 'g';
+                if (context.parsed.y > dailyGoal) {
+                  label += ` (Over Goal: ${dailyGoal}g)`;
+                }
+              }
+              return label;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// Initial setup call needs to include reading goals
+document.addEventListener('DOMContentLoaded', () => {
+    loadNotificationSettings(); // Load notification settings on startup
+    migrateOldData(); // Attempt to migrate old data format if necessary
+    updateGoalProgress(); // Load and apply goals on startup
+    renderInventory();
+    renderSessions(); // This calls renderCharts internally
+    initCollapsibles();
+    setInterval(updateStats, 30000);
+});
+
+// Helper function to migrate old data (if necessary)
+function migrateOldData() {
+    let needsSave = false;
+    sessions = sessions.map(s => {
+        // If session only has 'time' and not 'startTime', migrate it
+        if (s.time && !s.startTime) {
+            needsSave = true;
+            return {
+                ...s, // Keep existing fields
+                startTime: s.time, // Copy 'time' to 'startTime'
+                endTime: null,     // No end time for old logs
+                duration: null,    // No duration for old logs
+                effects: s.tags || [], // Use old 'tags' as 'effects' maybe? Or keep separate? Let's keep separate for now.
+                settingTags: []
+            };
+        }
+        // Ensure effects and settingTags arrays exist
+        if (!s.effects) {
+            s.effects = [];
+            needsSave = true;
+        }
+        if (!s.settingTags) {
+            s.settingTags = [];
+            needsSave = true;
+        }
+        return s;
+    });
+
+    if (needsSave) {
+        console.log("Migrating old session data format...");
+        localStorage.setItem("seshTrackerSessions", JSON.stringify(sessions));
+    }
+}
+
+// Helper function to load notification settings into UI on start
+function loadNotificationSettings() {
+    document.getElementById("notifyPopup").checked = localStorage.getItem("notifyPopup") === "true";
+    document.getElementById("notifySound").checked = localStorage.getItem("notifySound") === "true";
+    document.getElementById("notifyFlash").checked = localStorage.getItem("notifyFlash") === "true";
+    document.getElementById("notifySystem").checked = localStorage.getItem("notifySystem") === "true";
+    document.getElementById("notifyInterval").value = localStorage.getItem("notifyInterval") || "60";
+}
 
 // ------------------- Logo Scroll Animation -------------------
 document.addEventListener('scroll', () => {
@@ -930,3 +1490,161 @@ document.addEventListener('scroll', () => {
     logo.classList.remove('scrolled');
   }
 });
+
+// ------------------- Data Summary Feature -------------------
+function generateSummary() {
+    const startDateInput = document.getElementById('summaryStartDate');
+    const endDateInput = document.getElementById('summaryEndDate');
+    const outputDiv = document.getElementById('summaryOutput');
+
+    const startDateStr = startDateInput.value;
+    const endDateStr = endDateInput.value;
+
+    if (!startDateStr || !endDateStr) {
+        outputDiv.innerHTML = '<p style="color: red;">Please select both a start and end date.</p>';
+        return;
+    }
+
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+    end.setHours(23, 59, 59, 999); // Include the entire end day
+
+    if (start > end) {
+         outputDiv.innerHTML = '<p style="color: red;">Start date cannot be after end date.</p>';
+        return;
+    }
+
+    const relevantSessions = sessions.filter(s => {
+        const sessionDate = new Date(s.time);
+        return sessionDate >= start && sessionDate <= end;
+    });
+
+    if (relevantSessions.length === 0) {
+        outputDiv.innerHTML = '<p>No sessions found in the selected date range.</p>';
+        return;
+    }
+
+    let totalSessions = relevantSessions.length;
+    let totalAmount = relevantSessions.reduce((acc, s) => acc + (s.amount || 0), 0);
+    let avgAmountPerSession = totalSessions > 0 ? (totalAmount / totalSessions) : 0;
+
+    // Calculate days in range for daily average
+    const timeDiff = end.getTime() - start.getTime();
+    const daysInRange = Math.max(1, Math.ceil(timeDiff / (1000 * 3600 * 24))); // At least 1 day
+    let avgAmountPerDay = totalAmount / daysInRange;
+
+    const productCounts = {};
+    const strainCounts = {};
+    const hitCounts = {};
+    relevantSessions.forEach(s => {
+        if (s.product) productCounts[s.product] = (productCounts[s.product] || 0) + 1;
+        if (s.strain) strainCounts[s.strain] = (strainCounts[s.strain] || 0) + 1;
+        if (s.hit) hitCounts[s.hit] = (hitCounts[s.hit] || 0) + 1;
+    });
+
+    // Function to get top N items from counts object
+    const getTopItems = (counts, n = 3) => {
+        return Object.entries(counts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, n)
+            .map(([name, count]) => `${name} (${count}x)`)
+            .join(', ') || 'N/A';
+    };
+
+    let summaryHTML = `
+        <h3>Summary for ${startDateStr} to ${endDateStr} (${daysInRange} days)</h3>
+        <ul>
+            <li><strong>Total Sessions:</strong> ${totalSessions}</li>
+            <li><strong>Total Amount Consumed:</strong> ${totalAmount.toFixed(2)}g</li>
+            <li><strong>Average Amount per Session:</strong> ${avgAmountPerSession.toFixed(2)}g</li>
+            <li><strong>Average Amount per Day:</strong> ${avgAmountPerDay.toFixed(2)}g</li>
+            <li><strong>Top Products:</strong> ${getTopItems(productCounts)}</li>
+            <li><strong>Top Strains:</strong> ${getTopItems(strainCounts)}</li>
+            <li><strong>Top Hit Types:</strong> ${getTopItems(hitCounts)}</li>
+        </ul>
+    `;
+
+    outputDiv.innerHTML = summaryHTML;
+}
+
+document.getElementById('generateSummaryBtn')?.addEventListener('click', generateSummary);
+
+// ------------------- Live Session Logic -------------------
+
+const liveMessages = [
+    "Enjoying the moment?",
+    "Stay hydrated!",
+    "How's the vibe?",
+    "Relax and unwind...",
+    "Peak incoming?",
+    "Music check!",
+    "Snack alert?",
+    "Deep breaths...",
+    "Creative thoughts flowing?",
+    "Just chillin'...",
+    "Time flies when you're having fun!",
+    "Embrace the green."
+];
+
+function getRandomMessage() {
+    return liveMessages[Math.floor(Math.random() * liveMessages.length)];
+}
+
+function showLiveMessage() {
+    if (!liveSessionActive || !liveMessageDisplay) return;
+
+    const message = getRandomMessage();
+    liveMessageDisplay.textContent = message;
+    liveMessageDisplay.classList.remove('fade-out');
+    liveMessageDisplay.classList.add('fade-in');
+
+    // Clear previous timeout if exists
+    if (liveMessageTimeoutId) clearTimeout(liveMessageTimeoutId);
+
+    // Set timeout to fade out current message
+    const fadeOutTimer = setTimeout(() => {
+        liveMessageDisplay.classList.remove('fade-in');
+        liveMessageDisplay.classList.add('fade-out');
+    }, 5000); // Message visible for 5 seconds
+
+    // Set timeout to schedule the next message
+    const nextMessageDelay = 15000 + Math.random() * 30000; // 15-45 seconds delay
+    liveMessageTimeoutId = setTimeout(showLiveMessage, nextMessageDelay + 5000); // Schedule after fade out
+}
+
+function startLiveSession() {
+    liveSessionActive = true;
+    liveSessionStartTime = new Date();
+    startLiveSessionBtn.classList.add('hidden');
+    endLiveSessionBtn.classList.remove('hidden');
+    liveTimerDisplay.textContent = "0:00";
+    liveMessageDisplay.textContent = "Let the good times roll! ✨";
+    liveMessageDisplay.classList.remove('fade-out');
+    liveMessageDisplay.classList.add('fade-in');
+    liveSessionBox.style.animationPlayState = 'running'; // Ensure animation is running
+
+    liveTimerIntervalId = setInterval(() => {
+        const elapsedMs = Date.now() - liveSessionStartTime.getTime();
+        liveTimerDisplay.textContent = formatDuration(elapsedMs);
+    }, 1000);
+
+    // Start the message cycle after a short delay
+    if (liveMessageTimeoutId) clearTimeout(liveMessageTimeoutId);
+    liveMessageTimeoutId = setTimeout(showLiveMessage, 10000); // First message after 10s
+}
+
+function endLiveSession() {
+    liveSessionActive = false;
+    if (liveTimerIntervalId) clearInterval(liveTimerIntervalId);
+    if (liveMessageTimeoutId) clearTimeout(liveMessageTimeoutId);
+    liveTimerIntervalId = null;
+    liveMessageTimeoutId = null;
+    liveSessionStartTime = null;
+
+    startLiveSessionBtn.classList.remove('hidden');
+    endLiveSessionBtn.classList.add('hidden');
+    liveTimerDisplay.textContent = "Ended";
+    liveMessageDisplay.textContent = "";
+    liveMessageDisplay.classList.remove('fade-in', 'fade-out');
+    liveSessionBox.style.animationPlayState = 'paused'; // Pause animation
+}

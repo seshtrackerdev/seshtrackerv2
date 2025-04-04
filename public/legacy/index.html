@@ -92,6 +92,22 @@
       <img src="logo2.png" alt="SeshTracker Logo" class="app-logo" />
     </div>
 
+    <!-- New Live Session Box -->
+    <div id="liveSessionBox" class="module live-session-module">
+      <div class="module-header">
+        <h2>⚡ Live Session</h2>
+         <!-- No toggle button for this one -->
+      </div>
+      <div class="module-content live-session-content">
+        <div id="liveTimerDisplay" class="live-timer-display">Not Started</div>
+        <div id="liveMessageDisplay" class="live-message-display"></div>
+        <div class="button-group live-session-buttons">
+          <button id="startLiveSessionBtn" class="btn btn-primary">Start Live Session</button>
+          <button id="endLiveSessionBtn" class="btn btn-danger hidden">End Live Session</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats Module -->
     <div class="module">
       <div class="module-header">
@@ -119,6 +135,10 @@
           <div id="weeklyProgress"></div>
           <div id="monthlyProgress"></div>
         </div>
+        <div class="goal-visualization bg-card stats-box" style="margin-top: 1rem;">
+          <h4>Goal Adherence (Last 30 Days)</h4>
+          <canvas id="goalAdherenceChart"></canvas>
+        </div>
       </div>
     </div>
 
@@ -142,6 +162,12 @@
               <option value="Other">Other</option>
             </select>
             <input id="invQty" type="number" placeholder="Quantity (g)" class="input" />
+            <label for="invPurchaseDate">Purchase Date (optional)</label>
+            <input id="invPurchaseDate" type="date" class="input" />
+            <label for="invCost">Total Cost (optional)</label>
+            <input id="invCost" type="number" placeholder="e.g., 40.00" step="0.01" class="input" />
+            <label for="invPotency">Potency (THC %, optional)</label>
+            <input id="invPotency" type="number" placeholder="e.g., 22.5" step="0.1" class="input" />
             <div class="button-group">
               <button id="addInvBtn" class="btn">Add</button>
               <button id="clearInvBtn" class="btn btn-danger">Clear</button>
@@ -178,9 +204,49 @@
               <option value="Vape">Vape</option>
             </select>
             <input id="amountSmoked" type="number" placeholder="Amount smoked (g)" class="input" />
-            <div class="button-group">
-              <button id="logBtn" class="btn">Log</button>
-              <button id="clearBtn" class="btn btn-danger">Clear</button>
+            <label for="sessionNotes">Notes (optional)</label>
+            <textarea id="sessionNotes" placeholder="How did it feel? What were you doing?" class="input" rows="3"></textarea>
+
+            <!-- New Feature: Effects Logger -->
+            <div class="form-group">
+              <label>Effects (Select multiple):</label>
+              <div class="checkbox-group" id="effectsCheckboxes">
+                <label><input type="checkbox" name="effect" value="Relaxed"> Relaxed</label>
+                <label><input type="checkbox" name="effect" value="Happy"> Happy</label>
+                <label><input type="checkbox" name="effect" value="Euphoric"> Euphoric</label>
+                <label><input type="checkbox" name="effect" value="Uplifted"> Uplifted</label>
+                <label><input type="checkbox" name="effect" value="Creative"> Creative</label>
+                <label><input type="checkbox" name="effect" value="Focused"> Focused</label>
+                <label><input type="checkbox" name="effect" value="Energetic"> Energetic</label>
+                <label><input type="checkbox" name="effect" value="Sleepy"> Sleepy</label>
+                <label><input type="checkbox" name="effect" value="Hungry"> Hungry</label>
+              </div>
+            </div>
+
+            <!-- New Feature: Set & Setting Tags -->
+            <div class="form-group">
+              <label>Set & Setting (Select multiple):</label>
+              <div class="checkbox-group" id="settingCheckboxes">
+                <label><input type="checkbox" name="setting" value="Solo"> Solo</label>
+                <label><input type="checkbox" name="setting" value="Social"> Social</label>
+                <label><input type="checkbox" name="setting" value="Music"> Music</label>
+                <label><input type="checkbox" name="setting" value="Movie/TV"> Movie/TV</label>
+                <label><input type="checkbox" name="setting" value="Gaming"> Gaming</label>
+                <label><input type="checkbox" name="setting" value="Outdoors"> Outdoors</label>
+                <label><input type="checkbox" name="setting" value="Creative Work"> Creative Work</label>
+                <label><input type="checkbox" name="setting" value="Chores"> Chores</label>
+                <label><input type="checkbox" name="setting" value="Chilling"> Chilling</label>
+              </div>
+            </div>
+
+            <!-- New Feature: Session Timer -->
+            <div class="timer-controls">
+              <div id="timerDisplay" class="timer-display">Session Not Started</div>
+              <div class="button-group">
+                <button id="startTimerBtn" class="btn btn-primary">Start Timer</button>
+                <button id="endTimerBtn" class="btn" disabled>End & Log Session</button>
+                <button id="clearLogFormBtn" class="btn btn-danger">Clear Form</button>
+              </div>
             </div>
           </div>
         </div>
@@ -201,7 +267,7 @@
             <button id="calendarMonthly" class="btn">Monthly</button>
           </div>
           <div id="sessionFilters">
-            <input id="filterText" type="text" placeholder="Search sessions..." class="input" />
+            <input id="filterText" type="text" placeholder="Search sessions (strain, notes...)" class="input" />
             <select id="filterProduct" class="input">
               <option value="">All Products</option>
               <option value="Flower">Flower</option>
@@ -210,6 +276,7 @@
               <option value="Kief">Kief</option>
               <option value="Other">Other</option>
             </select>
+            <input id="filterTag" type="text" placeholder="Filter by tag" class="input" />
             <div class="date-filters">
               <input id="filterStartDate" type="date" class="input" />
               <input id="filterEndDate" type="date" class="input" />
@@ -255,6 +322,26 @@
       </div>
     </div>
 
+    <!-- Data Summary Module -->
+    <div class="module">
+      <div class="module-header">
+        <h2>Data Summary</h2>
+        <button class="toggle-button">−</button>
+      </div>
+      <div class="module-content">
+        <div class="bg-card">
+          <div class="summary-controls">
+            <label for="summaryStartDate">Start Date:</label>
+            <input id="summaryStartDate" type="date" class="input" />
+            <label for="summaryEndDate">End Date:</label>
+            <input id="summaryEndDate" type="date" class="input" />
+            <button id="generateSummaryBtn" class="btn btn-primary">Generate Summary</button>
+          </div>
+          <div id="summaryOutput" class="summary-output-area">Select a date range and click \"Generate Summary\".</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Ad Container -->
     <div class="ad-container">
       <!-- Google AdSense -->
@@ -269,10 +356,8 @@
       </script>
     </div>
 
-    <!-- Footer -->
-    <footer>
-      <p>Developed with 💚 by <a href="https://github.com/x04dev" target="_blank">x04dev</a> | v2.0</p>
-    </footer>
+    <!-- Version indicator -->
+    <div class="version-indicator">v2.0 Legacy</div>
   </div>
 
   <!-- Edit Session Modal -->
@@ -304,6 +389,45 @@
         </select>
         <label for="editAmount">Amount (g)</label>
         <input type="number" id="editAmount" name="amount" step="0.01">
+        <label for="editNotes">Notes</label>
+        <textarea id="editNotes" name="notes" class="input" rows="3"></textarea>
+        <label for="editTags">Tags (comma-separated)</label>
+        <input type="text" id="editTags" name="tags" class="input">
+
+        <!-- Add Effect checkboxes to modal -->
+        <div class="form-group">
+          <label>Effects:</label>
+          <div class="checkbox-group" id="editEffectsCheckboxes">
+            <label><input type="checkbox" name="editEffect" value="Relaxed"> Relaxed</label>
+            <label><input type="checkbox" name="editEffect" value="Happy"> Happy</label>
+            <label><input type="checkbox" name="editEffect" value="Euphoric"> Euphoric</label>
+            <label><input type="checkbox" name="editEffect" value="Uplifted"> Uplifted</label>
+            <label><input type="checkbox" name="editEffect" value="Creative"> Creative</label>
+            <label><input type="checkbox" name="editEffect" value="Focused"> Focused</label>
+            <label><input type="checkbox" name="editEffect" value="Energetic"> Energetic</label>
+            <label><input type="checkbox" name="editEffect" value="Sleepy"> Sleepy</label>
+            <label><input type="checkbox" name="editEffect" value="Hungry"> Hungry</label>
+            <!-- Add other effects matching the log form if needed -->
+          </div>
+        </div>
+
+        <!-- Add Setting checkboxes to modal -->
+        <div class="form-group">
+          <label>Set & Setting:</label>
+          <div class="checkbox-group" id="editSettingCheckboxes">
+            <label><input type="checkbox" name="editSetting" value="Solo"> Solo</label>
+            <label><input type="checkbox" name="editSetting" value="Social"> Social</label>
+            <label><input type="checkbox" name="editSetting" value="Music"> Music</label>
+            <label><input type="checkbox" name="editSetting" value="Movie/TV"> Movie/TV</label>
+            <label><input type="checkbox" name="editSetting" value="Gaming"> Gaming</label>
+            <label><input type="checkbox" name="editSetting" value="Outdoors"> Outdoors</label>
+            <label><input type="checkbox" name="editSetting" value="Creative Work"> Creative Work</label>
+            <label><input type="checkbox" name="editSetting" value="Chores"> Chores</label>
+            <label><input type="checkbox" name="editSetting" value="Chilling"> Chilling</label>
+             <!-- Add other settings matching the log form if needed -->
+          </div>
+        </div>
+
         <button type="submit" class="btn">Save Changes</button>
       </form>
     </div>
