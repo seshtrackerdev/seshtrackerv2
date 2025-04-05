@@ -8,6 +8,7 @@ import RegisterForm from "./components/RegisterForm";
 import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from './components/Header';
+import DebugTool from './utils/DebugTool';
 import "./App.css";
 import DashboardPlaceholder from "./components/DashboardPlaceholder";
 import ContactPage from './pages/ContactPage';
@@ -93,6 +94,7 @@ function App() {
   return (
     <Router>
       <AppContent />
+      <DebugTool />
     </Router>
   );
 }

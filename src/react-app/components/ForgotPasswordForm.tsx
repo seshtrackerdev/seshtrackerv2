@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 import './Auth.css'; // Reuse existing auth styles
 
 const ForgotPasswordForm = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const { resetPassword, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setMessage('');
+    setSuccess(false);
 
     if (!email) {
       setError('Please enter your email address');
@@ -23,11 +23,14 @@ const ForgotPasswordForm = () => {
     setError(
       'Password resets via email are currently unavailable. If you need to reset your password, please contact support.' // TODO: Add link when available
     );
+    // Display success anyway to show how it would look
+    setSuccess(true);
+    
     // In the future, the actual API call would go here:
     /*
     const success = await resetPassword(email);
     if (success) {
-      setMessage('If an account exists for this email, a password reset link has been sent (Feature currently disabled).');
+      setSuccess(true);
       setEmail(''); // Clear email field on "success"
     } else {
       // Show a generic error to avoid revealing if an email exists or not
@@ -48,9 +51,9 @@ const ForgotPasswordForm = () => {
             <p className="auth-form-subtitle">Enter your email to request a reset</p>
           </div>
 
-          {message && (
+          {success && (
             <div className="auth-success">
-              {message}
+              If an account exists for this email, a password reset link has been sent (Feature currently disabled).
             </div>
           )}
 

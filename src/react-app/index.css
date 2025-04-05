@@ -124,7 +124,7 @@ body {
 
 /* --- Typography --- */
 h1, h2, h3, h4, h5, h6 {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
@@ -143,8 +143,8 @@ h3 {
 }
 
 p {
-  margin-bottom: var(--spacing-md);
-  line-height: 1.6;
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.5;
 }
 
 a {
@@ -167,7 +167,8 @@ a:hover {
 }
 
 .page-section {
-  padding: var(--spacing-xl) 0;
+  padding: 5px 0;
+  margin: 0;
 }
 
 /* --- Utility Classes --- */
@@ -697,7 +698,7 @@ body.light-theme .mobile-nav button[data-mode="Dark Mode"] svg {
 /* --- Media Queries --- */
 @media (min-width: 640px) {
   :root {
-    --page-margin: var(--spacing-lg);
+    --page-margin: var(--spacing-md);
   }
   
   h1 {
@@ -715,7 +716,7 @@ body.light-theme .mobile-nav button[data-mode="Dark Mode"] svg {
 
 @media (min-width: 768px) {
   :root {
-    --page-margin: var(--spacing-xl);
+    --page-margin: var(--spacing-lg);
   }
   
   .hidden-mobile {
@@ -759,22 +760,28 @@ body.light-theme .mobile-nav button[data-mode="Dark Mode"] svg {
 
 /* --- Tour Functionality --- */
 .tour-section {
-  min-height: 100vh;
-  display: none; /* Initially hidden until tour starts */
+  min-height: 30vh;
+  display: none;
   align-items: center;
-  padding: var(--spacing-xl) var(--page-margin);
+  padding: 0 var(--page-margin);
+  margin: 0;
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(5px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .tour-started .tour-section {
-  display: flex; /* Show when tour starts */
+  display: flex;
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .tour-section.is-visible {
   opacity: 1;
   transform: translateY(0);
+  margin: 0;
+  min-height: auto;
 }
 
 .discover-button {
@@ -818,7 +825,9 @@ body.light-theme .mobile-nav button[data-mode="Dark Mode"] svg {
 
 /* Next button styling in tour sections */
 .next-button {
-  margin-top: var(--spacing-xl);
+  margin-top: 5px;
+  margin-bottom: 0;
+  padding: 10px 15px;
   background: linear-gradient(
     90deg, 
     var(--cannabis-green-dark), 
@@ -849,4 +858,11 @@ body.light-theme .mobile-nav button[data-mode="Dark Mode"] svg {
   100% {
     box-shadow: 0 0 0 0 rgba(67, 160, 71, 0);
   }
+}
+
+/* Force minimal height for these elements */
+.page-section, .tour-section, .container, section {
+  min-height: auto !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
 }
