@@ -1,0 +1,228 @@
+/* ===== BUTTON COMPONENT STYLES ===== */
+/* This file contains all button styles used throughout the application */
+
+/* Base Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--button-padding-y) var(--button-padding-x);
+  height: var(--button-height);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all var(--transition-base) var(--transition-timing);
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn .icon {
+  margin-right: var(--spacing-sm);
+}
+
+.btn .icon-right {
+  margin-left: var(--spacing-sm);
+  margin-right: 0;
+}
+
+/* Primary Button - Green, filled, for main actions */
+.btn-primary {
+  background-color: var(--cannabis-green);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--cannabis-green-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active:not(:disabled) {
+  background-color: var(--cannabis-green-dark);
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Secondary Button - Outlined, for secondary actions */
+.btn-secondary {
+  background-color: var(--cannabis-purple);
+  color: white;
+  border: none;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--cannabis-purple-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background-color: var(--cannabis-purple-dark);
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tertiary Button - Text, for less prominent actions */
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+}
+
+.btn-tertiary:hover {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+/* Icon Button - Circle, for icon-only buttons */
+.btn-icon {
+  width: var(--button-height);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon.btn-sm {
+  width: 36px;
+}
+
+.btn-icon.btn-lg {
+  width: 48px;
+}
+
+.btn-icon.btn-xl {
+  width: 56px;
+}
+
+/* Purple Button - For "Classic" mode links */
+.btn-purple {
+  background-color: var(--cannabis-purple);
+  color: white;
+  border-color: var(--cannabis-purple);
+}
+
+.btn-purple:hover {
+  background-color: var(--cannabis-purple-dark);
+  color: white;
+}
+
+/* CTA Button - For primary call-to-action elements */
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: var(--cannabis-green-dark);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+  color: var(--cannabis-green-dark);
+}
+
+.cta-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: var(--spacing-sm);
+}
+
+/* Pulse Effect - For buttons that need attention */
+.pulse-effect {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--cannabis-green-rgb, 67, 160, 71), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--cannabis-green-rgb, 67, 160, 71), 0);
+  }
+}
+
+/* Button Size Variations */
+.btn-xs {
+  font-size: var(--font-size-xs);
+  padding: 0.2rem 0.5rem;
+  height: 28px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-sm {
+  font-size: var(--font-size-sm);
+  padding: 0.3rem 0.75rem;
+  height: 36px;
+}
+
+.btn-lg {
+  font-size: var(--font-size-lg);
+  padding: 0.6rem 1.25rem;
+  height: 48px;
+  border-radius: var(--radius-lg);
+}
+
+.btn-xl {
+  font-size: var(--font-size-xl);
+  padding: 0.75rem 1.5rem;
+  height: 56px;
+  border-radius: var(--radius-lg);
+}
+
+/* Full Width Button */
+.btn-full {
+  width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 640px) {
+  .btn {
+    padding: var(--button-padding-y) calc(var(--button-padding-x) * 1.2);
+  }
+  
+  .btn-lg {
+    padding: 0.6rem 1.5rem;
+  }
+  
+  .btn-xl {
+    padding: 0.75rem 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn {
+    padding: 0.5rem 1rem;
+  }
+  
+  .cta-button {
+    font-size: 1rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+} 

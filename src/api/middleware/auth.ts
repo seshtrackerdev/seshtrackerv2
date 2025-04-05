@@ -32,7 +32,7 @@ export const authMiddleware = createMiddleware<{
   
   try {
     // Verify the token with kushobserver service
-    const verifyResponse = await fetch("https://kushobserver.workers.dev/verify", {
+    const verifyResponse = await fetch("https://kushobserver.tmultidev.workers.dev/verify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

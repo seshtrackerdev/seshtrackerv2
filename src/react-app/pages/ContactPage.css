@@ -1,0 +1,88 @@
+/* src/react-app/pages/ContactPage.css */
+
+/* Keep general page container styles if still relevant, but remove form-specific ones */
+.contact-page-container-react {
+    max-width: 800px; /* Consider removing if max-width is set by Tailwind */
+    margin: 2rem auto;
+    padding: 1rem 2rem 2rem; 
+    /* Use theme variable */
+    /* background-color: var(--bg-primary); */
+    border-radius: var(--border-radius-large);
+}
+
+/* Keep header styles if needed */
+.contact-header-react {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    /* Use theme variable */
+    border-bottom: 1px solid var(--border-color);
+}
+
+.contact-header-react h1 {
+    margin-bottom: 0.5rem;
+    /* Use theme variable */
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 2rem; 
+}
+
+.contact-header-react p {
+    /* Use theme variable */
+    color: var(--text-secondary);
+    font-size: 1.1em;
+}
+
+/* Remove form section styles if handled by Tailwind */
+/* .form-section-react { ... } */
+/* .form-section-react h2 { ... } */
+
+/* Remove form group and label styles if handled by Tailwind */
+/* .form-group-react { ... } */
+/* .form-group-react label { ... } */
+
+/* REMOVE these conflicting input/select/textarea styles as they are handled by Tailwind utility classes in the component */
+/*
+.input-react,
+.contact-page-container-react select,
+.contact-page-container-react textarea {
+    ...
+}
+
+.input-react:focus,
+.contact-page-container-react select:focus,
+.contact-page-container-react textarea:focus {
+    ...
+}
+
+.contact-page-container-react textarea {
+    ...
+}
+*/
+
+/* Remove button styles if handled by Tailwind cta-button */
+/* .btn-react { ... } */
+/* .btn-react:hover { ... } */
+/* .btn-react:active { ... } */
+
+/* Keep footer styles if needed */
+.contact-footer-react {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    /* Use theme variable */
+    border-top: 1px solid var(--border-color);
+    /* Use theme variable */
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Add fade-in animation here if not in global CSS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+} 

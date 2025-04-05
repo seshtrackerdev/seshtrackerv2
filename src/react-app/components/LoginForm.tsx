@@ -71,9 +71,9 @@ const LoginForm = () => {
                 <label className="form-label" htmlFor="password">
                   Password
                 </label>
-                <a href="#" className="form-link">
+                <Link to="/forgot-password" className="form-link">
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <input
                 className="form-input"

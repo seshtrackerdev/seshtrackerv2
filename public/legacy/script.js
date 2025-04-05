@@ -1323,14 +1323,12 @@ document.getElementById("openSettings").addEventListener("click", () => {
   setTimeout(() => {
     settingsMenu.classList.add("active");
   }, 10);
-  document.getElementById("openSettings").classList.add("hidden");
 });
 document.getElementById("closeSettings").addEventListener("click", () => {
   settingsMenu.classList.remove("active");
   setTimeout(() => {
     settingsMenu.classList.add("hidden");
   }, 300);
-  document.getElementById("openSettings").classList.remove("hidden");
 });
 
 // ------------------- Tab Switching for Settings Menu -------------------

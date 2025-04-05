@@ -2,73 +2,851 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --- Mobile-First Theme System --- */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Base Theme Colors */
+  --color-dark: #121212;
+  --color-dark-accent: #1e1e1e;
+  --color-light: #f8f9fa;
+  --color-light-accent: #e9ecef;
+  
+  /* Branding - Cannabis-themed Palette */
+  --cannabis-green: #43a047;     /* Main green */
+  --cannabis-green-light: #76d275;
+  --cannabis-green-dark: #00701a;
+  --cannabis-purple: #7b2cbf;    /* Accent purple */
+  --cannabis-purple-light: #ae52f4;
+  --cannabis-purple-dark: #4a148c;
+  --cannabis-earth: #795548;     /* Earthy tones */
+  --cannabis-earth-light: #a98274;
+  --cannabis-earth-dark: #4b2c20;
+  --cannabis-gold: #ffc107;      /* Accent gold */
+  
+  /* Text Colors */
+  --text-primary-dark: #f0f0f0;
+  --text-secondary-dark: #b3b3b3;
+  --text-primary-light: #212529;
+  --text-secondary-light: #6c757d;
+  
+  /* Base UI Elements */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Animation */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+  
+  /* Spacing (Mobile First) */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Layout */
+  --header-height: 60px;
+  --page-margin: var(--spacing-md);
+  --max-content-width: 1200px;
+  
+  /* Dark Theme Default */
+  --bg-primary: var(--color-dark);
+  --bg-secondary: var(--color-dark-accent);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --accent-color: var(--cannabis-green);
+  --accent-hover: var(--cannabis-green-light);
+  --accent-secondary: var(--cannabis-purple);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --success-color: var(--cannabis-green-light);
+  --warning-color: var(--cannabis-gold);
+  --error-color: #f44336;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* Light Theme */
+body.light-theme {
+  --bg-primary: var(--color-light);
+  --bg-secondary: var(--color-light-accent);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --accent-color: var(--cannabis-green-dark);
+  --accent-hover: var(--cannabis-green);
+  --accent-secondary: var(--cannabis-purple-dark);
+  --border-color: rgba(0, 0, 0, 0.12);
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --card-bg: #ffffff;
+  --input-bg: rgba(0, 0, 0, 0.03);
+  --success-color: var(--cannabis-green);
+  --warning-color: #ff9800;
+  --error-color: #e53935;
 }
-a:hover {
-  color: #535bf2;
+
+/* --- Global Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   margin: 0;
-  /* display: flex; */ /* Remove or adjust if flex layout is causing issues */
-  /* place-items: center; */ /* Remove or adjust if flex layout is causing issues */
-  /* min-width: 320px; */ /* Keep if needed, but not directly related to height */
-  /* min-height: 100vh; */ /* Remove this to prevent body itself forcing overflow */
-  /* Add overflow: hidden if absolutely no scroll is desired, but might hide content unexpectedly */
-  /* overflow: hidden; */ 
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color var(--transition-normal), 
+              color var(--transition-normal);
+}
+
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 1.75rem;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* --- Layout Components --- */
+.container {
+  width: 100%;
+  padding-left: var(--page-margin);
+  padding-right: var(--page-margin);
+  margin: 0 auto;
+  max-width: var(--max-content-width);
+}
+
+.page-section {
+  padding: var(--spacing-xl) 0;
+}
+
+/* --- Utility Classes --- */
+.text-center {
+  text-align: center;
+}
+
+.hidden-mobile {
+  display: none;
+}
+
+.brand-gradient {
+  background: linear-gradient(90deg, var(--cannabis-green), var(--cannabis-green-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.brand-gradient-purple {
+  background: linear-gradient(90deg, var(--cannabis-purple), var(--cannabis-purple-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- Cards --- */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 0.625rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all var(--transition-normal);
+  border: none;
+  text-align: center;
+  min-height: 44px; /* Mobile tap target size */
+  gap: 0.5rem;
 }
 
-@media (prefers-color-scheme: light) {
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(var(--accent-color), 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-tertiary:hover {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.btn-icon {
+  padding: 0.625rem;
+  border-radius: 50%;
+}
+
+/* --- Forms --- */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  min-height: 44px; /* Mobile tap target size */
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color), 0.25);
+}
+
+/* --- Navigation --- */
+.app-header {
+  background-color: var(--bg-primary);
+  height: var(--header-height);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-normal), 
+              border-color var(--transition-normal);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--page-margin);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.header-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.brand-text {
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.domain {
+  font-weight: 400;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-left: 1px;
+}
+
+/* Hide the desktop nav entirely since we're using hamburger for all sizes */
+.desktop-nav {
+  display: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Enhanced mobile navigation with smooth animation */
+.mobile-nav {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - var(--header-height));
+  background-color: rgba(25, 25, 25, 0.97);
+  backdrop-filter: blur(10px);
+  padding: var(--spacing-xl) var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 999;
+  border-bottom: 1px solid rgba(67, 160, 71, 0.2);
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-nav.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Menu decoration - more subtle and elegant */
+.menu-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.menu-leaf {
+  position: absolute;
+  font-size: 28px;
+  opacity: 0.05;
+  animation: float-menu 18s ease-in-out infinite alternate;
+  filter: grayscale(0.2) brightness(1.2);
+}
+
+.menu-leaf-1 {
+  top: 8%;
+  left: 5%; 
+  animation-delay: 0s;
+}
+
+.menu-leaf-2 {
+  top: 50%;
+  right: 8%;
+  animation-delay: 4s;
+  transform: rotate(45deg);
+}
+
+.menu-leaf-3 {
+  bottom: 15%;
+  left: 15%;
+  animation-delay: 8s;
+  transform: rotate(-30deg);
+}
+
+@keyframes float-menu {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(15px) rotate(10deg);
+  }
+  100% {
+    transform: translateY(5px) rotate(-8deg);
+  }
+}
+
+/* Add section headings to group navigation */
+.mobile-nav .nav-section {
+  padding-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.5;
+  font-weight: 600;
+}
+
+.mobile-nav .nav-section:nth-child(n+4) {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Refined menu items styling */
+.mobile-nav a, 
+.mobile-nav button {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-weight: 500;
+  width: 100%;
+  min-height: 52px;
+  border-radius: var(--radius-lg);
+  text-align: left;
+  background-color: rgba(255, 255, 255, 0.03);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+}
+
+.mobile-nav a span, 
+.mobile-nav button span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+
+.mobile-nav a svg, 
+.mobile-nav button svg {
+  color: var(--cannabis-green);
+  opacity: 0.8;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mobile-nav a:hover svg, 
+.mobile-nav button:hover svg,
+.mobile-nav a.active svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.mobile-nav a::before, 
+.mobile-nav button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--cannabis-green), var(--cannabis-green-light));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-nav a:hover, 
+.mobile-nav button:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+  border-color: rgba(67, 160, 71, 0.12);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.mobile-nav a:hover::before, 
+.mobile-nav button:hover::before {
+  opacity: 1;
+}
+
+/* Active link styling */
+.mobile-nav a.active {
+  color: var(--cannabis-green-light);
+  font-weight: 600;
+  background-color: rgba(67, 160, 71, 0.08);
+  border-color: rgba(67, 160, 71, 0.2);
+}
+
+.mobile-nav a.active::before {
+  opacity: 1;
+}
+
+/* Special styling for Classic button - ensure white text is readable */
+.mobile-nav a[style*="cannabis-purple"],
+.mobile-nav button[style*="cannabis-purple"] {
+  background-color: var(--cannabis-purple);
+  color: white !important; /* Force white text */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Add subtle text shadow for better readability */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3), inset 0 1px rgba(255, 255, 255, 0.1);
+  border: none;
+}
+
+/* Theme toggle button styling */
+.mobile-nav button[data-mode] {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav button[data-mode]::before {
+  content: attr(data-mode);
+  margin-right: auto;
+  color: var(--text-primary);
+}
+
+/* When in dark mode, style the light mode button */
+body:not(.light-theme) .mobile-nav button[data-mode="Light Mode"] svg {
+  color: #ffc107;
+}
+
+/* When in light theme, style the dark mode button */
+body.light-theme .mobile-nav button[data-mode="Dark Mode"] svg {
+  color: var(--cannabis-purple-light);
+}
+
+/* Cannabis-themed hamburger menu button */
+.mobile-menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: all var(--transition-normal);
+  position: relative;
+  z-index: 1001;
+}
+
+/* Hamburger lines */
+.mobile-menu-toggle svg {
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu-toggle.active svg {
+  transform: rotate(90deg);
+}
+
+/* Cannabis icon next to hamburger */
+.cannabis-icon {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 12px;
+  opacity: 0.7;
+  transform: rotate(30deg);
+  transition: all var(--transition-normal);
+}
+
+.mobile-menu-toggle:hover .cannabis-icon {
+  transform: rotate(45deg) scale(1.2);
+  opacity: 1;
+}
+
+.mobile-menu-toggle.active .cannabis-icon {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* Add cannabis leaf background to the menu toggle */
+.mobile-menu-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(67, 160, 71, 0.07);
+  border-radius: 50%;
+  z-index: -1;
+  transform: scale(0);
+  transition: transform var(--transition-normal), background-color var(--transition-normal);
+}
+
+.mobile-menu-toggle:hover::before {
+  transform: scale(1);
+  background-color: rgba(67, 160, 71, 0.15);
+}
+
+.mobile-menu-toggle.active {
+  color: var(--cannabis-green);
+}
+
+.mobile-menu-toggle.active::before {
+  transform: scale(1);
+  background-color: rgba(67, 160, 71, 0.1);
+}
+
+/* Enhanced theme toggle button styling */
+.mobile-nav .theme-toggle-light {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.mobile-nav .theme-toggle-light span {
+  color: #f8f9fa;
+}
+
+.mobile-nav .theme-toggle-light svg {
+  color: #ffc107;
+}
+
+.mobile-nav .theme-toggle-dark {
+  background-color: rgba(25, 25, 25, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.mobile-nav .theme-toggle-dark span {
+  color: #e0e0e0;
+}
+
+.mobile-nav .theme-toggle-dark svg {
+  color: #9c88ff;
+}
+
+/* --- Media Queries --- */
+@media (min-width: 640px) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --page-margin: var(--spacing-lg);
   }
-  a:hover {
-    color: #747bff;
+  
+  h1 {
+    font-size: 2rem;
   }
-  button {
-    background-color: #f9f9f9;
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-margin: var(--spacing-xl);
+  }
+  
+  .hidden-mobile {
+    display: block;
+  }
+  
+  /* Keep desktop-nav hidden since we're using hamburger on all screens */
+  .desktop-nav {
+    display: none;
+  }
+  
+  /* Remove the mobile-menu-toggle display: none rule */
+  /* Keep the hamburger menu visible on all screen sizes */
+  
+  h1 {
+    font-size: 2.25rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-margin: var(--spacing-2xl);
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2.25rem;
+  }
+  
+  h3 {
+    font-size: 1.75rem;
+  }
+}
+
+/* --- Tour Functionality --- */
+.tour-section {
+  min-height: 100vh;
+  display: none; /* Initially hidden until tour starts */
+  align-items: center;
+  padding: var(--spacing-xl) var(--page-margin);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.tour-started .tour-section {
+  display: flex; /* Show when tour starts */
+}
+
+.tour-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.discover-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: linear-gradient(
+    90deg, 
+    var(--cannabis-green), 
+    var(--cannabis-green-light)
+  );
+  background-size: 200% auto;
+  box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);
+  border: none;
+}
+
+.discover-button:hover {
+  background-position: right center;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(67, 160, 71, 0.4);
+}
+
+.discover-button .icon {
+  font-size: 1.2em;
+  margin-left: 8px;
+  display: inline-block;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Next button styling in tour sections */
+.next-button {
+  margin-top: var(--spacing-xl);
+  background: linear-gradient(
+    90deg, 
+    var(--cannabis-green-dark), 
+    var(--cannabis-green)
+  );
+  border: none;
+  box-shadow: 0 4px 15px rgba(67, 160, 71, 0.2);
+  transition: all 0.3s ease;
+}
+
+.next-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(67, 160, 71, 0.3);
+}
+
+/* Pulse effect for final CTA button */
+.pulse-effect {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(67, 160, 71, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(67, 160, 71, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(67, 160, 71, 0);
   }
 }

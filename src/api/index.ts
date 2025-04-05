@@ -36,6 +36,14 @@ app.post("/api/auth/login", async (c) => {
       error: string;
   }
 
+  // Add interface for successful KushObserver response (assuming structure)
+  interface KushObserverSuccess {
+      success: boolean;
+      userId: string;
+      token: string; // Assuming the token is returned here
+      // other fields may exist
+  }
+
   try {
     const response = await fetch("https://kushobserver.tmultidev.workers.dev/api/direct-login", {
       method: "POST",
@@ -60,9 +68,24 @@ app.post("/api/auth/login", async (c) => {
         return c.json(errorJson);
     }
 
-    const data = await response.json();
-    c.status(response.status as any);
-    return c.json(data as Record<string, unknown>);
+    // Assuming successful response includes userId and token
+    const data = await response.json<KushObserverSuccess | KushObserverError>();
+
+    // Check if the response indicates success and includes necessary fields
+    if (data.success && 'userId' in data && 'token' in data) {
+        c.status(response.status as any);
+        // Return success, userId, and the token to the frontend
+        return c.json({ 
+            success: true, 
+            userId: data.userId, 
+            token: data.token 
+        });
+    } else {
+        // Handle cases where success might be true but payload is unexpected, or success is false
+        console.error("KushObserver login response format unexpected or indicates failure:", data);
+        c.status(response.ok ? 400 : response.status as any); // Use 400 if response was ok but content bad
+        return c.json({ success: false, error: (data as KushObserverError).error || 'Login failed due to unexpected response format.' });
+    }
 
   } catch (err) {
     console.error("Login fetch error:", err);

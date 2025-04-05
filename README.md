@@ -6,38 +6,33 @@ This template provides a minimal setup for building a React application with Typ
 
 <!-- dash-content-start -->
 
-🚀 Supercharge your web development with this powerful stack:
+## ✨ Key Features
 
-- [**React**](https://react.dev/) - A modern UI library for building interactive interfaces
-- [**Vite**](https://vite.dev/) - Lightning-fast build tooling and development server
-- [**Hono**](https://hono.dev/) - Ultralight, modern backend framework
-- [**Cloudflare Workers**](https://developers.cloudflare.com/workers/) - Edge computing platform for global deployment
-
-### ✨ Key Features
-
-- 🔥 Hot Module Replacement (HMR) for rapid development
-- 📦 TypeScript support out of the box
-- 🛠️ ESLint configuration included
-- ⚡ Zero-config deployment to Cloudflare's global network
-- 🎯 API routes with Hono's elegant routing
-- 🔄 Full-stack development setup
-
-Get started in minutes with local development or deploy directly via the Cloudflare dashboard. Perfect for building modern, performant web applications at the edge.
+- **Frontend:** [React 19](https://react.dev/) with [Vite 6](https://vite.dev/) for a fast development experience and build process.
+- **Backend:** [Hono 4](https://hono.dev/) lightweight framework running on [Cloudflare Workers](https://developers.cloudflare.com/workers/) for serverless edge functions.
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/) for utility-first styling.
+- **Routing:** [React Router 7](https://reactrouter.com/) for client-side navigation.
+- **Language:** [TypeScript 5](https://www.typescriptlang.org/) for type safety.
+- **Linting:** [ESLint 9](https://eslint.org/) configured for code quality.
+- 🔥 Hot Module Replacement (HMR) via Vite.
+- ⚡ Zero-config deployment potential to Cloudflare's global network.
 
 <!-- dash-content-end -->
 
-## Getting Started
+## 🏗️ Project Structure
 
-To start a new project with this template, run:
+- `src/react-app/`: Contains the React frontend application code (components, pages, hooks, main entry point, styles).
+- `src/worker/`: Contains the Hono backend API code running on Cloudflare Workers.
+- `public/`: Static assets served by Vite.
+- `docs/`: Project documentation (architecture, technical details, status).
+- `tasks/`: Task tracking and requirements.
+- `fixes/`: Documentation for complex bug fixes.
+- `vite.config.ts`: Vite build and development server configuration.
+- `tailwind.config.js`: Tailwind CSS configuration.
+- `wrangler.json`: Cloudflare Workers configuration.
+- `package.json`: Project dependencies and scripts.
 
-```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/seshtrackerv2
-```
-
-A live deployment of this template is available at:
-[https://react-vite-template.templates.workers.dev](https://react-vite-template.templates.workers.dev)
-
-## Development
+## 🚀 Getting Started
 
 Install dependencies:
 
@@ -45,36 +40,48 @@ Install dependencies:
 npm install
 ```
 
-Start the development server with:
+## 💻 Development
+
+Start the Vite development server (frontend) and the Wrangler development server (backend worker) concurrently:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at [http://localhost:5173](http://localhost:5173).
+- The frontend application will typically be available at [http://localhost:3000](http://localhost:3000).
+  *(Note: Vite will automatically use the next available port, like 3001, if port 3000 is already in use)*.
+- The backend worker functions will be accessible through the frontend via relative paths (Vite proxies requests).
 
-## Production
+**Important: Tailwind CSS v4 Configuration**
 
-Build your project for production:
+This project uses Tailwind CSS v4. Correct PostCSS configuration is required in `vite.config.ts`. See `docs/technical.md` for details if you encounter Tailwind-related errors.
+
+## Production & Deployment
+
+Build the project for production:
 
 ```bash
 npm run build
 ```
 
-Preview your build locally:
+Preview the production build locally:
 
 ```bash
 npm run preview
 ```
 
-Deploy your project to Cloudflare Workers:
+Deploy to Cloudflare Workers:
 
 ```bash
-npx wrangler deploy
+npm run deploy # This runs build and then wrangler deploy
+# or
+# npx wrangler deploy dist/worker.js # Deploy manually after build
 ```
 
-## Additional Resources
+## 📚 Additional Resources
 
 - [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
 - [Vite Documentation](https://vitejs.dev/guide/)
-- [React Documentation](https://reactjs.org/)
+- [React Documentation](https://react.dev/)
+- [Hono Documentation](https://hono.dev/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)

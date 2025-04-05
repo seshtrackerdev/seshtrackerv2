@@ -1,0 +1,206 @@
+/* ===== CARD & CONTAINER COMPONENT STYLES ===== */
+/* This file contains all card and container-related styles */
+
+/* --- Basic Container --- */
+.container {
+  width: 100%;
+  padding-left: var(--page-margin);
+  padding-right: var(--page-margin);
+  margin: 0 auto;
+  max-width: var(--max-content-width);
+}
+
+.page-section {
+  padding: var(--spacing-xl) 0;
+}
+
+/* --- Cards --- */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.card-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.card-content {
+  margin-bottom: var(--spacing-md);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+/* Card variations */
+.card-compact {
+  padding: var(--spacing-md);
+}
+
+.card-flat {
+  box-shadow: none;
+  border: 1px solid var(--border-color);
+}
+
+/* --- Feature Items --- */
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-emoji {
+  font-size: 1.5rem;
+  margin-right: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.feature-text {
+  flex: 1;
+}
+
+.feature-text strong {
+  color: var(--accent-color);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* --- Feature List --- */
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto var(--spacing-xl);
+  max-width: 600px;
+  text-align: left;
+}
+
+/* --- Benefit Items --- */
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.benefit {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+}
+
+.benefit-icon {
+  font-size: 1.5rem;
+  margin-right: var(--spacing-md);
+}
+
+.benefit-text {
+  font-weight: 500;
+}
+
+/* --- Auth Forms --- */
+.auth-form {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  font-size: 1.75rem;
+}
+
+.auth-subtitle {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+.auth-footer {
+  margin-top: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.auth-footer a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive Styles --- */
+@media (min-width: 768px) {
+  .features-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+  
+  .benefit {
+    flex: 0 0 calc(50% - var(--spacing-md));
+  }
+  
+  .benefits {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-content {
+    max-width: 80%;
+  }
+  
+  .benefits {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+  
+  .benefit {
+    flex: 0 0 auto;
+  }
+} 

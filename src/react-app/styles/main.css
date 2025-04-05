@@ -1,0 +1,115 @@
+/* ===== SEESHTRACKER MAIN CSS ===== */
+
+/* --- CSS Variables --- */
+@import './variables.css';
+
+/* --- Reset & Base Styles --- */
+@import './base.css';
+
+/* --- Component & Layout Snippets --- */
+@import './snippets/navigation.css';
+@import './snippets/forms.css';
+@import './snippets/cards.css';
+@import './snippets/utilities.css';
+@import './snippets/landing.css';
+@import './snippets/buttons.css';
+
+/* --- Global Styles --- */
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  line-height: 1.5;
+  font-size: 16px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.page-container {
+  width: 100%;
+  padding: var(--page-margin);
+  margin: 0 auto;
+  max-width: var(--content-max-width);
+}
+
+.page-title {
+  font-size: 1.8rem;
+  margin-bottom: var(--spacing-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.alert {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: var(--success-light);
+  color: var(--success-dark);
+  border: 1px solid var(--success);
+}
+
+.alert-error {
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+  border: 1px solid var(--danger);
+}
+
+.alert-warning {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+  border: 1px solid var(--warning);
+}
+
+.alert-info {
+  background-color: var(--info-light);
+  color: var(--info-dark);
+  border: 1px solid var(--info);
+}
+
+/* --- Media Queries --- */
+@media (min-width: 640px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    font-size: 2.2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-title {
+    font-size: 2.5rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1.5rem;
+  }
+} 

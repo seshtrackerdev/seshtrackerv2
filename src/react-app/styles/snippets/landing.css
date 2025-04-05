@@ -1,0 +1,330 @@
+/* ===== LANDING PAGE SPECIFIC STYLES ===== */
+/* This file contains styles specific to the landing page */
+
+/* --- Landing Page Container --- */
+.landing-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl) var(--page-margin);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  text-align: center;
+  max-width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.headline-container {
+  margin-bottom: var(--spacing-lg);
+}
+
+.dynamic-headline {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  background: linear-gradient(135deg, var(--cannabis-green-light), var(--cannabis-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.hero-tagline {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xl);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-cta {
+  margin-bottom: var(--spacing-xl);
+}
+
+.discover-button {
+  font-size: 1.1rem;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+}
+
+/* Cannabis leaf animations */
+.leaf-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0.2;
+}
+
+.leaf {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-image: url('/images/cannabis-leaf.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.2;
+  animation-name: float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.leaf-1 {
+  top: 10%;
+  left: 10%;
+  animation-duration: 15s;
+}
+
+.leaf-2 {
+  top: 30%;
+  right: 15%;
+  animation-duration: 12s;
+  animation-delay: 2s;
+}
+
+.leaf-3 {
+  bottom: 20%;
+  left: 20%;
+  animation-duration: 18s;
+  animation-delay: 4s;
+}
+
+/* --- Tour Sections --- */
+.tour-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xl) var(--page-margin);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.tour-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-content {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-title {
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--accent-color);
+  border-radius: 3px;
+}
+
+.section-description {
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-image-container {
+  margin: var(--spacing-lg) auto;
+  max-width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.section-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.next-button {
+  margin-top: var(--spacing-lg);
+}
+
+/* Features Section */
+.features-section {
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.05);
+}
+
+/* How Section */
+.how-section {
+  background-color: rgba(var(--cannabis-purple-rgb, 123, 44, 191), 0.05);
+}
+
+.how-it-works {
+  margin-bottom: var(--spacing-xl);
+}
+
+.how-description {
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.how-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.how-feature {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.how-feature .feature-emoji {
+  margin-right: var(--spacing-md);
+  font-size: 1.25rem;
+}
+
+.analytics-preview {
+  margin: var(--spacing-xl) auto;
+  max-width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.analytics-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* CTA Section */
+.cta-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, 
+    rgba(var(--cannabis-green-dark-rgb, 0, 112, 26), 0.9), 
+    rgba(var(--cannabis-purple-dark-rgb, 74, 20, 140), 0.9)
+  );
+  color: #fff;
+  border-radius: 0;
+}
+
+.cta-content {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.cta-heading {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+  color: #fff;
+}
+
+.cta-tagline {
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-xl);
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- Responsive Styles --- */
+@media (min-width: 640px) {
+  .dynamic-headline {
+    font-size: 2.5rem;
+  }
+  
+  .hero-tagline {
+    font-size: 1.3rem;
+  }
+  
+  .discover-button {
+    font-size: 1.2rem;
+  }
+  
+  .leaf {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (min-width: 768px) {
+  .dynamic-headline {
+    font-size: 3rem;
+  }
+  
+  .leaf {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dynamic-headline {
+    font-size: 3.5rem;
+  }
+  
+  .hero-tagline {
+    font-size: 1.5rem;
+  }
+  
+  .how-section .section-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    text-align: left;
+    align-items: center;
+  }
+  
+  .how-section .section-title {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+  
+  .how-section .next-button {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+  
+  .how-section .section-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+} 

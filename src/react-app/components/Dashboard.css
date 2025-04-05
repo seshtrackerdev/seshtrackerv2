@@ -1,0 +1,99 @@
+/* Dashboard.css - Clean styling using simplified variables */
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: calc(var(--header-height) + 1.5rem);
+  min-height: calc(100vh - var(--header-height));
+  color: var(--text-primary);
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.75rem;
+}
+
+.dashboard-welcome {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.user-profile-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-elevation);
+}
+
+.profile-item {
+  margin-bottom: 0.75rem;
+}
+
+.profile-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.profile-item:last-child {
+  margin-bottom: 0;
+}
+
+.no-profile-message {
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.logged-in-as {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 1.5rem;
+}
+
+.logout-btn {
+  margin-top: 1rem;
+  background-color: #dc2626; /* Red color for logout */
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: #b91c1c;
+}
+
+.dashboard-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-height));
+}
+
+.loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid var(--bg-secondary);
+  border-top-color: var(--accent-color);
+  animation: spin 1s linear infinite;
+  margin-right: 1rem;
+}
+
+.error-message {
+  padding: 1rem;
+  border: 1px solid #ef4444;
+  border-radius: var(--border-radius);
+  background-color: var(--bg-secondary);
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+} 
