@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 /**
- * Simple Bug Report component with reliable form controls
+ * Simple Bug Report component with reliable form controls and inline styles
  */
 const BugReport: React.FC = () => {
   const location = useLocation();
@@ -20,6 +20,185 @@ const BugReport: React.FC = () => {
   const [systemInfo, setSystemInfo] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  
+  // Styles
+  const styles = {
+    bugButton: {
+      position: 'fixed' as const,
+      bottom: '20px',
+      right: '20px',
+      width: '56px',
+      height: '56px',
+      borderRadius: '50%',
+      backgroundColor: '#f44336',
+      color: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      border: 'none',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+      zIndex: 999,
+      cursor: 'pointer',
+      fontSize: '24px',
+      transition: 'background-color 0.2s ease'
+    },
+    modal: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'auto'
+    },
+    backdrop: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      zIndex: 1001
+    },
+    modalContent: {
+      position: 'relative' as const,
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      padding: '24px',
+      maxWidth: '600px',
+      width: '90%',
+      maxHeight: '90vh',
+      overflowY: 'auto' as const,
+      zIndex: 1002,
+      boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '24px',
+      paddingBottom: '12px',
+      borderBottom: '1px solid #eee'
+    },
+    title: {
+      fontSize: '20px',
+      fontWeight: 'bold',
+      color: '#333'
+    },
+    closeButton: {
+      background: 'none',
+      border: 'none',
+      fontSize: '24px',
+      cursor: 'pointer',
+      color: '#777'
+    },
+    formGroup: {
+      marginBottom: '20px'
+    },
+    label: {
+      display: 'block',
+      marginBottom: '6px',
+      fontSize: '14px',
+      fontWeight: '500',
+      color: '#555'
+    },
+    input: {
+      width: '100%',
+      padding: '10px 12px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      fontSize: '14px'
+    },
+    textarea: {
+      width: '100%',
+      padding: '10px 12px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      fontSize: '14px',
+      minHeight: '100px',
+      resize: 'vertical' as const
+    },
+    select: {
+      width: '100%',
+      padding: '10px 12px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      fontSize: '14px',
+      backgroundColor: 'white'
+    },
+    checkboxContainer: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      marginBottom: '10px'
+    },
+    checkbox: {
+      marginRight: '10px',
+      width: '18px',
+      height: '18px'
+    },
+    checkboxLabel: {
+      fontSize: '14px',
+      color: '#555'
+    },
+    checkboxDescription: {
+      fontSize: '12px',
+      color: '#777',
+      marginTop: '2px'
+    },
+    buttonGroup: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: '10px',
+      marginTop: '20px',
+      paddingTop: '16px',
+      borderTop: '1px solid #eee'
+    },
+    cancelButton: {
+      padding: '8px 16px',
+      backgroundColor: '#f5f5f5',
+      color: '#333',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      fontSize: '14px',
+      cursor: 'pointer'
+    },
+    submitButton: {
+      padding: '8px 16px',
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '14px',
+      cursor: 'pointer'
+    },
+    systemInfo: {
+      backgroundColor: '#f5f5f5',
+      padding: '12px',
+      borderRadius: '4px',
+      fontSize: '12px',
+      fontFamily: 'monospace',
+      marginTop: '10px'
+    },
+    successMessage: {
+      padding: '12px',
+      backgroundColor: '#dff2d8',
+      color: '#3c763d',
+      borderRadius: '4px',
+      marginBottom: '20px',
+      border: '1px solid #d6e9c6'
+    },
+    errorMessage: {
+      padding: '12px',
+      backgroundColor: '#f2dede',
+      color: '#a94442',
+      borderRadius: '4px',
+      marginBottom: '20px',
+      border: '1px solid #ebccd1'
+    }
+  };
   
   // Collect system information when the form is opened
   useEffect(() => {
@@ -104,213 +283,196 @@ const BugReport: React.FC = () => {
       {/* Bug Report Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed z-50 bottom-5 right-5 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center w-14 h-14 transition-all"
+        style={styles.bugButton}
         aria-label="Report a bug"
       >
-        <span className="text-2xl">🐛</span>
+        🐛
       </button>
       
-      {/* Modal Overlay */}
+      {/* Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-            onClick={() => setIsOpen(false)}
-          ></div>
-          
-          {/* Modal Content */}
-          <div className="relative min-h-screen flex items-center justify-center p-4">
-            <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-              {/* Header */}
-              <div className="flex justify-between items-center mb-6 border-b dark:border-gray-700 pb-3">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white">Report a Bug</h2>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white text-2xl"
-                >
-                  &times;
-                </button>
+        <div style={styles.modal}>
+          <div style={styles.backdrop} onClick={() => setIsOpen(false)}></div>
+          <div style={styles.modalContent}>
+            {/* Header */}
+            <div style={styles.header}>
+              <h2 style={styles.title}>Report a Bug</h2>
+              <button style={styles.closeButton} onClick={() => setIsOpen(false)}>×</button>
+            </div>
+            
+            {/* Success Message */}
+            {submitStatus === 'success' && (
+              <div style={styles.successMessage}>
+                <p><strong>Thank you for your report!</strong></p>
+                <p>We'll look into this issue as soon as possible.</p>
+              </div>
+            )}
+            
+            {/* Error Message */}
+            {submitStatus === 'error' && (
+              <div style={styles.errorMessage}>
+                <p><strong>Something went wrong!</strong></p>
+                <p>Please try again or contact support directly.</p>
+              </div>
+            )}
+            
+            {/* Form */}
+            <form onSubmit={handleSubmit}>
+              {/* Title */}
+              <div style={styles.formGroup}>
+                <label style={styles.label} htmlFor="title">
+                  Bug Title *
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  placeholder="Brief description of the issue"
+                />
               </div>
               
-              {/* Success Message */}
-              {submitStatus === 'success' && (
-                <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-                  <p className="font-medium">Thank you for your report!</p>
-                  <p>We'll look into this issue as soon as possible.</p>
+              {/* Description */}
+              <div style={styles.formGroup}>
+                <label style={styles.label} htmlFor="description">
+                  Description *
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  style={styles.textarea}
+                  placeholder="Please describe what happened and what you expected to happen"
+                ></textarea>
+              </div>
+              
+              {/* Steps to Reproduce */}
+              <div style={styles.formGroup}>
+                <label style={styles.label} htmlFor="steps">
+                  Steps to Reproduce
+                </label>
+                <textarea
+                  id="steps"
+                  name="steps"
+                  value={formData.steps}
+                  onChange={handleInputChange}
+                  style={styles.textarea}
+                  placeholder="1. Go to...\n2. Click on...\n3. Observe that..."
+                ></textarea>
+              </div>
+              
+              {/* Severity */}
+              <div style={styles.formGroup}>
+                <label style={styles.label} htmlFor="severity">
+                  Severity
+                </label>
+                <select
+                  id="severity"
+                  name="severity"
+                  value={formData.severity}
+                  onChange={handleInputChange}
+                  style={styles.select}
+                >
+                  <option value="low">Low - Minor issue, doesn't affect functionality</option>
+                  <option value="medium">Medium - Functionality partially impaired</option>
+                  <option value="high">High - Major feature broken</option>
+                  <option value="critical">Critical - Application unusable</option>
+                </select>
+              </div>
+              
+              {/* Email */}
+              <div style={styles.formGroup}>
+                <label style={styles.label} htmlFor="email">
+                  Your Email (optional)
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  placeholder="For follow-up questions (optional)"
+                />
+              </div>
+              
+              {/* Checkboxes */}
+              <div style={styles.formGroup}>
+                <div style={styles.checkboxContainer}>
+                  <input
+                    id="includeSystemInfo"
+                    name="includeSystemInfo"
+                    type="checkbox"
+                    checked={formData.includeSystemInfo}
+                    onChange={handleCheckboxChange}
+                    style={styles.checkbox}
+                  />
+                  <div>
+                    <label style={styles.checkboxLabel} htmlFor="includeSystemInfo">
+                      Include system information
+                    </label>
+                    <div style={styles.checkboxDescription}>
+                      Browser, OS, screen size, etc.
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={styles.checkboxContainer}>
+                  <input
+                    id="includeScreenshot"
+                    name="includeScreenshot"
+                    type="checkbox"
+                    checked={formData.includeScreenshot}
+                    onChange={handleCheckboxChange}
+                    style={styles.checkbox}
+                  />
+                  <div>
+                    <label style={styles.checkboxLabel} htmlFor="includeScreenshot">
+                      Include screenshot
+                    </label>
+                    <div style={styles.checkboxDescription}>
+                      Automatically capture current view
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* System Info Display */}
+              {formData.includeSystemInfo && systemInfo && (
+                <div style={styles.systemInfo}>
+                  <div style={{fontWeight: 'bold', marginBottom: '5px'}}>System Information:</div>
+                  <div>URL: {systemInfo.url}</div>
+                  <div>Browser: {systemInfo.userAgent.split(') ')[0].split(' (')[0]}</div>
+                  <div>Screen: {systemInfo.screenWidth}x{systemInfo.screenHeight}</div>
+                  <div>Window: {systemInfo.innerWidth}x{systemInfo.innerHeight}</div>
+                  <div>Platform: {systemInfo.platform}</div>
                 </div>
               )}
               
-              {/* Error Message */}
-              {submitStatus === 'error' && (
-                <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                  <p className="font-medium">Something went wrong!</p>
-                  <p>Please try again or contact support directly.</p>
-                </div>
-              )}
-              
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Title */}
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Bug Title *
-                  </label>
-                  <input
-                    id="title"
-                    name="title"
-                    type="text"
-                    required
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="Brief description of the issue"
-                  />
-                </div>
-                
-                {/* Description */}
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Description *
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    required
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="Please describe what happened and what you expected to happen"
-                  ></textarea>
-                </div>
-                
-                {/* Steps to Reproduce */}
-                <div>
-                  <label htmlFor="steps" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Steps to Reproduce
-                  </label>
-                  <textarea
-                    id="steps"
-                    name="steps"
-                    value={formData.steps}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="1. Go to...\n2. Click on...\n3. Observe that..."
-                  ></textarea>
-                </div>
-                
-                {/* Severity */}
-                <div>
-                  <label htmlFor="severity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Severity
-                  </label>
-                  <select
-                    id="severity"
-                    name="severity"
-                    value={formData.severity}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white appearance-menulist"
-                  >
-                    <option value="low">Low - Minor issue, doesn't affect functionality</option>
-                    <option value="medium">Medium - Functionality partially impaired</option>
-                    <option value="high">High - Major feature broken</option>
-                    <option value="critical">Critical - Application unusable</option>
-                  </select>
-                </div>
-                
-                {/* Email */}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Your Email (optional)
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-                    placeholder="For follow-up questions (optional)"
-                  />
-                </div>
-                
-                {/* Checkboxes */}
-                <div className="space-y-3">
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="includeSystemInfo"
-                        name="includeSystemInfo"
-                        type="checkbox"
-                        checked={formData.includeSystemInfo}
-                        onChange={handleCheckboxChange}
-                        className="h-5 w-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlFor="includeSystemInfo" className="font-medium text-gray-700 dark:text-gray-300">
-                        Include system information
-                      </label>
-                      <p className="text-gray-500 dark:text-gray-400">Browser, OS, screen size, etc.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="includeScreenshot"
-                        name="includeScreenshot"
-                        type="checkbox"
-                        checked={formData.includeScreenshot}
-                        onChange={handleCheckboxChange}
-                        className="h-5 w-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlFor="includeScreenshot" className="font-medium text-gray-700 dark:text-gray-300">
-                        Include screenshot
-                      </label>
-                      <p className="text-gray-500 dark:text-gray-400">Automatically capture current view</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* System Info Display */}
-                {formData.includeSystemInfo && systemInfo && (
-                  <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-xs font-mono overflow-x-auto">
-                    <div className="mb-1 font-semibold text-gray-700 dark:text-gray-300">System Information:</div>
-                    <div className="text-gray-600 dark:text-gray-400">
-                      <div>URL: {systemInfo.url}</div>
-                      <div>Browser: {systemInfo.userAgent.split(') ')[0].split(' (')[0]}</div>
-                      <div>Screen: {systemInfo.screenWidth}x{systemInfo.screenHeight}</div>
-                      <div>Window: {systemInfo.innerWidth}x{systemInfo.innerHeight}</div>
-                      <div>Platform: {systemInfo.platform}</div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Buttons */}
-                <div className="flex justify-end space-x-3 pt-3 border-t dark:border-gray-700">
-                  <button
-                    type="button"
-                    onClick={() => setIsOpen(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Submit Bug Report'}
-                  </button>
-                </div>
-              </form>
-            </div>
+              {/* Buttons */}
+              <div style={styles.buttonGroup}>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  style={styles.cancelButton}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={styles.submitButton}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Bug Report'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
