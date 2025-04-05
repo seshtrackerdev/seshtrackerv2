@@ -1,0 +1,103 @@
+/* Base theme (dark) */
+:root {
+  /* Theme colors are defined in variables.css */
+}
+
+/* Light theme overrides */
+.light-theme {
+  /* Color System */
+  /* Brand colors remain the same in light mode */
+  
+  /* Background colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f1f3f5;
+  --bg-card: #ffffff;
+  --bg-elevated: #f8f9fa;
+
+  /* Text colors - maximum contrast */
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-tertiary: #555555;
+  --text-muted: #777777;
+  --text-inverse: #ffffff;
+
+  /* Button text colors - SIMPLIFIED for maximum contrast */
+  --btn-text-light: #000000;  /* Black text for light backgrounds */
+  --btn-text-dark: #ffffff;   /* White text for dark backgrounds */
+  
+  /* Component text colors - explicit colors for various components */
+  --card-title-color: #000000;
+  --btn-text-button-color: #000000;
+  --checkbox-text-color: #000000;
+  --toggle-text-color: #000000;
+  --modal-title-color: #000000;
+  
+  /* Border colors */
+  --border-subtle: rgba(0, 0, 0, 0.1);
+  --border-regular: rgba(0, 0, 0, 0.15);
+  --border-prominent: rgba(0, 0, 0, 0.2);
+
+  /* Shadow system - lighter for light mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.12), 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark theme explicit definition (same as root) */
+.dark-theme {
+  /* Background colors */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2d2d2d;
+  --bg-card: #252525;
+  --bg-elevated: #333333;
+
+  /* Text colors - maximum contrast */
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-tertiary: #aaaaaa;
+  --text-muted: #888888;
+  --text-inverse: #000000;
+
+  /* Button text colors - SIMPLIFIED for maximum contrast */
+  --btn-text-light: #000000;  /* Black text for light backgrounds */
+  --btn-text-dark: #ffffff;   /* White text for dark backgrounds */
+  
+  /* Component text colors - explicit colors for various components */
+  --card-title-color: #ffffff;
+  --btn-text-button-color: #ffffff;
+  --checkbox-text-color: #ffffff;
+  --toggle-text-color: #ffffff;
+  --modal-title-color: #ffffff;
+  
+  /* Border colors */
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-regular: rgba(255, 255, 255, 0.2);
+  --border-prominent: rgba(255, 255, 255, 0.3);
+
+  /* Shadow system */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  --shadow-xl: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+/* Color helper variables for rgba operations */
+:root {
+  --brand-primary-rgb: 0, 200, 83;
+  --brand-secondary-rgb: 100, 221, 23;
+  --danger-rgb: 244, 67, 54;
+  --warning-rgb: 255, 193, 7;
+  --success-rgb: 40, 167, 69;
+  --info-rgb: 23, 162, 184;
+}
+
+/* Disable transitions for better text rendering */
+.light-theme, 
+.dark-theme,
+.light-theme *,
+.dark-theme * {
+  transition: none;
+} 

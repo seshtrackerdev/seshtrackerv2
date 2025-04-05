@@ -37,7 +37,7 @@ const BugReport: React.FC = () => {
       justifyContent: 'center',
       border: 'none',
       boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-      zIndex: 999,
+      zIndex: 9999,
       cursor: 'pointer',
       fontSize: '24px',
       transition: 'background-color 0.2s ease'
@@ -48,7 +48,7 @@ const BugReport: React.FC = () => {
       left: 0,
       right: 0,
       bottom: 0,
-      zIndex: 1000,
+      zIndex: 10000,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -60,20 +60,20 @@ const BugReport: React.FC = () => {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      zIndex: 1001
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      zIndex: 10001
     },
     modalContent: {
       position: 'relative' as const,
-      backgroundColor: 'white',
+      backgroundColor: '#1e1e1e',
       borderRadius: '8px',
       padding: '24px',
       maxWidth: '600px',
       width: '90%',
       maxHeight: '90vh',
       overflowY: 'auto' as const,
-      zIndex: 1002,
-      boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+      zIndex: 10002,
+      boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
     },
     header: {
       display: 'flex',
@@ -81,19 +81,19 @@ const BugReport: React.FC = () => {
       alignItems: 'center',
       marginBottom: '24px',
       paddingBottom: '12px',
-      borderBottom: '1px solid #eee'
+      borderBottom: '1px solid #333'
     },
     title: {
       fontSize: '20px',
       fontWeight: 'bold',
-      color: '#333'
+      color: '#f0f0f0'
     },
     closeButton: {
       background: 'none',
       border: 'none',
       fontSize: '24px',
       cursor: 'pointer',
-      color: '#777'
+      color: '#b3b3b3'
     },
     formGroup: {
       marginBottom: '20px'
@@ -103,31 +103,36 @@ const BugReport: React.FC = () => {
       marginBottom: '6px',
       fontSize: '14px',
       fontWeight: '500',
-      color: '#555'
+      color: '#e0e0e0'
     },
     input: {
       width: '100%',
       padding: '10px 12px',
-      border: '1px solid #ccc',
+      border: '1px solid #444',
       borderRadius: '4px',
-      fontSize: '14px'
+      fontSize: '14px',
+      backgroundColor: '#2a2a2a',
+      color: '#e0e0e0'
     },
     textarea: {
       width: '100%',
       padding: '10px 12px',
-      border: '1px solid #ccc',
+      border: '1px solid #444',
       borderRadius: '4px',
       fontSize: '14px',
       minHeight: '100px',
-      resize: 'vertical' as const
+      resize: 'vertical' as const,
+      backgroundColor: '#2a2a2a',
+      color: '#e0e0e0'
     },
     select: {
       width: '100%',
       padding: '10px 12px',
-      border: '1px solid #ccc',
+      border: '1px solid #444',
       borderRadius: '4px',
       fontSize: '14px',
-      backgroundColor: 'white'
+      backgroundColor: '#2a2a2a',
+      color: '#e0e0e0'
     },
     checkboxContainer: {
       display: 'flex',
@@ -137,15 +142,16 @@ const BugReport: React.FC = () => {
     checkbox: {
       marginRight: '10px',
       width: '18px',
-      height: '18px'
+      height: '18px',
+      accentColor: '#43a047'
     },
     checkboxLabel: {
       fontSize: '14px',
-      color: '#555'
+      color: '#e0e0e0'
     },
     checkboxDescription: {
       fontSize: '12px',
-      color: '#777',
+      color: '#b3b3b3',
       marginTop: '2px'
     },
     buttonGroup: {
@@ -154,20 +160,20 @@ const BugReport: React.FC = () => {
       gap: '10px',
       marginTop: '20px',
       paddingTop: '16px',
-      borderTop: '1px solid #eee'
+      borderTop: '1px solid #333'
     },
     cancelButton: {
       padding: '8px 16px',
-      backgroundColor: '#f5f5f5',
-      color: '#333',
-      border: '1px solid #ccc',
+      backgroundColor: '#333',
+      color: '#e0e0e0',
+      border: '1px solid #444',
       borderRadius: '4px',
       fontSize: '14px',
       cursor: 'pointer'
     },
     submitButton: {
       padding: '8px 16px',
-      backgroundColor: '#4CAF50',
+      backgroundColor: '#43a047',
       color: 'white',
       border: 'none',
       borderRadius: '4px',
@@ -175,28 +181,29 @@ const BugReport: React.FC = () => {
       cursor: 'pointer'
     },
     systemInfo: {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#2a2a2a',
       padding: '12px',
       borderRadius: '4px',
       fontSize: '12px',
       fontFamily: 'monospace',
-      marginTop: '10px'
+      marginTop: '10px',
+      color: '#b3b3b3'
     },
     successMessage: {
       padding: '12px',
-      backgroundColor: '#dff2d8',
-      color: '#3c763d',
+      backgroundColor: 'rgba(67, 160, 71, 0.2)',
+      color: '#76d275',
       borderRadius: '4px',
       marginBottom: '20px',
-      border: '1px solid #d6e9c6'
+      border: '1px solid rgba(67, 160, 71, 0.3)'
     },
     errorMessage: {
       padding: '12px',
-      backgroundColor: '#f2dede',
-      color: '#a94442',
+      backgroundColor: 'rgba(244, 67, 54, 0.2)',
+      color: '#f44336',
       borderRadius: '4px',
       marginBottom: '20px',
-      border: '1px solid #ebccd1'
+      border: '1px solid rgba(244, 67, 54, 0.3)'
     }
   };
   

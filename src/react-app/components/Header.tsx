@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
+import { useTheme } from '../components/ui';
 import SettingsMenu from './SettingsMenu';
 
 const Header: React.FC = () => {
@@ -8,30 +9,16 @@ const Header: React.FC = () => {
   const location = useLocation();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme ? savedTheme === 'dark' : true;
-  });
+  const { isDark, toggleTheme } = useTheme();
 
   // Check if we're on landing-related pages
   const isLandingPage = ['/', '/login', '/register', '/forgot-password', '/contact'].includes(location.pathname);
-
-  // Apply theme when it changes
-  useEffect(() => {
-    if (isDarkTheme) {
-      document.body.classList.remove('light-theme');
-    } else {
-      document.body.classList.add('light-theme');
-    }
-    localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
-  }, [isDarkTheme]);
 
   // Close mobile menu when changing routes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const toggleTheme = () => setIsDarkTheme(!isDarkTheme);
   const toggleSettings = () => setIsSettingsOpen(!isSettingsOpen);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   
@@ -147,21 +134,33 @@ const Header: React.FC = () => {
         {/* Settings section */}
         <div className="nav-section">Settings</div>
         
+        {/* UI Components link */}
+        <Link to="/ui-components" onClick={() => setIsMobileMenuOpen(false)} className={location.pathname === "/ui-components" ? "active" : ""}>
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            UI Components
+          </span>
+        </Link>
+        
         {/* Theme toggle */}
         <button 
           onClick={() => { toggleTheme(); setIsMobileMenuOpen(false); }}
-          data-mode={isDarkTheme ? 'Light Mode' : 'Dark Mode'}
-          className={isDarkTheme ? 'theme-toggle-light' : 'theme-toggle-dark'}
+          data-mode={isDark ? 'Light Mode' : 'Dark Mode'}
+          className={isDark ? 'theme-toggle-light' : 'theme-toggle-dark'}
         >
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              {isDarkTheme ? (
+              {isDark ? (
                 <circle cx="12" cy="12" r="5"></circle>
               ) : (
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
               )}
             </svg>
-            {isDarkTheme ? 'Light Mode' : 'Dark Mode'}
+            {isDark ? 'Light Mode' : 'Dark Mode'}
           </span>
         </button>
         

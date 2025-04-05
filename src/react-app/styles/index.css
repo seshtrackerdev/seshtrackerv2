@@ -1,0 +1,65 @@
+/* Base styles and variables */
+@import './variables.css';
+@import './themes.css';
+@import './reset.css';
+@import './typography.css';
+@import './utilities.css';
+
+/* Component styles */
+@import '../components/ui/Text/Text.css';
+@import '../components/ui/Button/Button.css';
+@import '../components/ui/Card/Card.css';
+@import '../components/ui/Input/Input.css';
+@import '../components/ui/Toggle/Toggle.css';
+@import '../components/ui/Checkbox/Checkbox.css';
+@import '../components/ui/Modal/Modal.css';
+@import '../components/ui/Badge/Badge.css';
+@import '../components/ui/ThemeToggle/ThemeToggle.css';
+@import '../components/ui/SessionTimer/SessionTimer.css';
+@import '../components/ui/HeatmapChart/HeatmapChart.css';
+@import '../components/ui/StrainLibrary/StrainLibrary.css';
+@import '../components/ui/RatingSlider/RatingSlider.css';
+
+/* Page styles */
+@import './ComponentShowcase.css';
+
+/* Global styles */
+body {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Hide focus outline for mouse users, maintain for keyboard navigation */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Base link styling */
+a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--brand-primary-dark);
+  text-decoration: underline;
+}

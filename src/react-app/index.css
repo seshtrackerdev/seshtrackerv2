@@ -1,3 +1,4 @@
+@import './styles/index.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -31,10 +32,10 @@
   --cannabis-gold: #ffc107;      /* Accent gold */
   
   /* Text Colors */
-  --text-primary-dark: #f0f0f0;
-  --text-secondary-dark: #b3b3b3;
-  --text-primary-light: #212529;
-  --text-secondary-light: #6c757d;
+  --text-primary-dark: #ffffff;
+  --text-secondary-dark: #e0e0e0;
+  --text-primary-light: #111111;
+  --text-secondary-light: #333333;
   
   /* Base UI Elements */
   --radius-sm: 4px;
@@ -77,6 +78,10 @@
   --success-color: var(--cannabis-green-light);
   --warning-color: var(--cannabis-gold);
   --error-color: #f44336;
+  
+  /* Button text colors for dark theme default */
+  --btn-text-light: #000000;  /* Black text for light buttons */
+  --btn-text-dark: #ffffff;   /* White text for dark buttons */
 }
 
 /* Light Theme */
@@ -95,6 +100,10 @@ body.light-theme {
   --success-color: var(--cannabis-green);
   --warning-color: #ff9800;
   --error-color: #e53935;
+  
+  /* Button text colors for light theme */
+  --btn-text-light: #000000;  /* Black text for light buttons */
+  --btn-text-dark: #ffffff;   /* White text for dark buttons */
 }
 
 /* --- Global Reset --- */
@@ -111,6 +120,10 @@ body {
   min-height: 100vh;
   transition: background-color var(--transition-normal), 
               color var(--transition-normal);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -127,7 +140,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--spacing-xs);
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
 }
 
 h1 {
@@ -151,6 +165,7 @@ a {
   color: var(--accent-color);
   text-decoration: none;
   transition: color var(--transition-fast);
+  font-weight: 500;
 }
 
 a:hover {
@@ -234,16 +249,20 @@ a:hover {
   text-align: center;
   min-height: 44px; /* Mobile tap target size */
   gap: 0.5rem;
+  letter-spacing: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .btn-primary {
   background-color: var(--accent-color);
-  color: white;
+  color: var(--btn-text-dark, #ffffff);
   box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
   background-color: var(--accent-hover);
+  color: var(--btn-text-dark, #ffffff);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
@@ -251,22 +270,27 @@ a:hover {
 .btn-secondary {
   background-color: transparent;
   border: 1px solid var(--accent-color);
-  color: var(--accent-color);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .btn-secondary:hover {
-  background-color: rgba(var(--accent-color), 0.1);
+  background-color: rgba(67, 160, 71, 0.1);
   transform: translateY(-2px);
 }
 
 .btn-tertiary {
   background-color: transparent;
-  color: var(--text-secondary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.light-theme .btn-tertiary {
+  color: #000000;
 }
 
 .btn-tertiary:hover {
   background-color: var(--input-bg);
-  color: var(--text-primary);
 }
 
 .btn-icon {

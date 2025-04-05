@@ -9,6 +9,7 @@ styles/
 ├── README.md           # This documentation file
 ├── main.css            # Entry point that imports all styles
 ├── variables.css       # Design tokens and CSS variables
+├── themes.css          # Theme-specific variable overrides
 ├── base.css            # Reset and base styles
 └── snippets/           # Reusable component styles
     ├── navigation.css  # Header, footer, mobile nav styles
@@ -26,6 +27,7 @@ styles/
 3. **CSS Variables**: Utilizing CSS custom properties for theming, consistency, and maintainability.
 4. **Minimal Specificity**: Keeping selector specificity low to prevent specificity wars.
 5. **Dark Mode Support**: Both media query and class-based theme switching support.
+6. **Text Contrast**: Ensuring proper contrast between text and background colors, especially for interactive elements.
 
 ## How to Use
 
@@ -94,6 +96,7 @@ The app supports both automatic dark mode (via `prefers-color-scheme`) and manua
 1. **For Component Styles**: Add component-specific styles to the appropriate snippet file.
 2. **For Page-Specific Styles**: Consider if the styles are reusable. If not, create a page-specific CSS file.
 3. **For New Design Tokens**: Add new variables to `variables.css` with appropriate documentation.
+4. **For Theme Variations**: Add theme-specific variable overrides to `themes.css`.
 
 ## Best Practices
 
@@ -104,6 +107,8 @@ The app supports both automatic dark mode (via `prefers-color-scheme`) and manua
 5. **Use Existing Components**: Check if a component or utility already exists before creating new styles.
 6. **Respect Mobile-First Approach**: Start with mobile styles, then adapt for larger screens.
 7. **Keep Selectors Simple**: Avoid deep nesting of selectors.
+8. **Ensure Color Contrast**: Always verify that text has sufficient contrast against its background.
+9. **Use Theme Variables**: Leverage theme-specific variables for colors that need to change between themes.
 
 ## CSS Variables Reference
 
@@ -116,3 +121,37 @@ See `variables.css` for a complete list of CSS variables available in the applic
 - Shadows and elevations
 - Animation timing
 - Component-specific variables 
+
+### Button-Specific Variables
+
+Button components now use a simplified high-contrast text approach to ensure maximum readability:
+
+```css
+/* Both themes use the same values */
+--btn-text-light: #000000;  /* Black text for light-colored buttons (gold, yellow) */
+--btn-text-dark: #ffffff;   /* White text for dark-colored buttons (green, purple, blue) */
+```
+
+This simplified approach ensures buttons are always readable by using only black text on light buttons and white text on dark buttons, avoiding any color combinations that might have poor contrast.
+
+### Component-Specific Text Colors
+
+To ensure proper contrast across all components in both light and dark modes, we use component-specific text color variables:
+
+```css
+/* Light theme */
+--card-title-color: #000000;
+--btn-text-button-color: #000000;
+--checkbox-text-color: #000000;
+--toggle-text-color: #000000;
+--modal-title-color: #000000;
+
+/* Dark theme */
+--card-title-color: #ffffff;
+--btn-text-button-color: #ffffff;
+--checkbox-text-color: #ffffff;
+--toggle-text-color: #ffffff;
+--modal-title-color: #ffffff;
+```
+
+These component-specific variables ensure text maintains proper contrast in both themes, avoiding the need for complex CSS selectors and overrides. 

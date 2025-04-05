@@ -1,0 +1,156 @@
+.heatmap-chart-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--spacing-md);
+  font-family: var(--font-family, 'Inter', sans-serif);
+}
+
+.chart-title {
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.chart-subtitle {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.heatmap-chart {
+  display: flex;
+  margin: var(--spacing-md) 0;
+  overflow-x: auto;
+  padding-bottom: var(--spacing-md);
+}
+
+.heatmap-y-axis {
+  display: flex;
+  flex-direction: column;
+  margin-right: var(--spacing-md);
+  min-width: 80px;
+}
+
+.heatmap-grid-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.heatmap-grid {
+  display: grid;
+  gap: 1px;
+  background-color: rgba(var(--brand-primary-rgb), 0.05);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.heatmap-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.05);
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.cell-value {
+  position: relative;
+  opacity: 0.8;
+}
+
+.heatmap-axis-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.y-label {
+  justify-content: flex-end;
+  padding-right: var(--spacing-sm);
+  text-align: right;
+}
+
+.heatmap-x-axis {
+  display: flex;
+  margin-top: var(--spacing-xs);
+}
+
+.x-label {
+  text-align: center;
+}
+
+/* Legend styling */
+.heatmap-legend {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--spacing-md);
+  align-self: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.legend-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+  text-align: center;
+}
+
+.legend-scale {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.gradient-bar {
+  height: 12px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+
+.chart-note {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: var(--spacing-sm);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .heatmap-chart {
+    margin: 0;
+  }
+  
+  .heatmap-y-axis {
+    min-width: 60px;
+    margin-right: var(--spacing-sm);
+  }
+  
+  .y-label, .x-label {
+    font-size: 0.7rem;
+  }
+  
+  .cell-value {
+    font-size: 0.75rem;
+  }
+} 

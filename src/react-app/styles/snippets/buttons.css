@@ -43,18 +43,24 @@
 /* Primary Button - Green, filled, for main actions */
 .btn-primary {
   background-color: var(--cannabis-green);
-  color: white;
+  color: var(--btn-text-dark, #ffffff);
   border: none;
+}
+
+.dark-theme .btn-primary {
+  color: #ffffff;
 }
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--cannabis-green-dark);
+  color: var(--btn-text-dark, #ffffff);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
 .btn-primary:active:not(:disabled) {
   background-color: var(--cannabis-green-dark);
+  color: var(--btn-text-dark, #ffffff);
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
 }
@@ -62,7 +68,7 @@
 /* Secondary Button - Outlined, for secondary actions */
 .btn-secondary {
   background-color: var(--cannabis-purple);
-  color: white;
+  color: var(--btn-text-dark, #ffffff);
   border: none;
 }
 
@@ -114,13 +120,13 @@
 /* Purple Button - For "Classic" mode links */
 .btn-purple {
   background-color: var(--cannabis-purple);
-  color: white;
+  color: var(--btn-text-dark, #ffffff);
   border-color: var(--cannabis-purple);
 }
 
 .btn-purple:hover {
   background-color: var(--cannabis-purple-dark);
-  color: white;
+  color: var(--btn-text-dark, #ffffff);
 }
 
 /* CTA Button - For primary call-to-action elements */
