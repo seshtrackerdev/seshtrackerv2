@@ -245,15 +245,18 @@ function renderCharts() {
       }]
     },
     options: {
-      animation: { duration: 1000, easing: "easeOutQuart" },
+      animation: false,
+      maintainAspectRatio: false,
+      responsive: false,
+      devicePixelRatio: 1,
+      scales: {
+        y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.1)" } }
+      },
       plugins: {
         shadowPlugin: { shadowColor: 'rgba(0,0,0,0.25)', shadowBlur: 10, shadowOffsetX: 0, shadowOffsetY: 4 },
         legend: { display: false },
         tooltip: { backgroundColor: "var(--container-color)", titleColor: "var(--text-color)", bodyColor: "var(--text-color)" }
-      },
-      maintainAspectRatio: false,
-      responsive: true,
-      scales: { y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.1)" } } }
+      }
     }
   });
 
@@ -278,14 +281,19 @@ function renderCharts() {
       }]
     },
     options: {
-      animation: { duration: 1000, easing: "easeOutQuart" },
+      animation: false,
+      maintainAspectRatio: false,
+      responsive: false,
+      devicePixelRatio: 1,
+      indexAxis: 'y',
+      scales: {
+        x: { beginAtZero: true }
+      },
       plugins: {
         shadowPlugin: { shadowColor: 'rgba(0,0,0,0.25)', shadowBlur: 10, shadowOffsetX: 0, shadowOffsetY: 4 },
         legend: { labels: { boxWidth: 12, padding: 10 } },
         tooltip: { backgroundColor: "var(--container-color)", titleColor: "var(--text-color)", bodyColor: "var(--text-color)" }
-      },
-      maintainAspectRatio: false,
-      responsive: true
+      }
     }
   });
 
@@ -310,14 +318,18 @@ function renderCharts() {
       }]
     },
     options: {
-      animation: { duration: 1000, easing: "easeOutQuart" },
+      animation: false,
+      maintainAspectRatio: false,
+      responsive: false,
+      devicePixelRatio: 1,
+      scales: {
+        y: { beginAtZero: true }
+      },
       plugins: {
         shadowPlugin: { shadowColor: 'rgba(0,0,0,0.25)', shadowBlur: 10, shadowOffsetX: 0, shadowOffsetY: 4 },
         legend: { labels: { boxWidth: 12, padding: 10 } },
         tooltip: { backgroundColor: "var(--container-color)", titleColor: "var(--text-color)", bodyColor: "var(--text-color)" }
-      },
-      maintainAspectRatio: false,
-      responsive: true
+      }
     }
   });
 
@@ -336,10 +348,11 @@ function renderCharts() {
     type: "line",
     data: { datasets: invDatasets },
     options: {
-      animation: { duration: 1000, easing: "easeOutQuart" },
+      animation: false,
       maintainAspectRatio: false,
       responsive: true,
       parsing: false,
+      devicePixelRatio: 1,
       scales: {
         x: { type: "time", time: { unit: "day" }, grid: { color: "rgba(0,0,0,0.1)" } },
         y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.1)" } }
@@ -1416,8 +1429,10 @@ function renderGoalAdherenceChart() {
       }]
     },
     options: {
+      animation: false,
       maintainAspectRatio: false,
       responsive: true,
+      devicePixelRatio: 1,
       scales: {
         y: {
           beginAtZero: true,

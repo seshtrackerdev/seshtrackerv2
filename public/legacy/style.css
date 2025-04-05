@@ -212,6 +212,8 @@ h3 { font-size: 1.2rem; }
   transition: transform 0.3s ease;
   z-index: 2000;
   overflow-y: auto;
+  opacity: 1;
+  color: var(--accent-color); /* Highlight when active */
 }
 .settings-menu.active {
   transform: translateX(0);
@@ -438,22 +440,23 @@ label {
 #dataAnalysisSection .grid > div,
 .goal-visualization /* Apply similar constraints to goal chart container */ {
   position: relative; /* Needed for Chart.js responsiveness */
-  height: 300px; /* Set an explicit height */
-  background-color: var(--container-color); /* Ensure background consistency if needed */
-  padding: 1rem; /* Add some padding */
-  border-radius: 0.5rem; /* Optional: round corners */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Optional: subtle shadow */
+  height: 300px; /* Set a fixed height */
+  overflow: hidden; /* Prevent internal scrolling */
+  background-color: var(--container-color); 
+  padding: 1rem; 
+  border-radius: 0.5rem; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
 }
 
 #dataAnalysisSection .grid > div h3 {
-  margin-bottom: 0.5rem; /* Adjust spacing below heading */
+  margin-bottom: 0.5rem; 
   text-align: center;
   font-size: 1rem;
 }
 
 #dataAnalysisSection .grid > div canvas,
 .goal-visualization canvas /* Apply to goal chart canvas */ {
-  max-height: 100%; /* Ensure canvas doesn't exceed container */
+  /* max-height: 100%; */ /* No longer needed with fixed container height */
 }
 
 /* === Module (Collapsible) Styles with Animated Content === */
@@ -816,5 +819,45 @@ select option.low-stock {
 .filter-indicator.active {
   opacity: 1;
   color: var(--accent-color); /* Highlight when active */
+}
+
+/* === Responsive Overrides === */
+
+/* Medium Screens (e.g., tablets, smaller laptops) */
+@media (max-width: 850px) {
+  .main-grid-container {
+    grid-template-columns: 1fr; /* Stack columns */
+  }
+  /* Optional: adjust gaps or padding if needed */
+}
+
+/* Small Screens (e.g., mobile phones) */
+@media (max-width: 640px) {
+  h1 { font-size: 1.8rem; } /* Reduce h1 size */
+  h2 { font-size: 1.3rem; } /* Reduce h2 size */
+  .module-header h2 { font-size: 1.1rem; } /* Reduce module header size further */
+
+  .btn { padding: 0.5rem 1rem; } /* Slightly smaller base padding */
+  .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; } /* Ensure small buttons are tappable */
+
+  .container { padding: 1rem 0.25rem; } /* Reduce container padding even more */
+
+  #dataAnalysisSection .grid > div,
+  .goal-visualization {
+    min-height: 200px; /* Reduce min chart height */
+    padding: 0.5rem; /* Reduce chart padding */
+  }
+  #dataAnalysisSection .grid > div h3 {
+      font-size: 0.9rem; /* Smaller chart titles */
+  }
+
+  .settings-menu {
+      width: 90vw; /* Make settings menu responsive */
+  }
+
+  .modal .modal-content {
+      width: 95%; /* Wider modal on small screens */
+      margin: 5% auto; /* Adjust modal margin */
+  }
 }
 

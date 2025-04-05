@@ -128,7 +128,9 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: calc(100vh - 55px);
+  margin-top: 55px;
+  box-sizing: border-box;
   text-align: center;
   padding: 2rem;
   background-color: #121212;

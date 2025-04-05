@@ -28,10 +28,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* display: flex; */ /* Remove or adjust if flex layout is causing issues */
+  /* place-items: center; */ /* Remove or adjust if flex layout is causing issues */
+  /* min-width: 320px; */ /* Keep if needed, but not directly related to height */
+  /* min-height: 100vh; */ /* Remove this to prevent body itself forcing overflow */
+  /* Add overflow: hidden if absolutely no scroll is desired, but might hide content unexpectedly */
+  /* overflow: hidden; */ 
 }
 
 h1 {

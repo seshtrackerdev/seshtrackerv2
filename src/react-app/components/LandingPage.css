@@ -25,6 +25,7 @@
   --shadow-color: rgba(0, 0, 0, 0.4);
   --header-bg: rgba(18, 18, 18, 0.85);
   --cta-leaf-filter: brightness(1.1);
+  --header-height: 60px; /* Default header height */
 }
 
 body.light-theme-v6 {
@@ -44,6 +45,8 @@ body.light-theme-v6 {
 html, body {
     margin: 0;
     padding: 0;
+    /* Remove forced overflow hidden */
+    /* overflow: hidden !important; */ 
 }
 
 body {
@@ -61,14 +64,18 @@ body {
 
 /* --- Overall Layout V6 --- */
 .landing-page-v6 {
-  display: flex;
+  display: flex; /* Keep flex for overall structure if needed */
   flex-direction: column;
-  min-height: 100vh; /* Use viewport height for the container */
+  /* Remove height and overflow constraints */
+  /* height: 100vh; */
+  /* overflow: hidden; */
 }
 
 .main-content-v6 {
-  display: block; /* Simple block */
-  padding-top: 60px; /* Account for fixed header */
+  display: block; 
+  padding-top: var(--header-height); /* Use variable */
+  /* Remove flex-grow */
+  /* flex-grow: 1; */ 
 }
 
 /* --- Sticky Header V6 --- */
@@ -77,11 +84,11 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: var(--header-height); /* Use variable */
   background-color: var(--bg-secondary); /* Keep opaque */
   border-bottom: 1px solid var(--border-color);
   z-index: 1000;
-  transition: background-color var(--transition-default), border-color var(--transition-default);
+  transition: background-color var(--transition-default), border-color var(--transition-default), height var(--transition-default);
   display: flex;
   align-items: center;
   padding: 0 5%;
@@ -89,6 +96,7 @@ body {
 
 body.light-theme-v6 .header-v6 {
     background-color: var(--bg-primary);
+    transition: padding 0.3s ease, font-size 0.3s ease;
 }
 
 .header-content-v6 {
@@ -119,6 +127,7 @@ body.light-theme-v6 .header-v6 {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: nowrap; /* Ensure buttons stay on one line */
 }
 
 .theme-toggle-v6 {
@@ -147,6 +156,7 @@ body.light-theme-v6 .header-v6 {
   transition: background-color var(--transition-default), color var(--transition-default), transform 0.2s ease, box-shadow var(--transition-default);
   display: inline-block;
   text-decoration: none;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 .auth-button-v6 {
@@ -177,7 +187,7 @@ body.light-theme-v6 .auth-button-v6 {
   transition: background-color var(--transition-default), transform 0.2s ease, box-shadow var(--transition-default);
   display: inline-block;
   text-decoration: none;
-  margin-right: 1rem;
+  flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .classic-button-v6:hover {
@@ -192,12 +202,15 @@ body.light-theme-v6 .auth-button-v6 {
   flex-direction: column;
   align-items: center;    
   justify-content: center; 
-  height: calc(100vh - 180px); /* Significantly reduced height */
+  height: calc(100vh - var(--header-height)); /* Use variable in calculation */
+  box-sizing: border-box; /* Include padding in height calculation */
+  /* Remove flex-grow */
+  /* flex-grow: 1; */ 
   text-align: center;
-  padding: 0.5rem 2rem; /* Reduced top/bottom padding further */
+  padding: 1rem 2rem; /* Padding is now included in height */
   position: relative; 
   width: 100%;
-  overflow: hidden; 
+  overflow: hidden; /* Prevent internal overflow */
 }
 
 .initial-view-v6::before {
@@ -496,11 +509,15 @@ body.light-theme-v6 { --accent-rgb: 22, 163, 74; }
 
 /* --- Responsive Adjustments V6 (Check consistency) --- */
 @media (max-width: 768px) {
+  :root {
+    /* Update header height for this breakpoint */
+    --header-height: 50px;
+  }
   .main-content-v6 {
-      padding-top: 50px; 
+      padding-top: var(--header-height); /* Already using variable */
   }
   .header-v6 {
-    height: 50px;
+    height: var(--header-height); /* Already using variable */
     padding: 0 3%;
   }
   .header-brand-v6 span {
@@ -567,6 +584,434 @@ body.light-theme-v6 { --accent-rgb: 22, 163, 74; }
       padding: 1.5rem 5%;
   }
 } 
+
+/* New class for gradient text */
+.brand-gradient-text {
+    background: linear-gradient(45deg, var(--accent-hover), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Ensure display is appropriate if needed, e.g., inline-block */
+    display: inline-block; 
+} 
+
+/* --- Feature Description and Highlights --- */
+.feature-description {
+  margin-bottom: 2rem;
+}
+
+.feature-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 600px;
+  text-align: left;
+}
+
+.feature-highlights li {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  background-color: var(--bg-accent);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-highlights li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.feature-highlights li::before {
+  content: attr(data-emoji);
+  font-size: 1.4rem;
+  margin-right: 1rem;
+}
+
+/* --- Visual Container Enhancements --- */
+.visual-container {
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 600px;
+}
+
+.section-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px var(--shadow-color);
+  transition: transform 0.3s ease;
+}
+
+.section-image:hover {
+  transform: scale(1.03);
+}
+
+/* Button Pulse Effect */
+.pulse-effect {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--accent-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+  }
+}
+
+/* --- CTA Section Enhancements --- */
+.cta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-heading {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  margin-bottom: 1rem !important;
+}
+
+.cta-subtext {
+  font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+  margin-bottom: 2rem !important;
+  max-width: 500px;
+}
+
+.benefits-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.benefit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2rem;
+  background-color: var(--bg-accent);
+  border-radius: 12px;
+  width: calc(33% - 1rem);
+  min-width: 120px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.benefit-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px var(--shadow-color);
+}
+
+.benefit-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.benefit-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Responsive adjustments for new elements */
+@media (max-width: 768px) {
+  .feature-highlights {
+    gap: 0.6rem;
+  }
+  
+  .feature-highlights li {
+    padding: 0.7rem 1rem;
+  }
+  
+  .feature-highlights li::before {
+    font-size: 1.2rem;
+    margin-right: 0.7rem;
+  }
+  
+  .benefits-container {
+    gap: 1rem;
+  }
+  
+  .benefit-item {
+    padding: 1rem;
+    width: calc(50% - 0.5rem);
+    min-width: 100px;
+  }
+  
+  .benefit-icon {
+    font-size: 1.5rem;
+  }
+  
+  .benefit-text {
+    font-size: 0.85rem;
+  }
+  
+  .cta-heading {
+    margin-bottom: 0.7rem !important;
+  }
+  
+  .cta-subtext {
+    margin-bottom: 1.5rem !important;
+  }
+} 
+
+/* === Responsive Overrides (LandingPage V6) === */
+
+/* Medium Screens (Tablets, etc.) */
+@media (max-width: 768px) {
+  :root {
+    /* Reduce section padding */
+    --section-padding: 5rem 5%;
+  }
+
+  .header-brand-v6 span {
+    /* Optionally hide text next to logo */
+    /* display: none; */
+  }
+
+  .header-actions-v6 {
+      gap: 0.75rem; /* Slightly reduce gap */
+  }
+  .classic-button-v6 {
+      /* Maybe hide this on medium screens if needed */
+      /* display: none; */
+  }
+
+  .auth-button-v6, .classic-button-v6, .tour-button-v6, .next-section-btn-v6 {
+    padding: 0.6rem 1.2rem; /* Slightly smaller buttons */
+    font-size: 0.9rem;
+  }
+
+  .section-content-v6 h2 {
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+  }
+  .section-content-v6 p,
+  .section-content-v6 li {
+    font-size: 0.95rem;
+  }
+}
+
+/* Small Screens (Mobile) */
+@media (max-width: 480px) {
+  :root {
+    /* Further reduce section padding */
+    --section-padding: 3rem 5%;
+    /* Update header height for this breakpoint */
+    --header-height: 55px;
+  }
+  
+  /* Hide desktop actions, show mobile toggle */
+  .desktop-only { display: none !important; } 
+  /* .mobile-only { display: block; } */ /* Remove this rule */
+  
+  .header-v6 {
+    padding: 0 4%; 
+    height: var(--header-height); /* Already using variable */
+  }
+  .header-content-v6 {
+     justify-content: space-between;
+     align-items: center;
+     position: relative; /* Needed for absolute positioning of nav */
+  }
+  .header-brand-v6 {
+    font-size: 1rem; 
+    gap: 0.3rem; 
+    flex-shrink: 0;
+  }
+  .header-logo-v6 {
+    display: none; /* Keep logo hidden */
+  }
+  .header-brand-v6 span {
+     display: inline; /* Keep text visible */
+  }
+  
+  /* Style the hamburger toggle button */
+  .mobile-menu-toggle {
+      background: none;
+      border: none;
+      padding: 0.4rem;
+      margin: 0; /* Reset margin */
+      cursor: pointer;
+      display: flex; 
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+  }
+  .mobile-menu-toggle svg {
+      width: 26px;
+      height: 26px;
+  }
+  
+  /* Style the mobile navigation container */
+  .mobile-nav {
+    /* display: none; */ /* Remove display none */
+    display: flex; /* Ensure it's always flex */
+    flex-direction: column;
+    align-items: center; 
+    position: absolute;
+    top: var(--header-height); 
+    left: 0;
+    right: 0;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-color);
+    z-index: 999;
+    padding: 1rem 0; 
+    box-sizing: border-box; 
+    
+    /* Animation properties */
+    transform-origin: top;
+    opacity: 0;
+    transform: scaleY(0);
+    visibility: hidden; /* Start hidden */
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s; /* Delay hiding visibility */
+  }
+  
+  .mobile-nav.open {
+    /* display: flex; */ /* Remove display flex */
+    opacity: 1;
+    transform: scaleY(1);
+    visibility: visible; /* Make visible */
+    pointer-events: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0s; /* Make visibility immediate */
+  }
+
+  /* Re-apply display:block to buttons */
+  .mobile-nav .classic-button-v6,
+  .mobile-nav .auth-button-v6 {
+    display: block; 
+    width: 80%; 
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-bottom: 0.5rem; 
+    background-color: #7b2cbf; 
+    color: white; 
+    border: none; 
+    text-align: center; 
+    padding: 0.8rem 1rem; 
+    font-size: 1.1rem; 
+    font-weight: 500; 
+    border-radius: 6px;
+  }
+
+  .mobile-nav .auth-button-v6 {
+    background-color: var(--accent-color);
+    color: var(--bg-primary); 
+    body.light-theme-v6 & { 
+        color: var(--bg-secondary);
+    }
+  }
+
+  .mobile-nav .theme-toggle-v6 {
+    display: block; 
+    width: 80%; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.5rem; 
+    background: none; 
+    color: var(--text-primary); 
+    border: none; 
+    text-align: center; 
+    padding: 0.8rem 1rem; 
+    font-size: 1.1rem; 
+    font-weight: 500; 
+    border-radius: 6px;
+  }
+  
+  /* Headline container remains fixed height */
+  .dynamic-headline-container-v6 {
+     height: 5.8rem; 
+     margin-bottom: 0.75rem;
+     width: 100%;
+     max-width: 90%; /* Ensure it doesn't touch edges */
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     overflow: hidden; 
+     margin-left: auto; /* Center block */
+     margin-right: auto; /* Center block */
+  }
+  /* Headline text centered inside */
+  .dynamic-headline-v6 {
+     font-size: clamp(1.6rem, 6vw, 2.2rem);
+     text-align: center;
+  }
+  
+  /* Tagline centered via margin */
+   .intro-tagline-v6 {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin: 0 auto 1.5rem auto; /* Center with margin */
+      padding: 0 1rem; 
+      max-width: 90%;
+      line-height: 1.5;
+      text-align: center;
+  }
+
+  /* Initial view uses block display */
+  .initial-view-v6 {
+    min-height: auto; 
+    padding: 3rem 1rem 3rem 1rem;
+    display: block; /* Use block layout */
+  }
+  
+  /* Button container centered via margin */
+   .initial-cta-v6 {
+      margin: 0 auto; 
+      text-align: center; 
+   }
+
+  /* Tour button styles */
+  .tour-button-v6 {
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      background-color: transparent;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      display: inline-block; 
+      margin-top: 0; /* Reset margin */
+  }
+
+  /* Reset header actions that might conflict (precautionary) */
+  .header-actions-v6.desktop-only {
+    display: none !important;
+  }
+
+  /* Ensure mobile toggle is definitely block */
+  .mobile-menu-toggle.mobile-only {
+    display: flex !important; 
+    align-items: center;
+  }
+
+  /* Remove conflicting display rules for mobile-nav */
+  /* Ensure mobile nav is hidden initially */
+  /* .mobile-nav.mobile-only {
+      display: none;
+  } */
+  /* .mobile-nav.mobile-only.open {
+      display: flex;
+  } */
+
+  /* ... rest of mobile styles ... */
+}
+
+/* Add desktop-only/mobile-only utility classes */
+/* .mobile-only { display: none; } */ /* Remove this global rule */
+.desktop-only { display: flex; align-items: center; gap: 1rem; }
 
 /* New class for gradient text */
 .brand-gradient-text {

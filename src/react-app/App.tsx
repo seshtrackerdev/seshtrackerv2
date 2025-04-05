@@ -29,15 +29,16 @@ const AppContent = () => {
   const { isAuthenticated, logout } = useAuth();
   const location = useLocation();
   
-  // Check if current path is login or register
+  // Check if current path is login, register, OR the landing page
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isLandingPage = location.pathname === '/';
 
   return (
     <>
-      {/* Basic navigation header with authentication status - hidden on auth pages */}
-      {!isAuthPage && (
-        <header className="bg-green-600 text-white p-4 flex justify-between items-center">
-          <a href="/" className="text-xl font-bold">SeshTracker</a>
+      {/* Hide header on auth pages AND on the landing page */}
+      {!isAuthPage && !isLandingPage && (
+        <header className="bg-green-600 text-white p-4 flex justify-between items-center z-50 relative">
+          <a href="/dashboard" className="text-xl font-bold">SeshTracker</a>
           <div>
             {isAuthenticated ? (
               <button 

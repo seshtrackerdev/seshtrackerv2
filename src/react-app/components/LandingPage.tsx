@@ -13,6 +13,7 @@ const LandingPage = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isTourStarted, setIsTourStarted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Refs for scrolling targets
   const tourStartRef = useRef<HTMLDivElement>(null);
@@ -68,6 +69,11 @@ const LandingPage = () => {
     }, 100);
   };
 
+  // Function to toggle mobile menu
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <div 
       className={`landing-page-v6 ${isDarkTheme ? 'dark-theme-v6' : 'light-theme-v6'}`}
@@ -76,12 +82,15 @@ const LandingPage = () => {
        <header className="header-v6">
          <div className="header-content-v6">
            <a href="/" className="header-brand-v6">
-              <img src="/images/favicon.png" alt="Sesh Tracker Icon" className="header-logo-v6" width="24" height="24" />
+              {/* Logo is hidden on mobile via CSS */}
+              <img src="/images/favicon.png" alt="Sesh Tracker Icon" className="header-logo-v6" width="24" height="24" /> 
               <span>
                   <span className="brand-gradient-text">Sesh</span>-Tracker.com
               </span>
            </a>
-           <div className="header-actions-v6">
+           
+           {/* --- Desktop Header Actions --- */}
+           <div className="header-actions-v6 desktop-only">
              <button
                className="theme-toggle-v6"
                onClick={toggleTheme}
@@ -97,17 +106,50 @@ const LandingPage = () => {
                Log In / Sign Up
              </button>
            </div>
+
+           {/* --- Mobile Menu Toggle --- */}
+           <button 
+             className="mobile-menu-toggle mobile-only"
+             onClick={toggleMobileMenu}
+             aria-label="Toggle menu"
+             aria-expanded={isMobileMenuOpen}
+           >
+              {/* Simple text or SVG icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+           </button>
+
          </div>
+          {/* --- Mobile Navigation Menu --- */}
+         <nav className={`mobile-nav mobile-only ${isMobileMenuOpen ? 'open' : ''}`}>
+             {/* Replicate actions inside the mobile menu, adding mobile-nav-link class */}
+             <a href="/legacy" className="mobile-nav-link classic-button-v6">
+               Switch to Classic
+             </a>
+             <button className="mobile-nav-link auth-button-v6" onClick={handleAuthRedirect}>
+               Log In / Sign Up
+             </button>
+              <button
+               className="mobile-nav-link theme-toggle-v6"
+               onClick={toggleTheme} 
+               aria-label="Toggle Theme"
+             >
+               {isDarkTheme ? 'Switch to Light Mode ☀️' : 'Switch to Dark Mode 🌙'}
+             </button>
+         </nav>
        </header>
 
        {/* --- V6 Main Content (Only Initial View Initially) --- */}
-       <main className="main-content-v6">
+       <main className="main-content-v6 pt-20">
          <section className="initial-view-v6">
              <div className="dynamic-headline-container-v6">
                  <h1 className="dynamic-headline-v6" key={headlineIndex}>
                      {dynamicHeadlines[headlineIndex]}
                  </h1>
              </div>
+             {/* Added Intro Tagline */}
+             <p className="intro-tagline-v6">
+               Your personal cannabis companion.
+             </p>
              <div className="initial-cta-v6" ref={tourStartRef}>
                  <button 
                      className="tour-button-v6" 
