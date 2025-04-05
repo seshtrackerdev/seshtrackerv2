@@ -17,6 +17,7 @@
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "hono": "4.7.1",
+    "html2canvas": "^1.4.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-router-dom": "^7.4.1"
