@@ -117,9 +117,11 @@ const bugReportStyles: Record<string, CSSProperties> = {
     backgroundColor: '#fff',
     cursor: 'pointer',
     width: '100%',
-    zIndex: 10000,
+    zIndex: 10001,
     position: 'relative',
     appearance: 'menulist', // Forces native dropdown appearance
+    WebkitAppearance: 'menulist', // For Safari
+    MozAppearance: 'menulist', // For Firefox
   },
   submitButton: {
     backgroundColor: '#4CAF50',
@@ -186,17 +188,16 @@ const bugReportStyles: Record<string, CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    margin: '8px 0',
-    cursor: 'pointer',
+    margin: '12px 0',
     color: '#333',
     userSelect: 'none',
   },
   checkbox: {
-    width: '16px',
-    height: '16px',
+    width: '20px',
+    height: '20px',
     cursor: 'pointer',
     position: 'relative',
-    zIndex: 10000,
+    zIndex: 10001,
     margin: '0 8px 0 0',
     accentColor: '#4CAF50',
   },
@@ -205,6 +206,10 @@ const bugReportStyles: Record<string, CSSProperties> = {
     fontSize: '14px',
     color: '#333',
     userSelect: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    padding: '5px 0',
   },
   checkpoint: {
     cursor: 'pointer',
@@ -1172,7 +1177,10 @@ const BugReport: React.FC<BugReportProps> = ({ enabled = true }) => {
                   id="bug-severity"
                   style={bugReportStyles.select}
                   value={severity}
-                  onChange={(e) => setSeverity(e.target.value)}
+                  onChange={(e) => {
+                    setSeverity(e.target.value);
+                    console.log("Severity changed to:", e.target.value); // Add logging
+                  }}
                 >
                   {severityLevels.map((level) => (
                     <option key={level.value} value={level.value}>
@@ -1201,85 +1209,75 @@ const BugReport: React.FC<BugReportProps> = ({ enabled = true }) => {
                   Diagnostic Information
                 </label>
                 
-                <div style={{...bugReportStyles.captureToggle, pointerEvents: 'none'}}>
+                <label
+                  htmlFor="include-system-info"
+                  style={bugReportStyles.checkboxLabel}
+                >
                   <input
                     id="include-system-info"
                     type="checkbox"
-                    style={{...bugReportStyles.checkbox, pointerEvents: 'auto'}}
+                    style={bugReportStyles.checkbox}
                     checked={includeSystemInfo}
                     onChange={() => setIncludeSystemInfo(!includeSystemInfo)}
                   />
-                  <label 
-                    htmlFor="include-system-info" 
-                    style={{...bugReportStyles.checkboxLabel, pointerEvents: 'auto'}}
-                  >
-                    Include system information
-                  </label>
-                </div>
+                  Include system information
+                </label>
                 
-                <div style={{...bugReportStyles.captureToggle, pointerEvents: 'none'}}>
+                <label
+                  htmlFor="include-storage-data"
+                  style={bugReportStyles.checkboxLabel}
+                >
                   <input
                     id="include-storage-data"
                     type="checkbox"
-                    style={{...bugReportStyles.checkbox, pointerEvents: 'auto'}}
+                    style={bugReportStyles.checkbox}
                     checked={includeStorageData}
-                    onChange={toggleIncludeStorageData}
+                    onChange={() => setIncludeStorageData(!includeStorageData)}
                   />
-                  <label 
-                    htmlFor="include-storage-data" 
-                    style={{...bugReportStyles.checkboxLabel, pointerEvents: 'auto'}}
-                  >
-                    Include local storage data
-                  </label>
-                </div>
+                  Include local storage data
+                </label>
                 
-                <div style={{...bugReportStyles.captureToggle, pointerEvents: 'none'}}>
+                <label
+                  htmlFor="include-screenshot"
+                  style={bugReportStyles.checkboxLabel}
+                >
                   <input
                     id="include-screenshot"
                     type="checkbox"
-                    style={{...bugReportStyles.checkbox, pointerEvents: 'auto'}}
+                    style={bugReportStyles.checkbox}
                     checked={includeScreenshot}
                     onChange={() => setIncludeScreenshot(!includeScreenshot)}
                   />
-                  <label 
-                    htmlFor="include-screenshot" 
-                    style={{...bugReportStyles.checkboxLabel, pointerEvents: 'auto'}}
-                  >
-                    Include screenshot
-                  </label>
-                </div>
+                  Include screenshot
+                </label>
 
-                <div style={{...bugReportStyles.captureToggle, pointerEvents: 'none'}}>
+                <label
+                  htmlFor="include-error-data"
+                  style={bugReportStyles.checkboxLabel}
+                >
                   <input
                     id="include-error-data"
                     type="checkbox"
-                    style={{...bugReportStyles.checkbox, pointerEvents: 'auto'}}
+                    style={bugReportStyles.checkbox}
                     checked={includeErrorData}
                     onChange={() => setIncludeErrorData(!includeErrorData)}
                   />
-                  <label 
-                    htmlFor="include-error-data" 
-                    style={{...bugReportStyles.checkboxLabel, pointerEvents: 'auto'}}
-                  >
-                    Include JavaScript error data
-                  </label>
-                </div>
+                  Include JavaScript error data
+                </label>
 
-                <div style={{...bugReportStyles.captureToggle, pointerEvents: 'none'}}>
+                <label
+                  htmlFor="include-network-data"
+                  style={bugReportStyles.checkboxLabel}
+                >
                   <input
-                    id="include-network-data"
+                    id="include-network-data" 
                     type="checkbox"
-                    style={{...bugReportStyles.checkbox, pointerEvents: 'auto'}}
+                    style={bugReportStyles.checkbox}
                     checked={includeNetworkData}
                     onChange={() => setIncludeNetworkData(!includeNetworkData)}
                   />
-                  <label 
-                    htmlFor="include-network-data" 
-                    style={{...bugReportStyles.checkboxLabel, pointerEvents: 'auto'}}
-                  >
-                    Include network request data
-                  </label>
-                </div>
+                  Include network request data
+                </label>
 
                 <div style={{ marginTop: '10px' }}>
                   <button
