@@ -67,6 +67,10 @@ development-plan/        # Development planning
 ├── ROADMAP.md           # Timeline and milestones
 ├── ARCHITECTURE.md      # Detailed architecture documentation
 └── phases/              # Phase-specific implementation plans
+
+public/                  # Static assets
+├── images/              # Image assets (no duplication)
+└── legacy/              # Legacy code (old versions)
 ```
 
 ## 💻 Getting Started
@@ -96,6 +100,22 @@ development-plan/        # Development planning
    ```
 
 4. The application will be available at [http://localhost:3000](http://localhost:3000)
+
+## 🧰 Development Workflow
+
+1. Run cleanup script to ensure proper structure:
+   ```
+   ./cleanup.ps1
+   ```
+
+2. Follow these organization rules when adding new files:
+   - Components go in `src/react-app/components/`
+   - CSS files should be named after their component (e.g. `Button.css`)
+   - All images should be stored in `public/images/`
+   - No duplicate files allowed across directories
+
+3. Use the VSCode file explorer to visually verify the correct directory structure
+4. Run the cleanup script periodically if you notice file organization issues
 
 ## 🔑 Authentication Integration
 
@@ -127,6 +147,22 @@ After authentication, users access their personalized dashboard with:
 - **Analytics Page**: Data visualization and insights
 - **Settings**: User preferences and account management
 
+## 🌐 Classic Version Integration
+
+The original SeshTracker web application has been preserved for backward compatibility:
+
+### How to Access the Classic Version
+
+1. **From the main app**: Click the "Open Classic SeshTracker" button on the homepage
+2. **Direct access**: Navigate to `/classic/index.html` or `/classic.html`
+
+### Implementation Details
+
+- All original files are preserved in the `public/legacy/` directory
+- The original JavaScript, CSS, and HTML are kept intact
+- Local storage data is preserved
+- All classic features work as before
+
 ## 🔄 Development Plan
 
 The project follows a phased development approach as detailed in the `/development-plan` directory:
@@ -147,6 +183,8 @@ npm run build
 # Deploy to Cloudflare Workers
 npm run deploy
 ```
+
+The deployment script (deploy.ps1) is already configured to work with the project structure.
 
 ## 📚 Additional Resources
 

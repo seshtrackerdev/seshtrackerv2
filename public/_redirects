@@ -1,6 +1,0 @@
-# Redirects for classic version
-/classic              /classic/index.html     200
-/classic/*            /classic/:splat         200
-
-# SPA fallback
-/*                    /index.html             200 
