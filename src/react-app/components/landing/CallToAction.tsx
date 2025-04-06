@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface CallToActionProps {
+  id?: string;
   title: string;
   description: string;
   primaryButtonText: string;
@@ -12,6 +13,7 @@ interface CallToActionProps {
 }
 
 const CallToAction: React.FC<CallToActionProps> = ({
+  id,
   title,
   description,
   primaryButtonText,
@@ -21,7 +23,7 @@ const CallToAction: React.FC<CallToActionProps> = ({
   forwardedRef
 }) => {
   return (
-    <section ref={forwardedRef} className="cta-section tour-section">
+    <section id={id} ref={forwardedRef} className="cta-section tour-section">
       <div className="cta-content">
         <h2 className="cta-title">{title}</h2>
         <p className="cta-description">{description}</p>

@@ -37,6 +37,9 @@
   margin-bottom: var(--spacing-lg);
   padding-bottom: 10px;
   min-height: 2.8rem;
+  height: 2.8rem;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .dynamic-headline {
@@ -48,7 +51,26 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fadeIn 0.5s ease-in-out;
+  position: relative;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.dynamic-headline.animating {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero-tagline {
@@ -179,117 +201,213 @@
 
 /* --- Tour Sections --- */
 .tour-section {
-  min-height: 50vh; /* Drastically reduced from 100vh */
-  display: none !important; /* Initially hidden with important flag */
+  min-height: 40vh;
+  display: none !important;
   align-items: center;
-  padding: 10px var(--page-margin); /* Drastically reduced from spacing-xl */
-  margin: 0 !important; /* Force zero margin */
+  justify-content: center;
+  padding: 2rem var(--page-margin);
+  margin: 0 !important;
   opacity: 0;
-  transform: translateY(10px); /* Reduced from 30px */
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.165, 0.84, 0.44, 1),
+              transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+  will-change: opacity, transform;
 }
 
-/* Special handling for direct anchor links - always show the section when targeted */
-.tour-section:target {
-  display: flex !important;
-  opacity: 1 !important;
-  transform: translateY(0) !important;
+/* Ensure consistent styling for all sections */
+.tour-section .container {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
 }
 
-/* Provide multiple selectors with high specificity and !important */
-.landing-page.tour-started .tour-section,
-.tour-started .tour-section,
-body.tour-started .tour-section,
-.tour-section[style*="display: flex"] {
-  display: flex !important; /* Force flex display with !important */
-  margin-bottom: 0 !important; /* Force zero bottom margin */
-  margin-top: 0 !important; /* Force zero top margin */
-}
-
-.tour-section.is-visible {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  margin: 0 !important; /* Force zero margin on all sides */
-}
-
-/* Force styles with !important to ensure they take effect */
-.landing-page:not(.tour-started) {
-  height: 100vh !important;
-  overflow: hidden !important;
-}
-
-/* Exception for when a section is directly targeted */
-.landing-page.tour-started,
-html:has(:target) .landing-page {
-  height: auto !important;
-  overflow: visible !important;
-}
-
-/* Direct anchor compatibility - a more universal solution */
-:target ~ * {
-  display: block;
-}
-
-.section-content {
+.tour-section .section-content {
+  padding: 1.5rem;
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  padding: 0; /* Remove padding */
 }
 
-.section-title {
-  margin-bottom: 10px; /* Reduced from spacing-lg */
+/* Consistent visual style for the feature grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+}
+
+.tour-section.is-visible .feature-grid {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feature-item {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid transparent;
+  height: 100%;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--accent-rgb, 67, 160, 71), 0.2);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
   color: var(--text-primary);
+}
+
+/* Smooth visibility transitions for tour sections */
+html body .landing-page.tour-started .tour-section,
+html body.tour-started .tour-section,
+html body .tour-started .tour-section,
+.tour-section[style*="display: flex"],
+.tour-section[style*="display:flex"] {
+  display: flex !important;
+  min-height: auto !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Smooth animation for visible sections */
+html body .tour-section.is-visible,
+html body .landing-page .tour-section.is-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Consistent styling for CTA buttons across sections */
+.tour-section .next-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-position 0.5s ease;
+  background-size: 200% auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.tour-section .next-button::after {
+  content: '→';
+  position: absolute;
+  right: 1.5rem;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.tour-section .next-button:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  padding-right: 2.5rem;
+}
+
+.tour-section .next-button:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Keyboard accessibility focus indicators */
+.tour-section .next-button:focus-visible,
+.discover-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Alternate section background colors for visual separation */
+.tour-section:nth-child(odd) {
+  background-color: var(--bg-secondary);
+}
+
+.tour-section:nth-child(even) {
+  background-color: var(--bg-primary);
+}
+
+/* Section title styling */
+.section-title {
   position: relative;
   display: inline-block;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .section-title::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: -0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 50px;
+  width: 60px;
   height: 3px;
   background-color: var(--accent-color);
   border-radius: 3px;
 }
 
-.section-description {
-  margin-bottom: 10px; /* Reduce spacing */
-  color: var(--text-secondary);
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.section-image-container {
-  margin: var(--spacing-lg) auto;
-  max-width: 100%;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-
-.section-image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.next-button {
-  margin-top: 10px; /* Drastically reduced */
-  margin-bottom: 0;
-  background: linear-gradient(
-    90deg, 
-    var(--cannabis-green-dark), 
-    var(--cannabis-green)
-  );
-  border: none;
-  box-shadow: 0 4px 15px rgba(67, 160, 71, 0.2);
-  transition: all 0.3s ease;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tour-progress {
+    right: 10px;
+  }
+  
+  .tour-progress-indicator {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .tour-section {
+    padding: 1.5rem var(--page-margin);
+  }
+  
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .section-title::after {
+    width: 40px;
+  }
+  
+  .section-description {
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .tour-section .next-button {
+    width: 100%;
+    max-width: 300px;
+  }
 }
 
 /* Features Section */
@@ -1657,4 +1775,285 @@ body.light-theme-v6 { --accent-rgb: 22, 163, 74; }
   transform: translateY(0) !important;
 }
 
-/* JavaScript will handle enabling scrolling by adding style attributes */ 
+/* JavaScript will handle enabling scrolling by adding style attributes */
+
+/* Special handling for direct anchor links - always show the section when targeted */
+.tour-section:target {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Essential landing page styles */
+.landing-page:not(.tour-started) {
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+.landing-page.tour-started {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Direct anchor compatibility */
+:target ~ * {
+  display: block;
+}
+
+/* Section description */
+.section-description {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* Section image container */
+.section-image-container {
+  margin: 2rem auto;
+  max-width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease;
+}
+
+.section-image-container:hover {
+  transform: translateY(-5px);
+}
+
+.section-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Active section styling for better visual feedback */
+.tour-section.active-section {
+  position: relative;
+  z-index: 5;
+}
+
+.tour-section.active-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--cannabis-green), var(--cannabis-green-light));
+  z-index: 10;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tour-section.active-section .section-title {
+  color: var(--accent-color);
+  transition: color 0.3s ease;
+}
+
+.tour-section.active-section .section-content {
+  animation: pulseSection 0.5s ease-out;
+}
+
+@keyframes pulseSection {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* --- Tour Progress Navigation --- */
+.tour-progress {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 100; /* Higher z-index to ensure visibility */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+}
+
+.tour-started .tour-progress {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tour-progress-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tour-progress-indicator:hover {
+  transform: scale(1.3);
+  background-color: var(--accent-color);
+}
+
+.tour-progress-indicator.active {
+  background-color: var(--accent-color);
+  transform: scale(1.4);
+  box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.2);
+}
+
+.tour-progress-indicator.active::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-color);
+  animation: pulse 2s infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tour-progress-label {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  pointer-events: none;
+  min-width: 120px;
+  text-align: center;
+}
+
+.tour-progress-indicator:hover .tour-progress-label {
+  opacity: 1;
+  visibility: visible;
+  right: 30px;
+}
+
+/* Animation and performance optimizations */
+.will-change-transform {
+  will-change: transform, opacity;
+}
+
+.will-change-scroll {
+  will-change: contents, scroll-position;
+}
+
+/* Enhanced headline animation */
+.dynamic-headline {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  line-height: 1.3;
+  background: linear-gradient(135deg, var(--cannabis-green-light), var(--cannabis-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.dynamic-headline.animating {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.headline-container {
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: 10px;
+  min-height: 2.8rem;
+  height: 2.8rem;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Ensure active section is highlighted */
+.tour-section.active-section {
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 0 20px rgba(67, 160, 71, 0.05);
+  border: 1px solid rgba(67, 160, 71, 0.1);
+  border-radius: var(--radius-md);
+  background-color: rgba(67, 160, 71, 0.02);
+}
+
+/* Make the indicator more accessible on light/dark modes */
+.light-theme .tour-progress-indicator {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .tour-progress-indicator.active {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Make mobile-friendly for smaller screens */
+@media (max-width: 768px) {
+  .tour-progress {
+    right: 10px;
+    padding: 5px;
+    gap: 12px;
+  }
+  
+  .tour-progress-indicator {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .tour-progress-label {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    min-width: 100px;
+  }
+} 

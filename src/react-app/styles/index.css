@@ -63,3 +63,32 @@ a:hover {
   color: var(--brand-primary-dark);
   text-decoration: underline;
 }
+
+/* Add these rules to fix tour functionality */
+.tour-section {
+  display: none;
+}
+
+.tour-started .tour-section,
+body.tour-started .tour-section,
+.landing-page.tour-started .tour-section {
+  display: flex !important;
+}
+
+.tour-section.is-visible,
+.tour-section[style*="display: flex"],
+.tour-section[style*="display:flex"] {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.landing-page:not(.tour-started) {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.landing-page.tour-started {
+  height: auto;
+  overflow: visible;
+}
