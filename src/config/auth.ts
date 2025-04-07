@@ -1,25 +1,27 @@
 /**
  * Authentication configuration for Kush.Observer integration
  */
+import { API, ENDPOINTS } from './ecosystem';
+
 export const AUTH_CONFIG = {
-  // This is the URL of the KushObserver service used for authentication
-  API_URL: 'https://kushobserver.tmultidev.workers.dev/api',
+  // Production API URL (from ecosystem config)
+  API_URL: ENDPOINTS.KUSHOBSERVER.PRODUCTION + '/api/auth',
   
-  // Development API URL (used in dev environment)
-  DEV_API_URL: 'https://kushobserver.tmultidev.workers.dev/api',
+  // Development API URL (from ecosystem config)
+  DEV_API_URL: ENDPOINTS.KUSHOBSERVER.DEVELOPMENT + '/api/auth',
   
   // These are the endpoints for various authentication and user-related operations
   ENDPOINTS: {
     // Authentication endpoints
     LOGIN: '/direct-login',
     REGISTER: '/direct-register',
-    VERIFY: '/verify',
-    REFRESH_TOKEN: '/auth/refresh-token',
+    VERIFY: '/validate-token',
+    REFRESH_TOKEN: '/refresh-token',
     RESET: '/reset',
     PASSWORD_RESET: '/password-reset',
     
     // User data endpoints
-    PROFILE: '/protected/user-profile',
+    PROFILE: '/user/profile',
     USER_PREFERENCES: '/user/preferences',
     USER_ADVANCED_PREFERENCES: '/user/advanced-preferences',
     SUBSCRIPTION: '/subscription',

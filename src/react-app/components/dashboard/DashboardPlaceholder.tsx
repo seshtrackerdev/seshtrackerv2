@@ -3,8 +3,7 @@ import { useAuth  } from "../../hooks";
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import DemoProfileSelector from './DemoProfileSelector';
-import type { DemoSession, DemoStrain, DemoProfileSummary } from '../utils/DemoDataGenerator';
-import "../../styles/.css";
+import type { DemoSession, DemoStrain, DemoProfileSummary } from '../../utils/DemoDataGenerator';
 
 // Define the expected structure of the user profile data from the API
 interface UserProfile {

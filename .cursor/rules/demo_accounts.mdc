@@ -1,0 +1,97 @@
+---
+description: Demo Account documentation for how Kush.Observer expects the parementers.
+globs: 
+alwaysApply: false
+---
+# Demo Accounts Rule
+
+## Standard Demo Accounts Configuration
+
+Always use the standard demo and test accounts when implementing features that require authentication or user context.
+
+### Account Credentials
+
+#### Test Account
+- **Email:** tester@email.com
+- **Password:** Superbowl9-Veggie0-Credit4-Watch1
+- **Type:** test
+
+#### Demo Account
+- **Email:** demouser1@email.com
+- **Password:** Hurry3-Sweat0-Dynamic0-Economist0
+- **Type:** demo
+
+### Demo Account Access
+
+For accessing demo accounts in code, use these patterns:
+
+```typescript
+// Server-side implementation:
+const demoCredentials = accountType === 'test' 
+  ? { email: 'tester@email.com', password: 'Superbowl9-Veggie0-Credit4-Watch1' }
+  : { email: 'demouser1@email.com', password: 'Hurry3-Sweat0-Dynamic0-Economist0' };
+
+// Client-side implementation:
+const demoLogin = async (type: 'test' | 'demo') => {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/seshtracker/demo-login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-SeshTracker-API-Key': API_KEY
+      },
+      body: JSON.stringify({ demo_type: type })
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Demo login error:', error);
+    throw error;
+  }
+};
+```
+
+### Demo Account Management
+
+1. **Never change** the credentials for these accounts
+2. **Do not delete** these accounts from the database
+3. **Add the `is_demo: true`** property to responses using these accounts
+4. **Include the `demo_type`** ('test' or 'demo') in the response
+
+### Demo Data
+
+Demo accounts should always have pre-populated data for testing purposes, including:
+
+1. User profile information
+2. Sample sessions
+3. Inventory items
+4. Usage statistics
+
+### Demo Account Endpoint
+
+All applications in the ecosystem should implement a demo login capability:
+
+```typescript
+// Demo Login Endpoint (React component example)
+export const DemoLogin: React.FC = () => {
+  const { login } = useAuth();
+  
+  const handleTestLogin = async () => {
+    await login('tester@email.com', 'Superbowl9-Veggie0-Credit4-Watch1');
+  };
+  
+  const handleDemoLogin = async () => {
+    await login('demouser1@email.com', 'Hurry3-Sweat0-Dynamic0-Economist0');
+  };
+  
+  return (
+    <div className="demo-login">
+      <button onClick={handleTestLogin}>Login as Test User</button>
+      <button onClick={handleDemoLogin}>Login as Demo User</button>
+    </div>
+  );
+};
+```
+
+### Security Note
+
+Despite being demo accounts, always implement proper authentication and validation. These accounts should have the same security measures as regular user accounts.

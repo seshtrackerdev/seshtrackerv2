@@ -16,11 +16,31 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "seshtracker-db",
-      "database_id": "5363986a-f8af-4b43-8936-c1be88ce4a34",
+      "database_name": "seshtracker-d1-new",
+      "database_id": "0ac38748-f2cd-4980-8e2d-8c3a92729169",
       "migrations_table": "d1_migrations",
       "migrations_dir": "migrations"
     }
   ],
-  "custom_domains": ["sesh-tracker.com"]
+  "custom_domains": ["sesh-tracker.com"],
+  "vars": {
+    "AUTH_API_URL": "https://kush.observer"
+  },
+  "env": {
+    "production": {
+      "vars": {
+        "AUTH_API_URL": "https://kush.observer"
+      }
+    },
+    "staging": {
+      "vars": {
+        "AUTH_API_URL": "https://staging.kush.observer"
+      }
+    },
+    "development": {
+      "vars": {
+        "AUTH_API_URL": "https://dev.kush.observer"
+      }
+    }
+  }
 } 

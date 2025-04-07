@@ -85,6 +85,32 @@ export class KushObserverClient {
   }
 
   /**
+   * Validate a token
+   * @param token JWT token to validate
+   * @returns Validation response
+   */
+  async validateToken(token: string): Promise<{ valid: boolean; user?: any; newToken?: string }> {
+    return fetchWithRateLimiting(`${API_BASE_URL}${AUTH_CONFIG.ENDPOINTS.VERIFY}`, {
+      method: 'POST',
+      headers: getKushObserverHeaders(),
+      body: { token }
+    });
+  }
+
+  /**
+   * Refresh a token
+   * @param token Current JWT token
+   * @returns Refresh response with new token
+   */
+  async refreshToken(token: string): Promise<{ success: boolean; token: string }> {
+    return fetchWithRateLimiting(`${API_BASE_URL}${AUTH_CONFIG.ENDPOINTS.REFRESH_TOKEN}`, {
+      method: 'POST',
+      headers: getKushObserverHeaders(),
+      body: { token }
+    });
+  }
+
+  /**
    * Get user profile
    * @returns User profile data
    */

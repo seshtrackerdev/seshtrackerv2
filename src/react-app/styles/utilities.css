@@ -653,3 +653,114 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* CRITICAL Tour & Landing Page Overrides
+   These have !important flags to ensure they override any other styles */
+.tour-section {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(30px) !important;
+  transition: opacity 0.5s ease, transform 0.5s ease !important;
+}
+
+.tour-started .tour-section,
+body.tour-started .tour-section,
+.landing-page.tour-started .tour-section,
+html.tour-started .tour-section {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.tour-section.is-visible,
+.tour-section[style*="display: flex"],
+.tour-section[style*="display:flex"] {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Additional critical overrides to ensure sections display */
+.tour-section[style] {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Even more aggressive overrides for edge cases */
+section.tour-section {
+  display: flex !important;
+  visibility: visible !important;
+}
+
+/* Ensure landing page height is correct */
+.landing-page:not(.tour-started) {
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+.landing-page.tour-started {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Force sections to display properly in tour mode */
+body[data-sections-shown="true"] .tour-section {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  visibility: visible !important;
+}
+
+/* Ensure the progress indicators are visible */
+.tour-progress {
+  display: flex !important;
+  pointer-events: all !important;
+  opacity: 1 !important;
+  z-index: 1000 !important;
+}
+
+/* Add classes to ensure smooth scrolling */
+html.smooth-scroll {
+  scroll-behavior: smooth !important;
+}
+
+.no-scroll {
+  overflow: hidden !important;
+}
+
+/* Section styling overrides */
+.active-section {
+  background-color: var(--bg-highlight, rgba(120, 120, 120, 0.05)) !important;
+}
+
+/* Fix for IE/Edge */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .tour-section {
+    display: flex !important;
+  }
+  
+  .landing-page {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+
+/* Fix for Safari */
+@supports (-webkit-overflow-scrolling: touch) {
+  .tour-section {
+    display: flex !important;
+  }
+  
+  body.tour-started {
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .tour-section {
+    min-height: auto !important;
+    padding: 4rem 1rem !important;
+  }
+}

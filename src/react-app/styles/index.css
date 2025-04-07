@@ -34,6 +34,288 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Header and Navigation Styles */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0 1rem;
+  height: 64px;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.header-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.brand-gradient {
+  background: linear-gradient(90deg, var(--cannabis-green) 0%, var(--cannabis-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.domain {
+  opacity: 0.7;
+  font-weight: normal;
+  font-size: 0.9rem;
+}
+
+/* Desktop Navigation */
+.desktop-nav {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .desktop-nav a {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+    position: relative;
+    text-decoration: none;
+  }
+  
+  .desktop-nav a:hover {
+    color: var(--text-primary);
+  }
+  
+  .desktop-nav a.active {
+    color: var(--cannabis-purple);
+  }
+  
+  .desktop-nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--cannabis-purple);
+    border-radius: 1px;
+  }
+}
+
+/* Header actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme-toggle, 
+.settings-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover, 
+.settings-button:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.login-button {
+  background-color: var(--cannabis-purple);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: var(--cannabis-purple-hover);
+  transform: translateY(-2px);
+}
+
+/* Mobile menu toggle */
+.mobile-menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  position: relative;
+  z-index: 1001;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.mobile-menu-toggle.active {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.cannabis-icon {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 12px;
+  opacity: 0.7;
+  transform: rotate(30deg);
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 320px;
+  height: 100vh;
+  background-color: var(--bg-secondary);
+  z-index: 1000;
+  padding: 5rem 1.5rem 2rem;
+  overflow-y: auto;
+  transition: right 0.3s ease;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-nav.open {
+  right: 0;
+}
+
+.mobile-nav a,
+.mobile-nav button {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s ease;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-nav a span,
+.mobile-nav button span {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-nav a:hover,
+.mobile-nav button:hover {
+  background-color: var(--bg-hover);
+}
+
+.mobile-nav a.active {
+  background-color: var(--bg-active);
+  color: var(--cannabis-purple);
+}
+
+.nav-section {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 1.5rem 0 0.5rem;
+  padding-left: 1rem;
+}
+
+.menu-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.menu-leaf {
+  position: absolute;
+  font-size: 1.25rem;
+  opacity: 0.3;
+  transform: rotate(30deg);
+}
+
+.menu-leaf-1 {
+  top: 10%;
+  left: 10%;
+  animation: float 5s ease-in-out infinite;
+}
+
+.menu-leaf-2 {
+  top: 15%;
+  right: 20%;
+  animation: float 7s ease-in-out infinite;
+}
+
+.menu-leaf-3 {
+  top: 30%;
+  left: 25%;
+  animation: float 6s ease-in-out infinite 1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(30deg); }
+  50% { transform: translateY(-10px) rotate(40deg); }
+}
+
+.classic-version-link {
+  margin-top: 1rem;
+  background-color: var(--cannabis-purple) !important;
+  color: white !important;
+}
+
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
   :root {

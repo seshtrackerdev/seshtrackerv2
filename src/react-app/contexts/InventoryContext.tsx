@@ -277,4 +277,158 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children 
           setError('Inventory item not found');
           return [];
         }
-        throw new Error(`
+        throw new Error(`Failed to fetch consumption history: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setConsumptionHistory(data.consumptionHistory || []);
+      return data.consumptionHistory || [];
+    } catch (err) {
+      console.error('Error loading consumption history:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load consumption history');
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Create a new inventory item
+  const createInventoryItem = async (itemData: InventoryItemCreate): Promise<InventoryItem | null> => {
+    if (!isAuthenticated) return null;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetchProtected('/api/protected/inventory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(itemData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to create inventory item: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setCurrentItem(data.item);
+      return data.item;
+    } catch (err) {
+      console.error('Error creating inventory item:', err);
+      setError(err instanceof Error ? err.message : 'Failed to create inventory item');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Update an existing inventory item
+  const updateInventoryItem = async (itemId: string, itemData: Partial<InventoryItemCreate>): Promise<InventoryItem | null> => {
+    if (!isAuthenticated) return null;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetchProtected(`/api/protected/inventory/${itemId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(itemData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to update inventory item: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setCurrentItem(data.item);
+      return data.item;
+    } catch (err) {
+      console.error('Error updating inventory item:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update inventory item');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Delete an inventory item
+  const deleteInventoryItem = async (itemId: string): Promise<boolean> => {
+    if (!isAuthenticated) return false;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetchProtected(`/api/protected/inventory/${itemId}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to delete inventory item: ${response.statusText}`);
+      }
+      
+      setCurrentItem(null);
+      return true;
+    } catch (err) {
+      console.error('Error deleting inventory item:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete inventory item');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Filter management
+  const setFilter = <K extends keyof InventoryFilters>(key: K, value: InventoryFilters[K]) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [key]: value
+    }));
+  };
+  
+  const clearFilters = () => {
+    setFilters({
+      limit: 20,
+      offset: 0,
+      sortBy: 'purchaseDate',
+      sortDirection: 'desc'
+    });
+  };
+  
+  return (
+    <InventoryContext.Provider value={{
+      inventoryItems,
+      currentItem,
+      itemUsage,
+      consumptionHistory,
+      isLoading,
+      error,
+      filters,
+      loadInventory,
+      loadInventoryItem,
+      loadItemUsage,
+      loadConsumptionHistory,
+      createInventoryItem,
+      updateInventoryItem,
+      deleteInventoryItem,
+      setFilter,
+      clearFilters
+    }}>
+      {children}
+    </InventoryContext.Provider>
+  );
+};
+
+// Custom hook to use the InventoryContext
+export const useInventory = () => {
+  const context = useContext(InventoryContext);
+  if (context === null) {
+    throw new Error('useInventory must be used within an InventoryProvider');
+  }
+  return context;
+};

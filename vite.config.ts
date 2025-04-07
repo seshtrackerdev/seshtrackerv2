@@ -7,6 +7,9 @@ import react from "@vitejs/plugin-react";
 // Import Cloudflare Workers types
 import type { D1Database } from "@cloudflare/workers-types";
 
+// Import our standardized domains
+import { ENDPOINTS } from "./src/config/ecosystem";
+
 // Configuration with real database connections
 export default defineConfig({
   // Base URL is / for production
@@ -58,7 +61,7 @@ export default defineConfig({
   publicDir: 'public',
   // Define environment variables for production
   define: {
-    'process.env.VITE_AUTH_API_URL': JSON.stringify('https://api.kushobserver.com'),
+    'process.env.VITE_AUTH_API_URL': JSON.stringify(`${ENDPOINTS.KUSHOBSERVER.PRODUCTION}/api`),
     'process.env.VITE_APP_ENV': JSON.stringify('production')
   },
 });

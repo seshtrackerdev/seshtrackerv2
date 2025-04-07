@@ -1,0 +1,61 @@
+---
+description: Rule that the Kush.Observer Cursor AI uses for deployment processing. 
+globs: 
+alwaysApply: false
+---
+# Deployment Process Rule
+
+## Standardized Deployment Process
+
+Always use the existing deployment scripts for Kush.Observer and SeshTracker ecosystem deployments. These scripts handle both GitHub pushing and Cloudflare Workers deployment in a standardized way.
+
+### Required Scripts
+
+1. `deploy.ps1` - PowerShell script for Windows users
+2. `deploy.sh` - Bash script for Unix/Linux/Mac users
+
+### Usage Pattern
+
+**Windows:**
+```powershell
+.\deploy.ps1 [branch-name] [commit-message]
+```
+
+**Unix/Linux/Mac:**
+```bash
+./deploy.sh [branch-name] [commit-message]
+```
+
+### Modification Guidelines
+
+1. **Extend, Don't Replace:** If additional functionality is needed, extend the existing scripts rather than creating new ones.
+2. **Configuration Updates:** When changing configuration (like wrangler.json), update the deployment scripts to validate those changes.
+3. **Secret Management:** Always use the scripts' built-in secret management for managing environment variables.
+4. **Environment-Specific Deployment:** Use the script parameters to specify environments (branch names).
+
+### Integration Specifics
+
+When working with the SeshTracker integration:
+
+1. Always maintain proper CORS configuration for all ecosystem domains:
+   - kush.observer
+   - sesh-tracker.com
+   - my-cannabis-tracker.com
+   - All relevant local development URLs (localhost:3000-3009, 4000)
+
+2. Ensure the following secrets are properly configured:
+   - JWT_SECRET
+   - SESH_TRACKER_API_KEY
+
+3. Verify that demo accounts remain accessible:
+   - Test: tester@email.com / Superbowl9-Veggie0-Credit4-Watch1
+   - Demo: demouser1@email.com / Hurry3-Sweat0-Dynamic0-Economist0
+
+### Deployment Verification
+
+After deployment, always verify:
+1. API health endpoint is responding
+2. SeshTracker integration endpoint is working
+3. Authentication flows are functional (especially cross-domain auth)
+
+See the full documentation in `SeshTracker-Integration-Guide.md` for detailed implementation guidance.

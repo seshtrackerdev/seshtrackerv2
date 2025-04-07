@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth  } from "../../hooks";
-import { useTheme  } from "../components";
+import { useTheme  } from "../../components/ui/ThemeProvider";
 import SettingsMenu from './SettingsMenu';
 
 const Header: React.FC = () => {
@@ -35,23 +35,82 @@ const Header: React.FC = () => {
           </span>
         </Link>
 
-        {/* Right side actions - force display to ensure it's visible */}
-        <div className="header-actions" style={{ display: 'flex' }}>
-          {/* Cannabis-themed hamburger menu toggle - force display to ensure it's visible */}
+        {/* Navigation for desktop */}
+        <nav className="desktop-nav">
+          {!isLoading && isAuthenticated ? (
+            <>
+              <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>Dashboard</Link>
+              <Link to="/sessions" className={location.pathname === "/sessions" ? "active" : ""}>Sessions</Link>
+              <Link to="/inventory" className={location.pathname === "/inventory" ? "active" : ""}>Inventory</Link>
+              <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>Analytics</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/contact" className={location.pathname === "/contact" ? "active" : ""}>Contact</Link>
+            </>
+          )}
+        </nav>
+
+        {/* Right side actions */}
+        <div className="header-actions">
+          {!isLoading && isAuthenticated ? (
+            <>
+              <button 
+                className="theme-toggle"
+                onClick={toggleTheme}
+                title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {isDark ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                )}
+              </button>
+              <button 
+                className="settings-button" 
+                onClick={toggleSettings} 
+                title="Settings"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+              </button>
+            </>
+          ) : isLandingPage && (
+            <>
+              <button 
+                className="theme-toggle"
+                onClick={toggleTheme}
+                title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {isDark ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                )}
+              </button>
+              <button className="login-button" onClick={handleAuthRedirect}>
+                Login
+              </button>
+            </>
+          )}
+
+          {/* Mobile menu toggle */}
           <button
             className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
             onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              position: 'relative',
-              zIndex: 1001
-            }}
           >
             {isMobileMenuOpen ? (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,21 +123,14 @@ const Header: React.FC = () => {
                   <line x1="3" y1="6" x2="21" y2="6"></line>
                   <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
-                <small className="cannabis-icon" aria-hidden="true" style={{ 
-                  position: 'absolute', 
-                  top: '-2px', 
-                  right: '-2px', 
-                  fontSize: '12px',
-                  opacity: 0.7,
-                  transform: 'rotate(30deg)'
-                }}>🍃</small>
+                <small className="cannabis-icon" aria-hidden="true">🍃</small>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Cannabis-themed Mobile Navigation Menu for all screen sizes */}
+      {/* Mobile Navigation Menu */}
       <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
         {/* Cannabis leaf decorations */}
         <div className="menu-decoration" aria-hidden="true">
@@ -166,7 +218,6 @@ const Header: React.FC = () => {
         {/* Theme toggle */}
         <button 
           onClick={() => { toggleTheme(); setIsMobileMenuOpen(false); }}
-          data-mode={isDark ? 'Light Mode' : 'Dark Mode'}
           className={isDark ? 'theme-toggle-light' : 'theme-toggle-dark'}
         >
           <span>
@@ -226,10 +277,7 @@ const Header: React.FC = () => {
         <Link 
           to="/legacy" 
           onClick={() => setIsMobileMenuOpen(false)}
-          style={{
-            backgroundColor: 'var(--cannabis-purple)',
-            color: 'white'
-          }}
+          className="classic-version-link"
         >
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

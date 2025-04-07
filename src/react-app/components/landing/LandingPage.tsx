@@ -1,89 +1,7 @@
-import React, { useEffect, useCallback, useRef, useState } from 'react';
-import HeroSection from './HeroSection';
-import FeatureSection from './FeatureSection';
-import TourManager from './TourManager';
-import "../../styles/LandingPage.css";
+import React, { useState, useEffect, useRef } from 'react';
+import './LandingPage.css';
+import '../../styles/LandingPage.css';
 
-// Mock components until actual components are created
-const PricingSection = ({ forwardedRef, id, ctaOnClick }: any) => (
-  <section id={id} ref={forwardedRef} className="tour-section">
-    <h2>Pricing Plans</h2>
-    <p>Affordable options for every need</p>
-    <button onClick={ctaOnClick}>Continue Tour</button>
-  </section>
-);
-
-const TestimonialSection = ({ forwardedRef, id, testimonials, ctaOnClick }: any) => (
-  <section id={id} ref={forwardedRef} className="tour-section">
-    <h2>What Users Say</h2>
-    <div className="testimonials">
-      {testimonials.map((t: any, i: number) => (
-        <div key={i} className="testimonial">
-          <p>"{t.quote}"</p>
-          <h3>{t.name}</h3>
-        </div>
-      ))}
-    </div>
-    <button onClick={ctaOnClick}>Final Step</button>
-  </section>
-);
-
-const CallToAction = ({ forwardedRef, id }: any) => (
-  <section id={id} ref={forwardedRef} className="tour-section">
-    <h2>Ready to Start?</h2>
-    <p>Join thousands of users optimizing their experience</p>
-    <button>Get Started</button>
-  </section>
-);
-
-// Define section data
-const sectionIds = [
-  'section-hero',
-  'section-features',
-  'section-pricing',
-  'section-testimonials',
-  'section-cta'
-];
-
-// Define feature data
-const featureData = [
-  {
-    title: 'Strain Tracking',
-    description: 'Log and track your favorite strains with detailed notes on effects, potency, and more.',
-    icon: '🌿'
-  },
-  {
-    title: 'Session Insights',
-    description: 'Track your consumption sessions and get insights into patterns and preferences.',
-    icon: '📊'
-  },
-  {
-    title: 'Mood Monitoring',
-    description: 'Connect your usage with mood effects to find what works best for you.',
-    icon: '😌'
-  }
-];
-
-// Define testimonial data
-const testimonialData = [
-  {
-    name: 'Alex M.',
-    quote: 'SeshTracker has helped me find the perfect strains for my anxiety. Game changer!',
-    avatar: '/images/avatar1.jpg'
-  },
-  {
-    name: 'Jamie L.',
-    quote: 'I love being able to track which products work best for my sleep issues.',
-    avatar: '/images/avatar2.jpg'
-  },
-  {
-    name: 'Sam K.',
-    quote: 'The insights feature helped me cut back on my usage while still getting the benefits.',
-    avatar: '/images/avatar3.jpg'
-  }
-];
-
-// Define dynamic headlines for the hero section
 const dynamicHeadlines = [
   "Track your Strains...",
   "Monitor your Mood...",
@@ -92,308 +10,197 @@ const dynamicHeadlines = [
   "Manage your Inventory..."
 ];
 
-export const LandingPage: React.FC = () => {
-  // State for tour management
+const LandingPage: React.FC = () => {
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isTourStarted, setIsTourStarted] = useState(false);
-  const [activeSection, setActiveSection] = useState(sectionIds[0]);
-  
-  // Create refs for each section
-  const landingPageRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = sectionIds.map(() => useRef<HTMLElement>(null));
-  
-  // Create a ref to track if we're currently scrolling programmatically
-  const isScrolling = useRef(false);
 
-  // Improved scroll tracking for active section
+  // Refs for scrolling targets
+  const tourStartRef = useRef<HTMLDivElement>(null);
+  const section1Ref = useRef<HTMLElement>(null);
+  const section2Ref = useRef<HTMLElement>(null);
+  const section3Ref = useRef<HTMLElement>(null);
+  const finalCTARef = useRef<HTMLElement>(null);
+
+  // Effect for dynamic headlines
   useEffect(() => {
-    const handleScroll = debounce(() => {
-      if (!isTourStarted) return;
-      
-      // Get all visible tour sections
-      const sections = Array.from(document.querySelectorAll('.tour-section'))
-        .filter(section => window.getComputedStyle(section).display !== 'none');
-        
-      if (sections.length === 0) return;
-      
-      // Get the viewport height and calculate the center point (with 40% offset)
-      const viewportHeight = window.innerHeight;
-      const viewportCenter = window.scrollY + (viewportHeight * 0.4); // Bias toward top section
-      
-      // Find the section closest to the viewport center
-      let closestSection = sections[0];
-      let closestDistance = Math.abs(
-        (closestSection as HTMLElement).getBoundingClientRect().top + 
-        window.scrollY - viewportCenter
-      );
-      
-      sections.forEach(section => {
-        const sectionElement = section as HTMLElement;
-        const sectionTop = sectionElement.getBoundingClientRect().top + window.scrollY;
-        const distance = Math.abs(sectionTop - viewportCenter);
-        
-        if (distance < closestDistance) {
-          closestSection = section;
-          closestDistance = distance;
-        }
+    const intervalId = setInterval(() => {
+      setHeadlineIndex((prevIndex) => (prevIndex + 1) % dynamicHeadlines.length);
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Effect for Intersection Observer (only runs if tour started)
+  useEffect(() => {
+    if (!isTourStarted) return;
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        } 
       });
-      
-      // Only update if we have a valid section
-      if (closestSection) {
-        // Update visual state
-        sections.forEach(section => section.classList.remove('active-section'));
-        closestSection.classList.add('active-section');
-        
-        // Update active section state if different
-        const sectionId = closestSection.id;
-        if (sectionId !== activeSection) {
-          setActiveSection(sectionId);
-        }
-        
-        // Update progress indicators
-        const indicators = document.querySelectorAll('.tour-progress-indicator');
-        
-        indicators.forEach(indicator => {
-          if (indicator.getAttribute('data-section') === sectionId) {
-            indicator.classList.add('active');
-            indicator.setAttribute('aria-current', 'true');
-          } else {
-            indicator.classList.remove('active');
-            indicator.setAttribute('aria-current', 'false');
-          }
-        });
-        
-        // Update URL hash without triggering a scroll
-        if (sectionId && !isScrolling.current) {
-          window.history.replaceState(null, '', `#${sectionId}`);
-        }
+    };
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const sections = [section1Ref, section2Ref, section3Ref, finalCTARef];
+    sections.forEach(ref => { if (ref.current) observer.observe(ref.current); });
+    return () => { sections.forEach(ref => { if (ref.current) observer.unobserve(ref.current); }); };
+  }, [isTourStarted]);
+
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+    document.body.classList.toggle('dark-theme-v6', !isDarkTheme);
+    document.body.classList.toggle('light-theme-v6', isDarkTheme);
+  };
+
+  const handleAuthRedirect = () => { window.location.href = '/login'; };
+
+  const scrollToRef = (ref: React.RefObject<HTMLElement | null>) => {
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // Function to start the tour and scroll
+  const startTour = () => {
+    setIsTourStarted(true);
+    setTimeout(() => {
+      if (section1Ref.current) {
+        scrollToRef(section1Ref);
       }
     }, 100);
-    
-    window.addEventListener('scroll', handleScroll);
-    
-    // Run once on mount to set initial active section
-    handleScroll();
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isTourStarted, activeSection]);
-
-  // Improved scroll to section function
-  const scrollToSection = useCallback((sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    
-    // Set this as active section first
-    const allSections = document.querySelectorAll('.tour-section');
-    allSections.forEach(s => s.classList.remove('active-section'));
-    section.classList.add('active-section');
-    
-    // Update active section state
-    setActiveSection(sectionId);
-    
-    // Set flag to prevent scroll handler from updating URL
-    isScrolling.current = true;
-    
-    // Calculate offset for fixed headers
-    const headerOffset = 80; // Adjust based on your header height
-    const elementPosition = section.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.scrollY - headerOffset;
-    
-    // Scroll with smooth behavior
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
-    
-    // Update URL hash
-    window.history.replaceState(null, '', `#${sectionId}`);
-    
-    // Announce section change for screen readers
-    const liveRegion = document.getElementById('tour-announcer');
-    if (liveRegion) {
-      const sectionTitle = section.querySelector('h2')?.textContent || sectionId;
-      liveRegion.textContent = `Navigated to ${sectionTitle} section`;
-    }
-    
-    // Reset scroll flag after animation completes
-    setTimeout(() => {
-      isScrolling.current = false;
-    }, 1000);
-  }, []);
-
-  // Handler for next section navigation from buttons
-  const handleNextSection = useCallback((targetSectionId: string) => {
-    // Start tour if not already started
-    if (!isTourStarted) {
-      startTour();
-      // Add small delay to ensure DOM is updated
-      setTimeout(() => {
-        scrollToSection(targetSectionId);
-      }, 100);
-    } else {
-      scrollToSection(targetSectionId);
-    }
-  }, [isTourStarted, scrollToSection]);
-
-  // Check localStorage on component mount
-  useEffect(() => {
-    // Check if tour was previously started
-    const tourStarted = localStorage.getItem('tourStarted') === 'true';
-    if (tourStarted) {
-      // Auto-start the tour
-      startTour();
-      
-      // Check for hash in URL for direct section navigation
-      const hash = window.location.hash;
-      if (hash && hash.startsWith('#section-')) {
-        const sectionId = hash.slice(1); // Remove the # character
-        // Small delay to ensure DOM is updated
-        setTimeout(() => {
-          scrollToSection(sectionId);
-        }, 100);
-      }
-    }
-  }, [scrollToSection]);
-
-  // Updated startTour function
-  const startTour = useCallback(() => {
-    setIsTourStarted(true);
-    localStorage.setItem('tourStarted', 'true');
-    
-    // Update landing page styling
-    const landingPage = document.querySelector('.landing-page') as HTMLElement;
-    if (landingPage) {
-      landingPage.classList.add('tour-started');
-      landingPage.style.height = 'auto';
-      landingPage.style.overflow = 'visible';
-    }
-    
-    // Add body class
-    document.body.classList.add('tour-started');
-    
-    // Make all sections visible with staggered animation
-    const allSections = document.querySelectorAll('.tour-section');
-    allSections.forEach((section, index) => {
-      const sectionElement = section as HTMLElement;
-      sectionElement.style.display = 'flex';
-      sectionElement.style.opacity = '0';
-      sectionElement.style.transform = 'translateY(20px)';
-      
-      setTimeout(() => {
-        sectionElement.style.opacity = '1';
-        sectionElement.style.transform = 'translateY(0)';
-      }, 50 * index);
-    });
-    
-    // Set first section as active
-    if (allSections.length > 0) {
-      allSections.forEach(s => s.classList.remove('active-section'));
-      allSections[0].classList.add('active-section');
-      setActiveSection(sectionIds[0]);
-      
-      // Update progress indicators
-      const indicators = document.querySelectorAll('.tour-progress-indicator');
-      indicators.forEach((indicator, index) => {
-        if (index === 0) {
-          indicator.classList.add('active');
-          indicator.setAttribute('aria-current', 'true');
-        } else {
-          indicator.classList.remove('active');
-          indicator.setAttribute('aria-current', 'false');
-        }
-      });
-    }
-  }, []);
-
-  // Helper function for debouncing
-  function debounce(func: Function, wait: number) {
-    let timeout: ReturnType<typeof setTimeout>;
-    return function executedFunction(...args: any[]) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
+  };
 
   return (
-    <div className="landing-page" ref={landingPageRef}>
-      {/* Tour progress indicators - Improved for better visibility and positioning */}
-      <div className="tour-progress" aria-label="Tour progress" role="navigation">
-        {sectionIds.map((sectionId, index) => {
-          const sectionName = sectionId.replace('section-', '');
-          const isActive = sectionId === activeSection;
-          return (
-            <button
-              key={sectionId}
-              className={`tour-progress-indicator ${isActive ? 'active' : ''}`}
-              data-section={sectionId}
-              aria-label={`Go to ${sectionName} section`}
-              aria-current={isActive ? 'true' : 'false'}
-              onClick={() => {
-                // Track click for analytics
-                console.log(`Progress indicator clicked: ${sectionId}`);
-                
-                // Ensure tour is started
-                if (!isTourStarted) {
-                  startTour();
-                  // Add small delay to ensure DOM is updated
-                  setTimeout(() => {
-                    scrollToSection(sectionId);
-                  }, 150);
-                } else {
-                  scrollToSection(sectionId);
-                }
-              }}
-            >
-              <span className="tour-progress-label">{sectionName}</span>
-            </button>
-          );
-        })}
-      </div>
-      
-      <HeroSection 
-        dynamicHeadlines={dynamicHeadlines}
-        onDiscoverClick={() => handleNextSection(sectionIds[1])}
-        forwardedRef={sectionRefs[0] as React.RefObject<HTMLDivElement>}
-      />
-      
-      <FeatureSection 
-        id={sectionIds[1]}
-        title="Key Features"
-        description="Everything you need to track and optimize your experience"
-        features={featureData}
-        ctaText="Learn More"
-        ctaOnClick={() => handleNextSection(sectionIds[2])}
-        forwardedRef={sectionRefs[1]}
-      />
-      
-      <PricingSection 
-        id={sectionIds[2]}
-        forwardedRef={sectionRefs[2]}
-        ctaOnClick={() => handleNextSection(sectionIds[3])}
-      />
-      
-      <TestimonialSection 
-        id={sectionIds[3]}
-        testimonials={testimonialData}
-        forwardedRef={sectionRefs[3]}
-        ctaOnClick={() => handleNextSection(sectionIds[4])}
-      />
-      
-      <CallToAction 
-        id={sectionIds[4]}
-        forwardedRef={sectionRefs[4]}
-      />
-      
-      <TourManager
-        isTourStarted={isTourStarted}
-        sectionRefs={sectionRefs}
-      />
-    </div>
+    <div 
+      className={`landing-page-v6 ${isDarkTheme ? 'dark-theme-v6' : 'light-theme-v6'}`}
+    >
+       {/* --- V6 Main Content (Only Initial View Initially) --- */}
+       <main className="main-content-v6">
+         <section className="initial-view-v6">
+             <div className="dynamic-headline-container-v6">
+                 <h1 className="dynamic-headline-v6" key={headlineIndex}>
+                     {dynamicHeadlines[headlineIndex]}
+                 </h1>
+             </div>
+             <div className="initial-cta-v6" ref={tourStartRef}>
+                 <button 
+                     className="tour-button-v6" 
+                     onClick={startTour}
+                 >
+                     Discover SeshTracker 👇
+                 </button>
+             </div>
+         </section>
+       </main>
+
+       {/* --- Conditionally Rendered Tour Sections & Footer (Outside Main) --- */}
+       {isTourStarted && (
+           <>
+               {/* Guided Tour Section 1: What is it? */}
+               <section id="section-1" ref={section1Ref} className="tour-section-v6 section-what">
+               <div className="section-content-v6">
+                   <h2>What's SeshTracker?</h2>
+                   <p>Your personal cannabis companion. Effortlessly log sessions, track strains, monitor effects, and understand your patterns over time.</p>
+                   <div className="visual-placeholder-v6">[Cool Graphic/Animation Here]</div>
+                   <button 
+                       className="next-section-btn-v6" 
+                       onClick={() => { if (section2Ref.current) scrollToRef(section2Ref); }}
+                   >
+                       Tell me more
+                   </button>
+               </div>
+               </section>
+
+               {/* Guided Tour Section 2: Features/Use Cases */}
+               <section id="section-2" ref={section2Ref} className="tour-section-v6 section-features">
+               <div className="section-content-v6">
+                   <h2>Why Use It? (For Stoners, By Stoners)</h2>
+                   <ul>
+                       <li data-emoji="🧠"> 
+                           <strong>Know Your High:</strong> Finally figure out which strains *actually* help you focus, relax, or get creative.
+                       </li>
+                       <li data-emoji="💰"> 
+                           <strong>Smart Stash:</strong> Stop guessing. Track your inventory, know what you have, and maybe save some cash.
+                       </li>
+                       <li data-emoji="📈"> 
+                           <strong>See Your Journey:</strong> Visualize your usage. Are you smoking more? Less? What triggers a session?
+                       </li>
+                       <li data-emoji="🚫"> 
+                           <strong>Avoid the Bad Trips:</strong> Note down strains or methods that didn't vibe with you. Remember what to skip next time.
+                       </li>
+                   </ul>
+                   <div className="visual-placeholder-v6">[Another Cool Graphic/Animation Here]</div>
+                   <button 
+                       className="next-section-btn-v6" 
+                       onClick={() => { if (section3Ref.current) scrollToRef(section3Ref); }}
+                   >
+                       How does it work?
+                   </button>
+               </div>
+               </section>
+
+               {/* Guided Tour Section 3: How it Works (Simple) */}
+               <section id="section-3" ref={section3Ref} className="tour-section-v6 section-how">
+               <div className="section-content-v6">
+                   <h2>Simple Tracking, Powerful Insights</h2>
+                   <div className="feature-description">
+                     <p>Just tap a few buttons after your session. We handle the rest, turning your logs into easy-to-understand charts and summaries.</p>
+                     <ul className="feature-highlights">
+                       <li data-emoji="📊">Track consumption methods, dosage, and effects</li>
+                       <li data-emoji="🧩">Connect patterns between strains and experiences</li>
+                       <li data-emoji="📱">Access your data anywhere, anytime</li>
+                     </ul>
+                   </div>
+                   <div className="visual-container">
+                     <div className="visual-placeholder-v6">
+                       <img src="/images/analytics-preview.png" alt="SeshTracker Analytics" className="section-image" />
+                     </div>
+                   </div>
+                   <button 
+                       className="next-section-btn-v6 pulse-effect" 
+                       onClick={() => { if (finalCTARef.current) scrollToRef(finalCTARef); }}
+                   >
+                       Alright, I'm interested...
+                   </button>
+               </div>
+               </section>
+
+               {/* Final Creative CTA Section */}
+               <section id="final-cta" ref={finalCTARef} className="final-cta-section-v6">
+               <div className="section-content-v6 cta-container">
+                       <h2 className="cta-heading">Ready to Roll?</h2>
+                       <p className="cta-subtext">Elevate your experience and gain clarity with personalized insights.</p>
+                       <div className="benefits-container">
+                         <div className="benefit-item">
+                           <span className="benefit-icon">🔒</span>
+                           <span className="benefit-text">Private & Secure</span>
+                         </div>
+                         <div className="benefit-item">
+                           <span className="benefit-icon">💯</span>
+                           <span className="benefit-text">100% Free</span>
+                         </div>
+                         <div className="benefit-item">
+                           <span className="benefit-icon">📊</span>
+                           <span className="benefit-text">Data Insights</span>
+                         </div>
+                       </div>
+                       <div 
+                         className="creative-cta-element-v6" 
+                         onClick={handleAuthRedirect} 
+                         title="Sign Up / Log In"
+                       >
+                           <img src="/images/cannabis-leaf.svg" alt="Cannabis Leaf" className="cta-leaf-v6"/>
+                           <span>Start Tracking</span>
+                       </div>
+               </div>
+               </section>
+
+                {/* --- V6 Footer --- */}
+               <footer className="footer-v6">
+                   <p>© {new Date().getFullYear()} Sesh Tracker</p>
+               </footer>
+           </>
+       )}
+     </div>
   );
 };
 

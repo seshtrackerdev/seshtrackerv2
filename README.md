@@ -172,6 +172,39 @@ The project follows a phased development approach as detailed in the `/developme
 3. **Enhanced Features**: Widget system, advanced analytics, rich session tracking
 4. **Refinement**: Performance optimization, UX enhancements, mobile optimization
 
+## 🔄 SeshTracker Migration
+
+The project includes a migration from the existing Kush.observer backend to a dedicated SeshTracker backend:
+
+### Migration Components
+
+1. **Database Schema**: New D1 database schema in `migrations/0002_sessions_inventory_schema.sql`
+2. **API Routes**: New versioned API endpoints:
+   - `/api/v2/inventory` - Full inventory management
+   - `/api/v2/sessions` - Session tracking and management
+3. **Authentication**: Integration with Kush.observer for token validation
+4. **Testing**: Connection testing and validation with `scripts/test-connection.js`
+
+### API Documentation
+
+The new API endpoints follow RESTful conventions:
+
+- **Inventory Endpoints**:
+  - `GET /api/v2/inventory` - List inventory items with pagination and sorting
+  - `POST /api/v2/inventory` - Create new inventory item
+  - `GET /api/v2/inventory/:id` - Get specific inventory item
+  - `PUT /api/v2/inventory/:id` - Update inventory item
+  - `DELETE /api/v2/inventory/:id` - Delete inventory item
+
+- **Session Endpoints**:
+  - `GET /api/v2/sessions` - List sessions with pagination and sorting
+  - `POST /api/v2/sessions` - Create new session
+  - `GET /api/v2/sessions/:id` - Get specific session
+  - `PUT /api/v2/sessions/:id` - Update session
+  - `DELETE /api/v2/sessions/:id` - Delete session
+
+For detailed API documentation, see the `/docs/api.md` file.
+
 ## 🚀 Deployment
 
 The application is designed to be deployed on Cloudflare's global network:
@@ -192,3 +225,226 @@ The deployment script (deploy.ps1) is already configured to work with the projec
 - [Technical Documentation](/docs/technical.md) - Technical specifications and patterns
 - [Architecture Overview](/docs/architecture.md) - System architecture and component relationships
 - [Mobile Design Guidelines](/docs/mobile-first-theme.md) - Mobile-first design approach
+
+## 🏢 Project Architecture
+
+SeshTracker is a modern serverless application built with:
+- **Frontend**: React 18 + Vite + TailwindCSS
+- **Backend**: Cloudflare Workers (Hono framework)
+- **Database**: Cloudflare D1 (SQLite-compatible)
+- **Auth**: Token-based via Kush.Observer integration
+
+### Directory Structure
+
+```
+seshtrackerv2/
+├── src/                      # Source code
+│   ├── react-app/           # React frontend application
+│   │   ├── components/      # UI components by feature
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── pages/           # Top-level pages
+│   │   ├── contexts/        # React contexts (auth, etc.)
+│   │   └── utils/           # Frontend utilities
+│   │
+│   ├── api/                 # Backend API using Hono
+│   │   ├── routes/          # API route handlers
+│   │   ├── middleware/      # Request middlewares
+│   │   └── kush-proxy/      # Kush.Observer integrations
+│   │
+│   ├── worker/              # Cloudflare Worker specific code
+│   ├── types/               # TypeScript type definitions
+│   └── config/              # Configuration files
+│
+├── public/                   # Static assets
+├── migrations/               # D1 database migrations
+├── docs/                     # Documentation
+│   ├── architecture/        # System architecture
+│   ├── api/                 # API documentation
+│   └── config/              # Configuration reference
+└── scripts/                  # Automation scripts
+```
+
+For more details, see:
+- [Architecture Documentation](docs/architecture/SeshTracker_Architecture_and_Integration.md)
+- [API Reference](docs/api/README.md)
+- [Development Guidelines](docs/CONTRIBUTING.md)
+
+### Deployment
+
+The application deploys to:
+- **Frontend**: Cloudflare Pages (`sesh-tracker.com`)
+- **API**: Cloudflare Workers (proxied via Pages as `/api/*`)
+- **Database**: Cloudflare D1
+
+# SeshTracker Production Deployment Guide
+
+This guide provides comprehensive instructions for deploying the SeshTracker application to production.
+
+## 🚀 Quick Deployment
+
+### Using the Deployment Script
+
+For a quick deployment to production, use the provided deployment script:
+
+**Linux/macOS**:
+```bash
+./deploy.sh
+```
+
+**Windows**:
+```powershell
+.\deploy.ps1
+```
+
+## 📋 Manual Deployment Steps
+
+If you prefer to deploy manually or need more control over the process, follow these steps:
+
+### 1. Prepare Your Environment
+
+Ensure you have the following prerequisites installed:
+- Node.js (v16+)
+- npm (v7+)
+- Git
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
+
+### 2. Get the Latest Code
+
+```bash
+# Pull the latest changes from the main branch
+git pull origin main
+
+# If you have local changes to save first
+git add .
+git commit -m "Your descriptive commit message"
+git push origin main
+```
+
+### 3. Install Dependencies
+
+```bash
+# Clean install production dependencies
+npm ci --production
+```
+
+### 4. Build the Application
+
+```bash
+# Build the frontend
+npm run build
+```
+
+### 5. Verify the Build
+
+```bash
+# Run linting checks
+npm run lint
+
+# Run TypeScript type checks
+npm run typecheck
+```
+
+### 6. Deploy to Cloudflare Workers
+
+```bash
+# Deploy to production environment
+npx wrangler deploy --env production
+```
+
+### 7. Verify the Deployment
+
+Check that the production site and API are functioning correctly:
+
+- Visit [https://sesh-tracker.com](https://sesh-tracker.com)
+- Check the API health endpoint: [https://sesh-tracker.com/api/health](https://sesh-tracker.com/api/health)
+
+## ⚙️ Configuration
+
+### Wrangler Configuration
+
+The `wrangler.toml` file contains the configuration for the Cloudflare Worker deployment. Ensure the production environment is properly configured:
+
+```toml
+[env.production]
+name = "seshtrackerv2"
+route = "https://sesh-tracker.com/api/*"
+zone_id = "your_zone_id"
+
+# ... other configuration options
+```
+
+### Environment Variables
+
+Production-specific environment variables are stored in Cloudflare's dashboard. To update them:
+
+1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Navigate to Workers & Pages > seshtrackerv2
+3. Go to Settings > Variables
+4. Update the environment variables as needed
+
+Critical environment variables include:
+- `KUSH_API_URL`
+- `KUSH_API_KEY`
+- `AUTH_API_URL`
+
+## 🔄 Rollback Procedure
+
+If issues occur after deployment, you can roll back to a previous version:
+
+1. Find the version ID you want to roll back to:
+   ```bash
+   npx wrangler versions list
+   ```
+
+2. Roll back to that version:
+   ```bash
+   npx wrangler rollback --version=VERSION_ID
+   ```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **Deployment fails with authentication errors**:
+   - Ensure you're logged in with `wrangler login`
+   - Check your account permissions in Cloudflare
+
+2. **API requests failing**:
+   - Verify your environment variables in Cloudflare
+   - Check CORS settings if browser requests are failing
+   - Look at the Worker logs in Cloudflare dashboard
+
+3. **Frontend build issues**:
+   - Clear node_modules and reinstall: `rm -rf node_modules && npm ci`
+   - Check for TypeScript errors with `npm run typecheck`
+
+### Viewing Logs
+
+Monitor Worker logs in Cloudflare Dashboard:
+1. Navigate to Workers & Pages > seshtrackerv2
+2. Go to Logs > Real-time logs
+
+## 📊 Monitoring Production
+
+After deployment, monitor the application using:
+
+- Cloudflare Analytics (in the Cloudflare Dashboard)
+- Worker Exception monitoring
+- HTTP status codes via Cloudflare analytics
+
+## 🔐 Security Considerations
+
+- Never commit `.env` files to the repository
+- Ensure all authentication endpoints are properly secured
+- Verify CORS settings are correctly configured
+- Use production-specific API keys
+
+---
+
+## 💡 Tips for Smooth Deployments
+
+1. **Deploy during off-peak hours** to minimize user impact
+2. **Test in production-like environment** before deploying
+3. **Monitor closely** for the first 15-30 minutes after deployment
+4. **Have a rollback plan** ready in case of issues
+5. **Document all deployment issues** for future reference

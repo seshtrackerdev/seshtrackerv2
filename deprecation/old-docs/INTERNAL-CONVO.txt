@@ -1,0 +1,96 @@
+CRITICAL: COMPLETE KushObserver Integration Details - DATABASE SCHEMA & IMPLEMENTATION GUIDE
+SeshTracker Team,
+Here's EVERYTHING needed for integration with our API:
+DATABASE SCHEMA
+CREATE TABLE users (
+id TEXT PRIMARY KEY,
+email TEXT UNIQUE,
+password_hash TEXT,
+name TEXT,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+last_login TIMESTAMP
+);
+CREATE TABLE inventory_items (
+id TEXT PRIMARY KEY,
+user_id TEXT,
+name TEXT,
+type TEXT,
+strain TEXT,
+strain_type TEXT,
+thc_percentage REAL,
+cbd_percentage REAL,
+purchase_date TIMESTAMP,
+dispensary TEXT,
+price REAL,
+original_quantity REAL,
+current_quantity REAL,
+quantity_unit TEXT,
+notes TEXT,
+rating INTEGER,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE sessions (
+id TEXT PRIMARY KEY,
+user_id TEXT,
+title TEXT,
+start_time TIMESTAMP,
+end_time TIMESTAMP,
+notes TEXT,
+setting TEXT,
+activity TEXT,
+mood_before TEXT,
+mood_after TEXT,
+rating INTEGER,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ENDPOINT DETAILS
+BASE URL: https://kushobserver.tmultidev.workers.dev/api/
+AUTHENTICATION
+Endpoint: /api/direct-login (POST)
+Body: {"email": "user@example.com", "password": "password123"}
+Response: {"success": true, "token": "JWT_TOKEN", "user": {...}}
+DATA ENDPOINTS
+1. INVENTORY API
+GET /api/protected/inventory?limit=25&offset=0&sortBy=purchase_date&sortDirection=desc
+Response: Minimum 25 items with pagination
+SESSIONS API
+GET /api/protected/sessions?limit=50&offset=0&sortBy=start_time&sortDirection=desc
+Response: Minimum 50 sessions with pagination
+USER PROFILE API
+GET /api/protected/user-profile
+Response: User profile with preferences
+FIXED ISSUES
+- Updated wrangler to version 4.7.2
+CORS headers properly configured for all domains
+Rate limiting fixed to avoid Cloudflare errors
+Sessions now return minimum 50 records as required
+API now deployed at https://kushobserver.tmultidev.workers.dev
+RATE LIMITING
+120 requests per minute per IP address
+Exceeding this returns 429 status with retryAfter value in seconds
+CORS ALLOWED DOMAINS
+https://sesh-tracker.com
+https://dev.sesh-tracker.com
+localhost origins (ports 3000-3007, 4000)
+NEXT STEPS - IMMEDIATELY IMPLEMENT
+1. UPDATE YOUR CODE - WITHIN 24 HOURS
+Replace all API URLs with https://kushobserver.tmultidev.workers.dev/api/
+Update authentication flow to use /api/direct-login
+Modify UI to display inventory, sessions, and profile data
+TEST YOUR INTEGRATION - MANDATORY TESTS
+Use test account: test@seshtracker.com / SeshTest123!
+Verify data loads properly in all views
+Confirm pagination works with limit/offset parameters
+Test with your dev, staging, and production environments
+VERIFY CORS COMPATIBILITY
+Ensure your frontend origins match our allowed domains
+Test OPTIONS preflight requests
+Verify credentials are sent properly
+IMPLEMENT RATE LIMIT HANDLING
+Add exponential backoff for 429 responses
+Use the retryAfter value to determine wait time
+VERIFICATION PROCESS
+1. Run provided test script against your integration
+Send screenshots of working integration to api-support@kushobserver.com
+We'll verify server-side logs show proper access patterns

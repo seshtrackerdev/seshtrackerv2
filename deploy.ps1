@@ -1,26 +1,47 @@
-# SeshTracker Production Deployment Script
+# SeshTracker Production Deployment Script (PowerShell)
+# This script handles the complete process of deploying SeshTracker to production
 
-Write-Host "Starting SeshTracker deployment process..." -ForegroundColor Cyan
+# Stop on errors
+$ErrorActionPreference = "Stop"
 
-# 1. Set environment variables
-$env:VITE_AUTH_API_URL = "https://api.kushobserver.com"
-$env:VITE_APP_ENV = "production"
-$env:VITE_APP_NAME = "SeshTracker"
-$env:VITE_APP_VERSION = "2.0"
+Write-Host "🌿 SeshTracker Production Deployment"
+Write-Host "===================================="
+Write-Host "Starting deployment process at $(Get-Date)"
 
-# 2. Clean the build directory
-Write-Host "Cleaning previous build..." -ForegroundColor Yellow
-Remove-Item -Path ".\dist" -Recurse -Force -ErrorAction SilentlyContinue
+# 1. Ensure we have the latest code
+Write-Host "`n📦 Pulling latest changes from GitHub..."
+git pull origin main
 
-# 3. Build the application
-Write-Host "Building application..." -ForegroundColor Yellow
+# 2. Install dependencies
+Write-Host "`n📦 Installing dependencies..."
+npm ci --production
+
+# 3. Build the frontend
+Write-Host "`n🔨 Building frontend assets..."
 npm run build
 
-# 4. Deploy to Cloudflare Workers
-Write-Host "Deploying to Cloudflare Workers..." -ForegroundColor Yellow
-wrangler deploy
+# 4. Run linting and type checks
+Write-Host "`n🔍 Running linting and type checks..."
+npm run lint
+npm run typecheck
 
-Write-Host "Deployment completed!" -ForegroundColor Green
-Write-Host "Your application should now be live at https://sesh-tracker.com" -ForegroundColor Cyan
+# 5. Deploy to Cloudflare
+Write-Host "`n☁️ Deploying to Cloudflare Workers..."
+npx wrangler deploy --env production
 
-Write-Host "`nRemember to set up your DNS records in Cloudflare to point to your Worker!" -ForegroundColor Yellow 
+# 6. Verify deployment
+Write-Host "`n✅ Verifying deployment..."
+try {
+    $response = Invoke-WebRequest -Uri "https://sesh-tracker.com/api/health" -UseBasicParsing
+    if ($response.Content -like "*ok*") {
+        Write-Host "✅ API deployment verified!" -ForegroundColor Green
+    } else {
+        Write-Host "❌ API verification failed!" -ForegroundColor Red
+    }
+} catch {
+    Write-Host "❌ API verification failed! Error: $_" -ForegroundColor Red
+}
+
+Write-Host "`n🎉 Deployment completed at $(Get-Date)"
+Write-Host "SeshTracker is now live at https://sesh-tracker.com"
+Write-Host "====================================" 

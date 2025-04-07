@@ -285,6 +285,40 @@ export const createApiClient = (fetchProtectedFn: any) => {
       }
     },
     
+    // Update User Preferences
+    updateUserPreferences: async (preferences: any) => {
+      try {
+        const response = await fetchProtectedFn(`${BASE_API_URL}/user-preferences`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(preferences),
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to update preferences: ${response.statusText}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Error updating user preferences:', error);
+        throw error;
+      }
+    },
+    
+    // Fetch Analytics Data
+    fetchUserAnalytics: async (timeframe = 'all') => {
+      try {
+        const response = await fetchProtectedFn(`${BASE_API_URL}/analytics?timeframe=${timeframe}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch analytics: ${response.statusText}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+        throw error;
+      }
+    },
+    
     // Sessions
     fetchSessions: async (limit = 20, sortBy = 'startTime', sortDirection = 'desc') => {
       try {
