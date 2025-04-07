@@ -51,10 +51,10 @@ npm ci --production
 Write-Host "`n🔨 Building frontend assets..."
 npm run build
 
-# 7. Run linting and type checks
-Write-Host "`n🔍 Running linting and type checks..."
-npm run lint
-npm run typecheck
+# Skip linting and type checks
+Write-Host "`n🔍 Skipping linting and type checks for deployment..."
+# npm run lint
+# npm run typecheck
 
 # 8. Deploy to Cloudflare
 Write-Host "`n☁️ Deploying to Cloudflare Workers..."

@@ -65,7 +65,8 @@
     "types": "wrangler types",
     "clean": "./cleanup.ps1",
     "clean:build": "./build.ps1",
-    "clean:deploy": "./deploy.ps1"
+    "clean:deploy": "./deploy.ps1",
+    "typecheck": "tsc --noEmit"
   },
   "type": "module"
 }

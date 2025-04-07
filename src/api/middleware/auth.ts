@@ -1,5 +1,6 @@
 import { AUTH_CONFIG } from "../../config/auth";
-import { Context, Next, createMiddleware } from "hono";
+import { Context, Next } from "hono";
+import { createMiddleware } from "hono/factory";
 import { env } from "hono/adapter";
 import { API, ENDPOINTS } from "../../config/ecosystem";
 
@@ -34,7 +35,8 @@ export const authMiddleware = createMiddleware<{
   console.log('[AUTH] Token length:', token.length);
 
   // Allow bypass in development mode if specified in options
-  if (process.env.NODE_ENV === 'development' && options?.devMode) {
+  const nodeEnv = typeof process !== 'undefined' ? process.env.NODE_ENV : undefined;
+  if (nodeEnv === 'development' && options?.devMode) {
     // This will accept any token and create a mock user
     const mockUserId = 'dev_user_123';
     console.log('[AUTH] Setting mock user for development');
@@ -80,7 +82,7 @@ export async function verifyAuthToken(c: Context): Promise<string | null> {
   try {
     // Verify token with Kush.observer
     // Use the ecosystem config for the endpoint, falling back to environment variable
-    const nodeEnv = process.env.NODE_ENV || 'production';
+    const nodeEnv = typeof process !== 'undefined' ? process.env.NODE_ENV : 'production';
     const environment = nodeEnv === 'production' ? 'PRODUCTION' : 
                         nodeEnv === 'staging' ? 'STAGING' : 'DEVELOPMENT';
     
@@ -100,7 +102,7 @@ export async function verifyAuthToken(c: Context): Promise<string | null> {
     }
 
     const validationData = await validationResponse.json();
-    if (validationData?.success && validationData?.data?.user) {
+    if (validationData && validationData.success && validationData.data && validationData.data.user) {
       // Return the user ID
       return validationData.data.user.id;
     }
@@ -126,4 +128,22 @@ export async function requireAuth(c: Context): Promise<boolean> {
   
   c.set('userId', userId);
   return true;
-} 
+}
+
+/**
+ * Middleware to require authentication and set userId in context
+ * This middleware can be used on routes to ensure user authentication
+ */
+export const withUserContext = async (c: Context, next: Next) => {
+  const userId = await verifyAuthToken(c);
+  if (!userId) {
+    return c.json({ 
+      success: false, 
+      error: 'Unauthorized - Invalid or missing authentication token' 
+    }, 401);
+  }
+  
+  // Set userId in context for other middleware/handlers to use
+  c.set('userId', userId);
+  await next();
+}; 
