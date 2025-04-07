@@ -1634,7 +1634,8 @@ apiRouter.get("/auth/user/profile", authMiddleware, async (c) => {
   }
 });
 
-// Mount the API router under the /api path
+// IMPORTANT: Mount the API router under the /api path
+// Make this is the first route handler to ensure it takes precedence
 app.route("/api", apiRouter);
 
 // Route for checking API health/status
@@ -1661,9 +1662,19 @@ apiRouter.get("/auth/check", authMiddleware, (c) => {
 });
 
 // Default handler for all other requests - serve frontend assets
-app.use("*", async (c) => {
-  const { ASSETS } = c.env;
-  return ASSETS.fetch(c.req.raw);
+app.get("*", async (c) => {
+  try {
+    const { ASSETS } = c.env;
+    
+    // Add explicit log to debug routing issues
+    console.log('[ROUTE] Serving frontend assets for:', c.req.path);
+    
+    // Try to serve the requested asset
+    return ASSETS.fetch(c.req.raw);
+  } catch (error) {
+    console.error('[ERROR] Failed to serve assets:', error);
+    return new Response('Server error', { status: 500 });
+  }
 });
 
 export default app;

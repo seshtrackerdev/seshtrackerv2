@@ -11,7 +11,8 @@
   "assets": {
     "binding": "ASSETS",
     "directory": "dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "exclude": ["api/**/*"]
   },
   "d1_databases": [
     {
@@ -30,7 +31,16 @@
     "production": {
       "vars": {
         "AUTH_API_URL": "https://kush.observer"
-      }
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "seshtracker-d1-new",
+          "database_id": "0ac38748-f2cd-4980-8e2d-8c3a92729169",
+          "migrations_table": "d1_migrations",
+          "migrations_dir": "migrations"
+        }
+      ]
     },
     "staging": {
       "vars": {
