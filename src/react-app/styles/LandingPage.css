@@ -1,0 +1,118 @@
+/* Landing Page Styles */
+.landing-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.tour-section {
+  padding: 4rem 2rem;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.tour-section.active-section {
+  background-color: var(--bg-highlight);
+}
+
+.section-hero {
+  background-color: var(--bg-primary);
+  text-align: center;
+  padding-top: 6rem;
+}
+
+.section-features {
+  background-color: var(--bg-secondary);
+}
+
+.section-pricing {
+  background-color: var(--bg-primary);
+}
+
+.section-testimonials {
+  background-color: var(--bg-secondary);
+}
+
+.section-cta {
+  background-color: var(--primary-light);
+  text-align: center;
+}
+
+.testimonials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.testimonial {
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 350px;
+}
+
+.testimonial p {
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.tour-progress-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--border);
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tour-progress-indicator.active {
+  background-color: var(--primary);
+  transform: scale(1.2);
+}
+
+/* Tour controls */
+.tour-controls {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+/* Screen reader only element */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tour-section {
+    padding: 3rem 1rem;
+  }
+  
+  .testimonials {
+    flex-direction: column;
+    align-items: center;
+  }
+} 

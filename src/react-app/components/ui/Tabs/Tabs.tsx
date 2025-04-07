@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../../styles/.css";
+import "../../../styles/Tabs.css";
 
 // Tab component props
 export interface TabProps {
@@ -98,3 +98,4 @@ const Tabs = ({ children, selectedIndex, onChange, className }: TabsProps) => {
 
 export { Tab, TabList, TabPanel };
 export default Tabs; 
+

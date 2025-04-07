@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Text } from '../Text';
-import "../../../styles/.css";
+import "../../../styles/RatingSlider.css";
 
 export interface RatingSliderProps {
   /**
@@ -178,3 +178,4 @@ const RatingSlider: React.FC<RatingSliderProps> = ({
 };
 
 export default RatingSlider; 
+

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import "../../../styles/.css";
+import "../../../styles/Modal.css";
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
@@ -172,3 +172,4 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal; 
+

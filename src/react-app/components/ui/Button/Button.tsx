@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../../styles/.css";
+import "../../../styles/Button.css";
 
 export type ButtonVariant = 
   | 'primary' 

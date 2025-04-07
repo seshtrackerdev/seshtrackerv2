@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "../../../styles/.css";
+import "../../../styles/TagSelector.css";
 
 export interface Tag {
   id: string;
@@ -367,3 +367,4 @@ const TagSelector: React.FC<TagSelectorProps> = ({
 };
 
 export default TagSelector; 
+

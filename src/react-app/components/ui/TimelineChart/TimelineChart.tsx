@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import "../../../styles/.css";
+import "../../../styles/TimelineChart.css";
 
 interface TimelineEvent {
   id: string;
@@ -325,3 +325,4 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
 };
 
 export default TimelineChart; 
+

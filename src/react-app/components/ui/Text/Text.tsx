@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../../styles/.css";
+import "../../../styles/Text.css";
 
 type TextVariant = 
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -47,3 +47,4 @@ export const Text: React.FC<TextProps> = ({
 };
 
 export default Text; 
+

@@ -15,20 +15,22 @@ import {
   Toggle,
   TrendChart,
   RadarChart,
-  HeatmapChart,
   BarChart,
   TimelineChart,
   RatingSlider,
-  StrainLibrary,
   TagSelector,
-  RichTextEditor,
-  SessionWizard,
-  SessionTimer,
-  EffectTracker,
   SharingCard,
-  CollaborativePanel,
-  NotificationBanner,
-} from './ui';
+} from '../../components/ui';
+
+// Comment out components that might not exist yet
+// HeatmapChart,
+// StrainLibrary,
+// RichTextEditor,
+// SessionWizard,
+// SessionTimer,
+// EffectTracker,
+// CollaborativePanel,
+// NotificationBanner,
 
 const LeafIcon = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { generateDemoProfile } from '../utils/DemoDataGenerator';
-import "../../styles/.css";
+import { generateDemoProfile } from '../../utils/DemoDataGenerator';
+import "../../styles/DemoProfileSelector.css";
 
 // Profile definitions with descriptions
 const profiles = [

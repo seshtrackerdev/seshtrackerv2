@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth  } from "../../hooks";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import "../../styles/.css"; // Reuse existing auth styles
+import "./Auth.css"; // Use the Auth.css file in the same directory
 
 const ForgotPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);

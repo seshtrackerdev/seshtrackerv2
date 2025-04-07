@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import "../../../styles/.css";
+import "../../../styles/Input.css";
 
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'filled' | 'outlined';
@@ -84,3 +84,4 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = 'Input';
 
 export default Input; 
+

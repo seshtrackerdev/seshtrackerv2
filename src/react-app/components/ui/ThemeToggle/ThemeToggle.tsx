@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useTheme } from '../ThemeProvider';
 import Toggle from '../Toggle';
-import "../../../styles/.css";
+import "../../../styles/ThemeToggle.css";
 
 interface ThemeToggleProps {
   showIcon?: boolean;
@@ -65,3 +65,4 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
 };
 
 export default ThemeToggle; 
+

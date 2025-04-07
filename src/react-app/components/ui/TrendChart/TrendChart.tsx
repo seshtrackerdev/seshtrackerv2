@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../../styles/.css";
+import "../../../styles/TrendChart.css";
 import { Card, CardBody } from '../Card';
 import { Text } from '../Text';
 
@@ -165,3 +165,4 @@ const TrendChart: React.FC<TrendChartProps> = ({
 };
 
 export default TrendChart; 
+

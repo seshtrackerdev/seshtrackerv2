@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth  } from "../../hooks";
 import { Link, useNavigate } from 'react-router-dom';
-import "../../styles/.css";
+import "../auth/Auth.css";
 
 const RegisterForm = () => {
   const [name, setName] = useState('');

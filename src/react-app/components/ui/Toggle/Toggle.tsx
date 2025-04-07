@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import "../../../styles/.css";
+import "../../../styles/Toggle.css";
 
 export type ToggleSize = 'sm' | 'md' | 'lg';
 
@@ -113,3 +113,4 @@ const Toggle: React.FC<ToggleProps> = ({
 };
 
 export default Toggle; 
+

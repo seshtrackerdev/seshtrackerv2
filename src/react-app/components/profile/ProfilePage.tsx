@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth  } from "../../hooks";
-import "../../styles/.css";
+import "./Profile.css";
 
 interface ProfileFormData {
   name: string;

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import "../../../styles/.css";
+import "../../../styles/BarChart.css";
 
 interface BarChartData {
   label: string;
@@ -235,3 +235,4 @@ const BarChart: React.FC<BarChartProps> = ({
 };
 
 export default BarChart; 
+

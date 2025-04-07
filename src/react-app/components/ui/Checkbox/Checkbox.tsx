@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import "../../../styles/.css";
+import "../../../styles/Checkbox.css";
 
 export type CheckboxSize = 'sm' | 'md' | 'lg';
 
@@ -106,3 +106,4 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 Checkbox.displayName = 'Checkbox';
 
 export default Checkbox; 
+

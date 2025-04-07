@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../../styles/.css";
+import "../../../styles/RadarChart.css";
 import { Text } from '../Text';
 
 export interface RadarChartProps {
@@ -255,3 +255,4 @@ const RadarChart: React.FC<RadarChartProps> = ({
 };
 
 export default RadarChart; 
+
