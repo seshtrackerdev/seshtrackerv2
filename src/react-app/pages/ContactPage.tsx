@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ContactPage.css';
+import "../../styles/.css";
 
 // Define types for form state
 interface ContactFormState {

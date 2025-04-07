@@ -1,12 +1,12 @@
 # Headers for all pages
 /*
-  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Origin: https://www.sesh-tracker.com, https://sesh-tracker.com, *
   X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
 
 # Headers for classic folder
 /classic/*
-  Access-Control-Allow-Origin: *
-  Access-Control-Allow-Methods: GET, OPTIONS
-  Access-Control-Allow-Headers: * 
+  Access-Control-Allow-Origin: https://www.sesh-tracker.com, https://sesh-tracker.com, *
+  Access-Control-Allow-Methods: GET, OPTIONS, POST, PUT, PATCH, DELETE
+  Access-Control-Allow-Headers: Authorization, Content-Type, Accept 

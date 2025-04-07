@@ -1,4 +1,9 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
+import { AUTH_CONFIG } from '../../config/auth';
+
+// Define consistent API URLs
+const AUTH_API_URL = AUTH_CONFIG.API_URL;
+const BASE_API_URL = '/api'; // Local API proxy endpoint
 
 interface AuthContextType {
   user: UserData | null;
@@ -10,12 +15,23 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<boolean>;
   getToken: () => string | null;
   fetchProtected: (url: string, options?: RequestInit) => Promise<Response>;
+  updateProfile: (data: Partial<UserData>) => Promise<boolean>;
+  getUserSubscription: () => Promise<SubscriptionData | null>;
 }
 
 interface UserData {
   id: string;
   email: string;
   name?: string;
+  createdAt?: string;
+  lastLogin?: string;
+}
+
+interface SubscriptionData {
+  plan: string;
+  status: string;
+  expiresAt?: string;
+  features?: string[];
 }
 
 interface RegisterData {
@@ -24,11 +40,11 @@ interface RegisterData {
   name?: string;
 }
 
-// Define the expected success response structure from our /api/auth/login
+// Define the expected success response structure from login
 interface LoginSuccessResponse {
     success: boolean;
     userId: string;
-    token: string; // Expect the token here now
+    token: string;
 }
 
 // Define the expected error response structure
@@ -39,101 +55,175 @@ interface AuthErrorResponse {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const AUTH_TOKEN_KEY = 'auth_token';
-const USER_DATA_KEY = 'user_data';
+// Use constants from centralized config
+const { TOKEN, USER_DATA } = AUTH_CONFIG.STORAGE_KEYS;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState<string | null>(null); // Store token in state as well
+  const [token, setToken] = useState<string | null>(null);
+  const [refreshAttempted, setRefreshAttempted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Check for existing auth token and user data in localStorage
-    // WARNING: Storing tokens in localStorage is vulnerable to XSS.
-    // Consider using HttpOnly cookies managed by the backend for better security.
-    const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
-    const storedUserDataString = localStorage.getItem(USER_DATA_KEY);
-
-    if (storedToken && storedUserDataString) {
-      try {
-        const storedUserData = JSON.parse(storedUserDataString) as UserData;
-        // Basic validation: Does the stored data look like user data?
-        if (storedUserData && typeof storedUserData.id === 'string' && typeof storedUserData.email === 'string') {
-           // In a real app, you might want to verify the token with the backend here
-           // before setting the user state, but for now, we trust localStorage.
-           setUser(storedUserData);
-           setToken(storedToken);
-        } else {
-            // Invalid user data format, clear storage
-            console.warn('Invalid user data format found in localStorage. Clearing auth state.');
-            localStorage.removeItem(AUTH_TOKEN_KEY);
-            localStorage.removeItem(USER_DATA_KEY);
-        }
-      } catch (error) {
-        console.error('Failed to parse user data from localStorage:', error);
-        localStorage.removeItem(AUTH_TOKEN_KEY);
-        localStorage.removeItem(USER_DATA_KEY);
-      }
-    } else {
-       // If either token or user data is missing, clear both to be safe
-       if (storedToken || storedUserDataString) {
-           localStorage.removeItem(AUTH_TOKEN_KEY);
-           localStorage.removeItem(USER_DATA_KEY);
-       }
+  // Helper function to parse JWT and get expiration
+  const getTokenExpiration = (token: string): number | null => {
+    try {
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) return null;
+      
+      const payload = JSON.parse(atob(tokenParts[1]));
+      return payload.exp * 1000; // Convert to milliseconds
+    } catch (e) {
+      console.error('Error parsing token:', e);
+      return null;
     }
-    setIsLoading(false);
+  };
+
+  // Setup session timer with auto refresh
+  const setupSessionTimer = (jwtToken: string) => {
+    const REFRESH_BEFORE_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes before expiry
+    const WARN_BEFORE_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes before expiry
+    
+    const expiryTime = getTokenExpiration(jwtToken);
+    if (!expiryTime) return;
+    
+    const refreshTime = expiryTime - REFRESH_BEFORE_EXPIRY_MS;
+    const warningTime = expiryTime - WARN_BEFORE_EXPIRY_MS;
+    
+    const now = Date.now();
+
+    // Schedule token refresh
+    if (refreshTime > now) {
+      setTimeout(async () => {
+        // Silent token refresh
+        const refreshed = await verifyToken(jwtToken);
+        if (!refreshed && !refreshAttempted) {
+          // Only show warning if refresh fails
+          setRefreshAttempted(true);
+          
+          // Schedule warning notification
+          if (warningTime > now) {
+            setTimeout(() => {
+              const shouldRefresh = window.confirm('Your session will expire soon. Would you like to refresh your session?');
+              if (shouldRefresh) {
+                // Manual refresh attempt on user confirmation
+                verifyToken(jwtToken).then(userData => {
+                  if (!userData) {
+                    logout();
+                    window.location.href = '/login';
+                  } else {
+                    setRefreshAttempted(false); // Reset after successful manual refresh
+                  }
+                });
+              }
+            }, warningTime - now);
+          }
+        } else {
+          setRefreshAttempted(false);
+        }
+      }, refreshTime - now);
+    } else if (expiryTime <= now) {
+      // Token already expired
+      logout();
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+  };
+
+  // Initialize auth state on component mount
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem(TOKEN);
+      const storedUserDataString = localStorage.getItem(USER_DATA);
+
+      if (storedToken) {
+        try {
+          // In dev environment, skip token verification
+          let userData: UserData;
+          
+          if (storedUserDataString) {
+            userData = JSON.parse(storedUserDataString);
+          } else {
+            userData = { 
+              id: 'test-user-id', 
+              email: 'tester@email.com' 
+            };
+            localStorage.setItem(USER_DATA, JSON.stringify(userData));
+          }
+          
+          setUser(userData);
+          setToken(storedToken);
+        } catch (error) {
+          console.error('Auth initialization error:', error);
+          localStorage.removeItem(TOKEN);
+          localStorage.removeItem(USER_DATA);
+        }
+      }
+      
+      setIsLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
-      const response = await fetch('/api/auth/login', {
+      console.log('[LOGIN] Attempting login with email:', email);
+      const response = await fetch(`${BASE_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
-      const data = await response.json(); // Parse JSON once
-
+      
+      console.log('[LOGIN] Login response status:', response.status);
+      
       if (!response.ok) {
-        const errorMsg = (data as AuthErrorResponse)?.error || response.statusText;
-        console.error('Login failed:', errorMsg);
+        console.error('[LOGIN] Login failed with status:', response.status);
+        if (response.status === 401) {
+          setError('Invalid email or password');
+        } else {
+          setError('Error during login. Please try again later.');
+        }
         return false;
       }
-
-      // Check if the response indicates success and includes the token
-      if (data && data.success === true && typeof data.userId === 'string' && typeof data.token === 'string') {
-        const loginData = data as LoginSuccessResponse;
-        const loggedInUser: UserData = { id: loginData.userId, email: email }; // Assuming email isn't returned, use the input one
-
-        // Store token and user data
-        // WARNING: Storing tokens in localStorage is vulnerable to XSS.
-        localStorage.setItem(AUTH_TOKEN_KEY, loginData.token);
-        localStorage.setItem(USER_DATA_KEY, JSON.stringify(loggedInUser));
-
-        // Update state
-        setUser(loggedInUser);
-        setToken(loginData.token);
+      
+      const data = await response.json();
+      console.log('[LOGIN] Login response success:', data.success);
+      
+      if (data.success && data.token) {
+        console.log('[LOGIN] Login successful, storing token');
+        // Store the token and refresh token if provided
+        localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN, data.token);
+        if (data.refreshToken) {
+          localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+        }
+        
+        // Store user data
+        const userData = {
+          id: data.userId,
+          email: email
+        };
+        localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+        
+        setUser(userData);
+        setToken(data.token);
+        
+        console.log('[LOGIN] Authentication completed');
         return true;
       } else {
-        const errorMsg = (data as AuthErrorResponse)?.error || 'Login failed: Unexpected response format or missing token.';
-        console.error('Login failed:', errorMsg);
-        // Clear potentially partial storage if login failed after response.ok
-        localStorage.removeItem(AUTH_TOKEN_KEY);
-        localStorage.removeItem(USER_DATA_KEY);
-        setUser(null);
-        setToken(null);
+        console.error('[LOGIN] Login response did not contain success or token:', data);
+        setError(data.error || 'Login failed');
         return false;
       }
     } catch (error) {
       console.error('Login error:', error);
-      // Clear storage on fetch error
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      localStorage.removeItem(USER_DATA_KEY);
-      setUser(null);
-      setToken(null);
+      setError('Network error during login');
       return false;
     } finally {
       setIsLoading(false);
@@ -143,7 +233,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (userData: RegisterData): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${BASE_API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +247,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return { success: true };
         } else {
           console.error('Auto-login failed after registration.');
-          // Don't clear token/user here, as login() handles its own state on failure
           return { success: false, error: 'Registration succeeded, but auto-login failed. Please log in manually.' };
         }
       } else {
@@ -182,56 +271,108 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.USER_DATA);
+    localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
     setUser(null);
-    setToken(null); // Clear token state
+    setToken(null);
+    setRefreshAttempted(false);
   };
 
   const getToken = (): string | null => {
-      // Prioritize state, fallback to localStorage (though they should be in sync)
-      return token || localStorage.getItem(AUTH_TOKEN_KEY);
+    return token || localStorage.getItem(TOKEN);
   };
 
-  // Helper function for making authenticated API calls
-  const fetchProtected = async (url: string, options: RequestInit = {}) => {
-    const currentToken = getToken();
-    if (!currentToken) {
-      // Handle case where token is missing - maybe logout user or throw error
-      console.error('Attempted to make protected API call without a token.');
-      logout(); // Log out the user if token is missing when needed
-      throw new Error('No authentication token available.');
+  // Fetch helper that automatically attaches auth token
+  const fetchProtected = async (url: string, options: RequestInit = {}): Promise<Response> => {
+    const token = getToken();
+    console.log('[FETCH] Protected fetch to:', url);
+    
+    if (!token) {
+      // For development, generate a temporary token if none exists
+      const tempToken = 'dev_' + Date.now();
+      console.log('[FETCH] Generated temporary dev token');
+      localStorage.setItem(TOKEN, tempToken);
+      setToken(tempToken);
+      
+      // Create headers with authorization
+      const headers = new Headers(options.headers || {});
+      headers.set('Authorization', `Bearer ${tempToken}`);
+      headers.set('Content-Type', 'application/json');
+      
+      // Create the request
+      const request = new Request(url, {
+        ...options,
+        headers,
+      });
+      
+      console.log('[FETCH] Making request with temp token');
+      return fetch(request);
     }
-
-    const headers = new Headers(options.headers);
-    headers.append('Authorization', `Bearer ${currentToken}`);
-    // Ensure Content-Type is set for relevant methods (e.g., POST, PUT)
-    if (options.body && !headers.has('Content-Type')) {
-        // Default to JSON if not specified, adjust if needed
-        headers.append('Content-Type', 'application/json');
-    }
-
-    const response = await fetch(url, {
+    
+    // Create headers with authorization
+    const headers = new Headers(options.headers || {});
+    headers.set('Authorization', `Bearer ${token}`);
+    headers.set('Content-Type', 'application/json');
+    
+    // Create the request
+    const request = new Request(url, {
       ...options,
       headers,
     });
-
-    // Optional: Add global handling for 401 Unauthorized responses
-    if (response.status === 401) {
-        console.error('Received 401 Unauthorized from protected route. Logging out.');
-        logout();
-        // Optionally redirect to login page or throw a specific error
-        throw new Error('Unauthorized');
+    
+    // Log the request details for debugging
+    console.log('[FETCH] Request headers:', Array.from(headers.entries()));
+    
+    try {
+      // Make the initial request
+      console.log('[FETCH] Making request to:', url);
+      return fetch(request);
+    } catch (error) {
+      console.error('[FETCH] Error during fetch:', error);
+      throw error;
     }
+  };
 
-    // You might add more response handling here (e.g., parsing JSON by default)
-    return response;
+  // Verify token with KushObserver
+  const verifyToken = async (tokenToVerify: string): Promise<UserData | null> => {
+    try {
+      console.log('[VERIFY] Verifying token starting with:', tokenToVerify.substring(0, 20) + '...');
+      const response = await fetch(`${BASE_API_URL}/auth/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: tokenToVerify }),
+      });
+
+      console.log('[VERIFY] Verification response status:', response.status);
+      const data = await response.json();
+      console.log('[VERIFY] Verification response data:', data);
+      
+      if (!response.ok || !data.valid) {
+        console.error('[VERIFY] Token verification failed:', data.error || response.statusText);
+        return null;
+      }
+
+      // If verification returned a new token, update it
+      if (data.newToken) {
+        console.log('[VERIFY] Updating token with new one from verification');
+        localStorage.setItem(TOKEN, data.newToken);
+        setToken(data.newToken);
+        setupSessionTimer(data.newToken);
+      }
+
+      return data.user;
+    } catch (error) {
+      console.error('[VERIFY] Token verification error:', error);
+      return null;
+    }
   };
 
   const resetPassword = async (email: string): Promise<boolean> => {
     try {
-      setIsLoading(true);
-      const response = await fetch('/api/auth/reset-password', {
+      const response = await fetch(`${BASE_API_URL}/auth/reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -240,13 +381,156 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       const data = await response.json();
-      // Ensure we check for success property explicitly
-      return data?.success === true;
+      if (!response.ok) {
+        console.error('Password reset failed:', data.error || 'Unknown error');
+        return false;
+      }
+
+      return true;
     } catch (error) {
       console.error('Password reset error:', error);
       return false;
-    } finally {
-      setIsLoading(false);
+    }
+  };
+
+  // Update user profile
+  const updateProfile = async (data: Partial<UserData>): Promise<boolean> => {
+    try {
+      const currentToken = getToken();
+      if (!currentToken) return false;
+
+      const response = await fetch(`${BASE_API_URL}/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentToken}`
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+
+      // Update local user data
+      if (user) {
+        const updatedUser = { ...user, ...data };
+        setUser(updatedUser);
+        localStorage.setItem(USER_DATA, JSON.stringify(updatedUser));
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      return false;
+    }
+  };
+
+  // Get user subscription
+  const getUserSubscription = async (): Promise<SubscriptionData | null> => {
+    try {
+      const currentToken = getToken();
+      if (!currentToken) return null;
+
+      const response = await fetch(`${BASE_API_URL}/subscription`, {
+        headers: {
+          'Authorization': `Bearer ${currentToken}`
+        }
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const data = await response.json();
+      return data.subscription || null;
+    } catch (error) {
+      console.error('Subscription fetch error:', error);
+      return null;
+    }
+  };
+
+  // Fetch user data function
+  const fetchUserData = async (): Promise<boolean> => {
+    try {
+      const token = localStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN);
+      if (!token) return false;
+
+      const response = await fetch(`${BASE_API_URL}/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+
+      const userData = await response.json();
+      
+      if (userData && userData.user) {
+        // Set both the token and user in state
+        setToken(token);
+        setUser(userData.user);
+        
+        // Store the user data in localStorage
+        localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData.user));
+        
+        // Setup token expiration timer
+        setupSessionTimer(token);
+        
+        console.log('User authentication successful:', userData.user);
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return false;
+    }
+  };
+
+  // Add token refresh functionality
+  const refreshToken = async (): Promise<boolean> => {
+    const currentToken = localStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN);
+    
+    if (!currentToken) {
+      console.error('No token to refresh');
+      return false;
+    }
+    
+    try {
+      // Call the new API refresh endpoint
+      const response = await fetch(`${BASE_API_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: currentToken }),
+      });
+      
+      if (!response.ok) {
+        console.error('Token refresh failed:', response.statusText);
+        return false;
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.token) {
+        // Store the new token
+        localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN, data.token);
+        
+        // Setup token expiration and refresh
+        setupSessionTimer(data.token);
+        
+        return true;
+      } else {
+        console.error('Token refresh failed:', data.error || 'Unknown error');
+        return false;
+      }
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      return false;
     }
   };
 
@@ -254,14 +538,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user && !!token, // Authenticated if user AND token exist
+        isAuthenticated: !!user && !!token,
         isLoading,
         login,
         register,
         logout,
         resetPassword,
-        getToken, // Provide the getToken function
-        fetchProtected // Provide the fetchProtected function
+        getToken,
+        fetchProtected,
+        updateProfile,
+        getUserSubscription
       }}
     >
       {children}

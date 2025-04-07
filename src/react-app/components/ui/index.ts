@@ -9,6 +9,7 @@ export { default as Text } from './Text';
 export { default as ThemeProvider, useTheme } from './ThemeProvider';
 export { default as ThemeToggle } from './ThemeToggle';
 export { default as Toggle } from './Toggle';
+export { default as Tabs, Tab, TabList, TabPanel } from './Tabs';
 
 // Analytics components
 export { default as TrendChart } from './TrendChart';
@@ -41,6 +42,7 @@ export * from './Modal';
 export * from './Text';
 export * from './ThemeProvider';
 export * from './Toggle';
+export * from './Tabs';
 
 // Analytics component types
 export * from './TrendChart';

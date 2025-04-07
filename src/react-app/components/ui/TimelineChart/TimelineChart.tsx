@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import './TimelineChart.css';
+import "../../../styles/.css";
 
 interface TimelineEvent {
   id: string;

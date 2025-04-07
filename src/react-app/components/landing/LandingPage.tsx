@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef, useState } from 'react';
 import HeroSection from './HeroSection';
 import FeatureSection from './FeatureSection';
 import TourManager from './TourManager';
-import '../styles/LandingPage.css';
+import "../../styles/LandingPage.css";
 
 // Mock components until actual components are created
 const PricingSection = ({ forwardedRef, id, ctaOnClick }: any) => (

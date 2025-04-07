@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import './Checkbox.css';
+import "../../../styles/.css";
 
 export type CheckboxSize = 'sm' | 'md' | 'lg';
 

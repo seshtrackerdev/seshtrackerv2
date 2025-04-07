@@ -1,5 +1,5 @@
 import React from 'react';
-import './Badge.css';
+import "../../../styles/.css";
 
 export type BadgeVariant = 
   | 'primary' 

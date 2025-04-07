@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import './BarChart.css';
+import "../../../styles/.css";
 
 interface BarChartData {
   label: string;

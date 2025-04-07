@@ -1,0 +1,531 @@
+/* Dashboard.css - Modern and clean styling for the dashboard */
+
+.dashboard-container {
+  max-width: var(--max-content-width, 1200px);
+  margin: 0 auto;
+  padding: var(--spacing-lg, 1rem) var(--page-margin, 1rem);
+  padding-top: calc(var(--header-height, 64px) + var(--spacing-lg, 1rem));
+  min-height: calc(100vh - var(--header-height, 64px));
+  color: var(--text-primary);
+}
+
+.dashboard-header {
+  margin-bottom: var(--spacing-lg, 1rem);
+}
+
+.dashboard-header h1 {
+  font-size: var(--font-size-2xl, 1.875rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs, 0.5rem);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.dashboard-header p {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary);
+}
+
+.subscription-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.25rem);
+  background-color: var(--cannabis-green);
+  color: var(--white, #ffffff);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full, 9999px);
+  margin-left: var(--spacing-sm, 0.5rem);
+  vertical-align: middle;
+}
+
+/* Dashboard tabs styling */
+.dashboard-tabs {
+  width: 100%;
+}
+
+.tab-buttons {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-lg, 1rem);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-xs, 0.25rem);
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.tab-buttons::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome, Safari and Opera */
+}
+
+.tab-buttons button {
+  position: relative;
+  margin-right: var(--spacing-md, 0.75rem);
+  padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 0.75rem);
+  border-radius: var(--radius-md, 0.375rem) var(--radius-md, 0.375rem) 0 0;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-normal, 0.2s), 
+              background-color var(--transition-normal, 0.2s), 
+              box-shadow var(--transition-normal, 0.2s);
+  white-space: nowrap;
+}
+
+.tab-buttons button:hover {
+  color: var(--text-primary);
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.05);
+}
+
+.tab-buttons button.active {
+  color: var(--cannabis-green);
+  font-weight: 600;
+}
+
+.tab-buttons button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--cannabis-green);
+  border-radius: var(--radius-full, 9999px);
+}
+
+.tab-buttons button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.25);
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Summary cards grid */
+.dashboard-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md, 0.75rem);
+  margin-bottom: var(--spacing-lg, 1rem);
+}
+
+@media (min-width: 640px) {
+  .dashboard-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card customization */
+.dashboard-card {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md, 0.375rem);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal, 0.2s), box-shadow var(--transition-normal, 0.2s);
+  border: 1px solid var(--border-color);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.3);
+}
+
+.dashboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md, 0.75rem);
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.05);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-card-body {
+  padding: var(--spacing-md, 0.75rem);
+  flex-grow: 1;
+}
+
+.dashboard-card-title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.dashboard-card-icon {
+  font-size: 1.25rem;
+  color: var(--cannabis-green);
+}
+
+.dashboard-card-stat {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: var(--spacing-sm, 0.5rem) 0;
+  color: var(--text-primary);
+}
+
+.dashboard-card-label {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.dashboard-card-footer {
+  padding: var(--spacing-md, 0.75rem);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.dashboard-card-footer a {
+  color: var(--cannabis-green);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: var(--font-size-sm, 0.875rem);
+  transition: color var(--transition-normal, 0.2s);
+}
+
+.dashboard-card-footer a:hover {
+  color: var(--cannabis-green-dark);
+  text-decoration: underline;
+}
+
+/* Quick actions section */
+.quick-actions {
+  margin-bottom: var(--spacing-xl, 1.5rem);
+}
+
+.quick-actions-heading {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md, 0.75rem);
+  color: var(--text-primary);
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md, 0.75rem);
+}
+
+@media (min-width: 768px) {
+  .quick-actions-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md, 0.75rem);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 0.375rem);
+  transition: all var(--transition-normal, 0.2s);
+  color: var(--text-primary);
+  text-decoration: none;
+  box-shadow: var(--shadow-xs);
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--cannabis-green);
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.05);
+}
+
+.action-button:active {
+  transform: translateY(0);
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.1);
+}
+
+.action-button .icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-xs, 0.25rem);
+  color: var(--cannabis-green);
+}
+
+.action-button .title {
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs, 0.25rem);
+}
+
+.action-button .description {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Sessions and Inventory lists */
+.session-list,
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 0.75rem);
+}
+
+.session-item,
+.inventory-item {
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-md, 0.75rem);
+  border-radius: var(--radius-md, 0.375rem);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-normal, 0.2s);
+  display: flex;
+  gap: var(--spacing-md, 0.75rem);
+  align-items: flex-start;
+  text-decoration: none;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.session-item:hover,
+.inventory-item:hover {
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.05);
+  border-color: var(--cannabis-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.session-item:active,
+.inventory-item:active {
+  transform: translateY(0);
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.1);
+}
+
+.item-icon {
+  font-size: 1.25rem;
+  color: var(--cannabis-green);
+  flex-shrink: 0;
+}
+
+.item-content {
+  flex: 1;
+}
+
+.item-title {
+  font-weight: 600;
+  font-size: var(--font-size-sm, 0.875rem);
+  margin-bottom: var(--spacing-xs, 0.25rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-details {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary);
+}
+
+.item-badge {
+  font-size: var(--font-size-xs, 0.75rem);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm, 0.25rem);
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-rating {
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.1);
+  color: var(--cannabis-green);
+}
+
+.badge-method {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.badge-low-stock {
+  background-color: rgba(var(--cannabis-gold-rgb, 255, 193, 7), 0.1);
+  color: var(--cannabis-gold);
+}
+
+.badge-favorite {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: rgb(220, 38, 38);
+}
+
+.badge-strain-indica {
+  background-color: rgba(79, 70, 229, 0.1);
+  color: rgb(79, 70, 229);
+}
+
+.badge-strain-sativa {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: rgb(245, 158, 11);
+}
+
+.badge-strain-hybrid {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: rgb(16, 185, 129);
+}
+
+/* Empty states */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl, 1.5rem) var(--spacing-md, 0.75rem);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-md, 0.75rem);
+}
+
+.empty-state-title {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.empty-state-message {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+/* Progress bar for inventory */
+.progress-bar {
+  background-color: var(--bg-primary);
+  height: 4px;
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+  margin-top: var(--spacing-sm, 0.5rem);
+}
+
+.progress-value {
+  height: 100%;
+  background-color: var(--cannabis-gold);
+  border-radius: var(--radius-full, 9999px);
+}
+
+/* Loading state styling */
+.loading-skeleton {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md, 0.375rem);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Premium upgrade card */
+.upgrade-card {
+  background: linear-gradient(to bottom right, 
+    rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.05),
+    rgba(var(--cannabis-purple-rgb, 128, 90, 213), 0.05));
+  border: 1px solid rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.2);
+  border-radius: var(--radius-md, 0.375rem);
+  padding: var(--spacing-lg, 1rem);
+  margin-bottom: var(--spacing-xl, 1.5rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.upgrade-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.3);
+}
+
+.upgrade-card-title {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs, 0.25rem);
+  color: var(--cannabis-green);
+}
+
+.upgrade-card-description {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md, 0.75rem);
+}
+
+.upgrade-features {
+  margin-bottom: var(--spacing-lg, 1rem);
+}
+
+.upgrade-feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+  margin-bottom: var(--spacing-sm, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.upgrade-feature-icon {
+  color: var(--cannabis-green);
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 639px) {
+  .dashboard-header h1 {
+    font-size: var(--font-size-xl, 1.5rem);
+  }
+  
+  .dashboard-card-stat {
+    font-size: 1.5rem;
+  }
+  
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: var(--spacing-xl, 1.5rem) var(--page-margin, 1.5rem);
+    padding-top: calc(var(--header-height, 64px) + var(--spacing-lg, 1rem));
+  }
+  
+  .dashboard-header {
+    margin-bottom: var(--spacing-xl, 1.5rem);
+  }
+  
+  .dashboard-header h1 {
+    font-size: var(--font-size-3xl, 2.25rem);
+  }
+} 

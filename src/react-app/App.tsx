@@ -3,22 +3,41 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import LandingPage from "./components/LandingPage";
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
-import ForgotPasswordForm from "./components/ForgotPasswordForm";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Header from './components/Header';
+import { 
+  // Auth components
+  LoginForm,
+  RegisterForm,
+  ForgotPasswordForm,
+  AuthDebugger,
+  
+  // Layout components
+  ProtectedRoute,
+  
+  // Common components
+  Header,
+  BugReport,
+  PageTransition,
+  
+  // Feature pages
+  Dashboard,
+  SessionsPage,
+  InventoryPage,
+  AnalyticsPage,
+  ProfilePage,
+  TestPage,
+  
+  // Test components
+  ComponentShowcase,
+  
+  // Landing components
+  LandingPage,
+  
+  // UI components
+  ThemeProvider
+} from './components';
+
 import DebugTool from './utils/DebugTool';
-import BugReport from './components/BugReport';
-import PageTransition from './components/PageTransition';
-import ComponentShowcase from './components/ComponentShowcase';
-import { ThemeProvider } from './components/ui';
-import "./App.css";
-import DashboardPlaceholder from "./components/DashboardPlaceholder";
-import SessionsPage from "./components/SessionsPage";
-import InventoryPage from "./components/InventoryPage";
-import AnalyticsPage from "./components/AnalyticsPage";
+import "./styles/.css";
 import ContactPage from './pages/ContactPage';
 
 // Classic version redirect component
@@ -83,11 +102,18 @@ const AppContent = () => {
               </PageTransition>
             } />
             
+            {/* Test page for KushObserver integration */}
+            <Route path="/test-integration" element={
+              <PageTransition>
+                <TestPage />
+              </PageTransition>
+            } />
+            
             {/* Protected routes that require authentication */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <PageTransition>
-                  <DashboardPlaceholder />
+                  <Dashboard />
                 </PageTransition>
               </ProtectedRoute>
             } />
@@ -116,6 +142,14 @@ const AppContent = () => {
               </ProtectedRoute>
             } />
             
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <ProfilePage />
+                </PageTransition>
+              </ProtectedRoute>
+            } />
+            
             {/* Redirect /classic to /legacy */}
             <Route path="/classic" element={<Navigate to="/legacy" replace />} />
           </Routes>
@@ -130,6 +164,7 @@ function App() {
     <Router>
       <ThemeProvider storageKey="theme">
         <AppContent />
+        <AuthDebugger />
         <DebugTool />
         <BugReport />
       </ThemeProvider>
@@ -138,3 +173,4 @@ function App() {
 }
 
 export default App;
+

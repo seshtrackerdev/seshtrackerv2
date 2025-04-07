@@ -119,8 +119,18 @@ table {
 
 /* --- Selection --- */
 ::selection {
-  background-color: var(--selection-bg, rgba(var(--cannabis-purple-rgb, 123, 44, 191), 0.3));
-  color: var(--selection-text, var(--text-primary));
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.2);
+  color: var(--text-primary);
+}
+
+.dark-theme ::selection {
+  background-color: rgba(var(--cannabis-green-rgb, 67, 160, 71), 0.2);
+  color: var(--text-primary);
+}
+
+.light-theme ::selection {
+  background-color: rgba(var(--cannabis-purple-rgb, 123, 44, 191), 0.15);
+  color: var(--text-primary);
 }
 
 /* --- Focus States --- */

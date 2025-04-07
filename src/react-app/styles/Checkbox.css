@@ -1,0 +1,107 @@
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.checkbox-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-regular);
+  background-color: transparent;
+  transition: all var(--transition-fast);
+  color: white;
+}
+
+/* Sizes */
+.checkbox-sm + .checkbox-custom {
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-md + .checkbox-custom {
+  width: 20px;
+  height: 20px;
+}
+
+.checkbox-lg + .checkbox-custom {
+  width: 24px;
+  height: 24px;
+}
+
+/* Checkbox text */
+.checkbox-text {
+  margin-left: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--checkbox-text-color, var(--text-primary));
+}
+
+/* Checked state */
+.checkbox:checked + .checkbox-custom {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+/* Focus state */
+.checkbox:focus-visible + .checkbox-custom {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.checkbox-disabled + .checkbox-custom {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--bg-tertiary);
+}
+
+.checkbox-disabled ~ .checkbox-text {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error state */
+.checkbox-error + .checkbox-custom {
+  border-color: var(--danger);
+}
+
+.checkbox-error:checked + .checkbox-custom {
+  background-color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Hover state */
+.checkbox:not(:disabled):not(:checked) + .checkbox-custom:hover {
+  border-color: var(--brand-primary-light);
+}
+
+/* Icons */
+.checkbox-check-icon,
+.checkbox-indeterminate-icon {
+  width: 80%;
+  height: 80%;
+}
+
+/* Ensure contrast when checkbox is disabled */
+.checkbox:disabled ~ .checkbox-text {
+  color: var(--text-tertiary);
+} 

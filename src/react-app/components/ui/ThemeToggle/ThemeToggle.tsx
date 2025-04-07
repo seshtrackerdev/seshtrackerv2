@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useTheme } from '../ThemeProvider';
 import Toggle from '../Toggle';
-import './ThemeToggle.css';
+import "../../../styles/.css";
 
 interface ThemeToggleProps {
   showIcon?: boolean;

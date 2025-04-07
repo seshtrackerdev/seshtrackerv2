@@ -1,0 +1,362 @@
+[
+  {
+    "id": "session-001",
+    "userId": "user-001",
+    "strain": "strain-001", 
+    "strainType": "hybrid",
+    "dosage": 0.25,
+    "dosageUnit": "g",
+    "consumptionMethod": "Smoking",
+    "startTime": "2024-06-01T20:00:00Z",
+    "endTime": "2024-06-01T21:30:00Z",
+    "duration": 90,
+    "effects": [
+      {
+        "effect": "Relaxed",
+        "rating": 8,
+        "duration": 120
+      },
+      {
+        "effect": "Creative",
+        "rating": 7,
+        "duration": 90
+      },
+      {
+        "effect": "Happy",
+        "rating": 9,
+        "duration": 100
+      }
+    ],
+    "overallRating": 8,
+    "notes": "Great evening session. Felt relaxed and creative while working on my art project.",
+    "mood": "Content",
+    "location": "Home",
+    "tags": ["Evening", "Art", "Weekend"],
+    "createdAt": "2024-06-01T21:45:00Z",
+    "inventoryId": "inventory-001"
+  },
+  {
+    "id": "session-002",
+    "userId": "user-001",
+    "strain": "strain-004", 
+    "strainType": "sativa",
+    "dosage": 0.15,
+    "dosageUnit": "g",
+    "consumptionMethod": "Vaporizing",
+    "startTime": "2024-06-02T09:30:00Z",
+    "endTime": "2024-06-02T11:00:00Z",
+    "duration": 90,
+    "effects": [
+      {
+        "effect": "Energetic",
+        "rating": 9,
+        "duration": 120
+      },
+      {
+        "effect": "Creative",
+        "rating": 8,
+        "duration": 90
+      },
+      {
+        "effect": "Focused",
+        "rating": 7,
+        "duration": 150
+      }
+    ],
+    "overallRating": 8,
+    "notes": "Morning session with Sour Diesel. Great for getting work done and staying focused.",
+    "mood": "Productive",
+    "location": "Home Office",
+    "tags": ["Morning", "Work", "Weekday"],
+    "createdAt": "2024-06-02T11:15:00Z",
+    "inventoryId": "inventory-002"
+  },
+  {
+    "id": "session-003",
+    "userId": "user-002",
+    "strain": "strain-003", 
+    "strainType": "indica",
+    "dosage": 0.5,
+    "dosageUnit": "g",
+    "consumptionMethod": "Smoking",
+    "startTime": "2024-06-01T22:00:00Z",
+    "endTime": "2024-06-01T23:30:00Z",
+    "duration": 90,
+    "effects": [
+      {
+        "effect": "Relaxed",
+        "rating": 9,
+        "duration": 150
+      },
+      {
+        "effect": "Sleepy",
+        "rating": 10,
+        "duration": 180
+      },
+      {
+        "effect": "Hungry",
+        "rating": 8,
+        "duration": 90
+      }
+    ],
+    "overallRating": 9,
+    "notes": "Perfect for before bed. Helped with insomnia and relaxed my muscles.",
+    "mood": "Relaxed",
+    "location": "Bedroom",
+    "tags": ["Night", "Sleep", "Weekend"],
+    "createdAt": "2024-06-01T23:45:00Z",
+    "inventoryId": "inventory-003"
+  },
+  {
+    "id": "session-004",
+    "userId": "user-001",
+    "strain": "strain-006", 
+    "strainType": "hybrid",
+    "dosage": 0.2,
+    "dosageUnit": "g",
+    "consumptionMethod": "Tincture",
+    "startTime": "2024-06-03T16:00:00Z",
+    "endTime": "2024-06-03T19:00:00Z",
+    "duration": 180,
+    "effects": [
+      {
+        "effect": "Relaxed",
+        "rating": 7,
+        "duration": 180
+      },
+      {
+        "effect": "Clear-headed",
+        "rating": 9,
+        "duration": 200
+      },
+      {
+        "effect": "Calm",
+        "rating": 8,
+        "duration": 190
+      }
+    ],
+    "overallRating": 8,
+    "notes": "Used high-CBD strain for anxiety relief. No psychoactive effects, perfect for daytime use.",
+    "mood": "Calm",
+    "location": "Park",
+    "tags": ["Afternoon", "Anxiety", "Weekday", "CBD"],
+    "createdAt": "2024-06-03T19:15:00Z",
+    "inventoryId": "inventory-004"
+  },
+  {
+    "id": "session-005",
+    "userId": "user-003",
+    "strain": "strain-007", 
+    "strainType": "hybrid",
+    "dosage": 0.3,
+    "dosageUnit": "g",
+    "consumptionMethod": "Edible",
+    "startTime": "2024-06-04T18:30:00Z",
+    "endTime": "2024-06-04T22:30:00Z",
+    "duration": 240,
+    "effects": [
+      {
+        "effect": "Euphoric",
+        "rating": 10,
+        "duration": 240
+      },
+      {
+        "effect": "Happy",
+        "rating": 9,
+        "duration": 220
+      },
+      {
+        "effect": "Relaxed",
+        "rating": 8,
+        "duration": 270
+      }
+    ],
+    "overallRating": 9,
+    "notes": "Great edible experience with GSC. Longer lasting than smoking, perfect for the evening.",
+    "mood": "Euphoric",
+    "location": "Friend's House",
+    "tags": ["Evening", "Social", "Weekday", "Edible"],
+    "createdAt": "2024-06-04T22:45:00Z",
+    "inventoryId": "inventory-005"
+  },
+  {
+    "id": "session-006",
+    "userId": "user-002",
+    "strain": "strain-009", 
+    "strainType": "indica",
+    "dosage": 0.4,
+    "dosageUnit": "g",
+    "consumptionMethod": "Smoking",
+    "startTime": "2024-06-05T21:30:00Z",
+    "endTime": "2024-06-05T23:00:00Z",
+    "duration": 90,
+    "effects": [
+      {
+        "effect": "Relaxed",
+        "rating": 10,
+        "duration": 120
+      },
+      {
+        "effect": "Sleepy",
+        "rating": 9,
+        "duration": 150
+      },
+      {
+        "effect": "Happy",
+        "rating": 8,
+        "duration": 90
+      }
+    ],
+    "overallRating": 9,
+    "notes": "Northern Lights is perfect for sleep. Helped with my back pain and insomnia.",
+    "mood": "Relaxed",
+    "location": "Home",
+    "tags": ["Night", "Sleep", "Pain", "Weekday"],
+    "createdAt": "2024-06-05T23:15:00Z",
+    "inventoryId": "inventory-006"
+  },
+  {
+    "id": "session-007",
+    "userId": "user-001",
+    "strain": "strain-005", 
+    "strainType": "hybrid",
+    "dosage": 0.25,
+    "dosageUnit": "g",
+    "consumptionMethod": "Vaporizing",
+    "startTime": "2024-06-06T19:00:00Z",
+    "endTime": "2024-06-06T21:00:00Z",
+    "duration": 120,
+    "effects": [
+      {
+        "effect": "Relaxed",
+        "rating": 9,
+        "duration": 130
+      },
+      {
+        "effect": "Happy",
+        "rating": 10,
+        "duration": 120
+      },
+      {
+        "effect": "Creative",
+        "rating": 8,
+        "duration": 100
+      }
+    ],
+    "overallRating": 9,
+    "notes": "Wedding Cake is becoming a favorite. Great balanced effects for evening relaxation.",
+    "mood": "Happy",
+    "location": "Living Room",
+    "tags": ["Evening", "Music", "Weekday"],
+    "createdAt": "2024-06-06T21:15:00Z",
+    "inventoryId": "inventory-007"
+  },
+  {
+    "id": "session-008",
+    "userId": "user-003",
+    "strain": "strain-010", 
+    "strainType": "sativa",
+    "dosage": 0.2,
+    "dosageUnit": "g",
+    "consumptionMethod": "Smoking",
+    "startTime": "2024-06-07T10:00:00Z",
+    "endTime": "2024-06-07T12:00:00Z",
+    "duration": 120,
+    "effects": [
+      {
+        "effect": "Energetic",
+        "rating": 9,
+        "duration": 130
+      },
+      {
+        "effect": "Creative",
+        "rating": 10,
+        "duration": 140
+      },
+      {
+        "effect": "Focused",
+        "rating": 8,
+        "duration": 150
+      }
+    ],
+    "overallRating": 9,
+    "notes": "Jack Herer is perfect for creative work. Great morning strain for productivity.",
+    "mood": "Creative",
+    "location": "Home Studio",
+    "tags": ["Morning", "Creative", "Work", "Weekday"],
+    "createdAt": "2024-06-07T12:15:00Z",
+    "inventoryId": "inventory-008"
+  },
+  {
+    "id": "session-009",
+    "userId": "user-002",
+    "strain": "strain-008", 
+    "strainType": "sativa",
+    "dosage": 0.3,
+    "dosageUnit": "g",
+    "consumptionMethod": "Tincture",
+    "startTime": "2024-06-08T09:00:00Z",
+    "endTime": "2024-06-08T13:00:00Z",
+    "duration": 240,
+    "effects": [
+      {
+        "effect": "Clear-headed",
+        "rating": 10,
+        "duration": 250
+      },
+      {
+        "effect": "Relaxed",
+        "rating": 8,
+        "duration": 230
+      },
+      {
+        "effect": "Focused",
+        "rating": 9,
+        "duration": 220
+      }
+    ],
+    "overallRating": 9,
+    "notes": "Harlequin's balanced THC/CBD ratio is perfect for daytime. Helps with anxiety without impairment.",
+    "mood": "Balanced",
+    "location": "Coffee Shop",
+    "tags": ["Morning", "Study", "Anxiety", "Weekend", "CBD"],
+    "createdAt": "2024-06-08T13:15:00Z",
+    "inventoryId": "inventory-009"
+  },
+  {
+    "id": "session-010",
+    "userId": "user-001",
+    "strain": "strain-002", 
+    "strainType": "hybrid",
+    "dosage": 0.35,
+    "dosageUnit": "g",
+    "consumptionMethod": "Smoking",
+    "startTime": "2024-06-09T20:30:00Z",
+    "endTime": "2024-06-09T22:30:00Z",
+    "duration": 120,
+    "effects": [
+      {
+        "effect": "Relaxed",
+        "rating": 10,
+        "duration": 150
+      },
+      {
+        "effect": "Happy",
+        "rating": 9,
+        "duration": 130
+      },
+      {
+        "effect": "Euphoric",
+        "rating": 8,
+        "duration": 120
+      }
+    ],
+    "overallRating": 9,
+    "notes": "OG Kush never disappoints. Perfect for unwinding after a long weekend.",
+    "mood": "Relaxed",
+    "location": "Patio",
+    "tags": ["Evening", "Relaxation", "Weekend"],
+    "createdAt": "2024-06-09T22:45:00Z",
+    "inventoryId": "inventory-010"
+  }
+] 

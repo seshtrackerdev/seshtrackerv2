@@ -1,0 +1,289 @@
+.profile-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.profile-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+}
+
+.message.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #047857;
+}
+
+.message.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #b91c1c;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-section {
+  background-color: var(--bg-secondary);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.profile-form, .password-form {
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.form-input:disabled {
+  background-color: var(--bg-disabled);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-help {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.375rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-primary, .btn-secondary, .btn-upgrade {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-color-dark);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-hover);
+}
+
+.btn-upgrade {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-upgrade:hover {
+  background-color: #4f46e5;
+}
+
+.password-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.password-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+/* Subscription section */
+.subscription-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.subscription-plan {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.plan-badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.badge-premium {
+  background-color: #8b5cf6;
+  color: white;
+}
+
+.badge-pro {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.badge-free {
+  background-color: #9ca3af;
+  color: white;
+}
+
+.subscription-status {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.subscription-expiry {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.subscription-features h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+}
+
+.feature-included {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.feature-excluded {
+  background-color: rgba(239, 68, 68, 0.05);
+  color: var(--text-secondary);
+}
+
+.feature-icon {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.feature-included .feature-icon {
+  color: #059669;
+}
+
+.feature-excluded .feature-icon {
+  color: #dc2626;
+}
+
+.feature-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-name {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.feature-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.upgrade-section {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 0.375rem;
+  background-color: rgba(99, 102, 241, 0.1);
+  text-align: center;
+}
+
+.upgrade-section h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.subscription-loading {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+} 

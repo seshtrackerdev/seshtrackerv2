@@ -57,11 +57,19 @@
 /* --- Mobile Navigation --- */
 .mobile-menu-toggle {
   display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   color: var(--text-primary);
   cursor: pointer;
   padding: var(--spacing-xs);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: all var(--transition-normal);
+  position: relative;
+  z-index: 1001;
 }
 
 .mobile-nav {
@@ -173,39 +181,14 @@
     display: block;
   }
   
+  /* Keep desktop-nav hidden since we're using hamburger on all screens */
   .desktop-nav {
-    display: flex;
-    gap: var(--spacing-lg);
-  }
-  
-  .desktop-nav a {
-    color: var(--text-primary);
-    font-weight: 500;
-    transition: color var(--transition-fast);
-    position: relative;
-  }
-  
-  .desktop-nav a:hover {
-    color: var(--accent-color);
-  }
-  
-  .desktop-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--accent-color);
-    transition: width var(--transition-normal);
-  }
-  
-  .desktop-nav a:hover::after {
-    width: 100%;
-  }
-  
-  .mobile-menu-toggle {
     display: none;
+  }
+  
+  /* Keep the hamburger menu visible on all screen sizes */
+  .mobile-menu-toggle {
+    display: flex;
   }
 }
 

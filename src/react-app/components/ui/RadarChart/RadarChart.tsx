@@ -1,5 +1,5 @@
 import React from 'react';
-import './RadarChart.css';
+import "../../../styles/.css";
 import { Text } from '../Text';
 
 export interface RadarChartProps {

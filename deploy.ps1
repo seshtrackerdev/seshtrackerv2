@@ -1,23 +1,26 @@
-# SeshTracker Deployment Script for Windows
+# SeshTracker Production Deployment Script
 
-Write-Host "🌿 Starting SeshTracker deployment..." -ForegroundColor Green
+Write-Host "Starting SeshTracker deployment process..." -ForegroundColor Cyan
 
-# Install dependencies if node_modules doesn't exist
-if (-not (Test-Path -Path "node_modules")) {
-    Write-Host "📦 Installing dependencies..." -ForegroundColor Yellow
-    npm install
-}
+# 1. Set environment variables
+$env:VITE_AUTH_API_URL = "https://api.kushobserver.com"
+$env:VITE_APP_ENV = "production"
+$env:VITE_APP_NAME = "SeshTracker"
+$env:VITE_APP_VERSION = "2.0"
 
-# Run the clean build script
-Write-Host "🔨 Building application with optimized structure..." -ForegroundColor Yellow
-./build.ps1
+# 2. Clean the build directory
+Write-Host "Cleaning previous build..." -ForegroundColor Yellow
+Remove-Item -Path ".\dist" -Recurse -Force -ErrorAction SilentlyContinue
 
-# Deploy to Cloudflare
-Write-Host "🚀 Deploying to Cloudflare..." -ForegroundColor Yellow
-npx wrangler deploy
+# 3. Build the application
+Write-Host "Building application..." -ForegroundColor Yellow
+npm run build
 
-Write-Host "✅ Deployment complete! Your site should be available at https://sesh-tracker.com" -ForegroundColor Green
-Write-Host "  - Classic version: https://sesh-tracker.com/legacy/" -ForegroundColor Cyan
-Write-Host "  - Classic redirect: https://sesh-tracker.com/classic.html" -ForegroundColor Cyan
+# 4. Deploy to Cloudflare Workers
+Write-Host "Deploying to Cloudflare Workers..." -ForegroundColor Yellow
+wrangler deploy
+
+Write-Host "Deployment completed!" -ForegroundColor Green
+Write-Host "Your application should now be live at https://sesh-tracker.com" -ForegroundColor Cyan
 
 Write-Host "`nRemember to set up your DNS records in Cloudflare to point to your Worker!" -ForegroundColor Yellow 

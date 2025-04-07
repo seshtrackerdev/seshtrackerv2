@@ -20,7 +20,7 @@ const SharingCard: React.FC<SharingCardProps> = ({
 }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   
-  const shareUrl = `https://seshtracker.com/shared/${sessionId}`;
+  const shareUrl = `https://sesh-tracker.com/shared/${sessionId}`;
   
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl)

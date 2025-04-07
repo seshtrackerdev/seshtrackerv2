@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import './Input.css';
+import "../../../styles/.css";
 
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'filled' | 'outlined';

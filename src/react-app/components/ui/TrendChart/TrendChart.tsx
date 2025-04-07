@@ -1,5 +1,5 @@
 import React from 'react';
-import './TrendChart.css';
+import "../../../styles/.css";
 import { Card, CardBody } from '../Card';
 import { Text } from '../Text';
 

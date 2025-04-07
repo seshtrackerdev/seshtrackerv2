@@ -1,0 +1,166 @@
+.radar-chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-md);
+  font-family: var(--font-family, 'Inter', sans-serif);
+}
+
+.chart-title {
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.chart-subtitle {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.radar-chart {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.radar-grid, 
+.radar-data {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.grid-circle {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.15);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.axis-line {
+  stroke: rgba(0, 0, 0, 0.2);
+  stroke-width: 1;
+}
+
+.strain-data-group {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.strain-data-group:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+  transform-origin: center;
+}
+
+.data-point {
+  transition: all 0.3s ease;
+}
+
+.data-point:hover {
+  r: 4;
+  stroke: white;
+  stroke-width: 1.5;
+}
+
+.radar-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.dimension-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333333;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.8rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.legend-color {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-label {
+  font-weight: 500;
+  color: #333333;
+}
+
+.strain-type-badge {
+  font-size: 0.65rem;
+  padding: 2px 5px;
+  border-radius: var(--radius-sm, 4px);
+  text-transform: capitalize;
+  margin-left: var(--spacing-xs, 4px);
+}
+
+.strain-type-indica {
+  background-color: rgba(123, 44, 191, 0.15);
+  color: #7b2cbf;
+}
+
+.strain-type-sativa {
+  background-color: rgba(67, 160, 71, 0.15);
+  color: #43a047;
+}
+
+.strain-type-hybrid {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.chart-note {
+  text-align: center;
+  color: #888888;
+  font-style: italic;
+  margin-top: var(--spacing-sm, 8px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .radar-chart {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .dimension-label {
+    font-size: 0.65rem;
+  }
+} 

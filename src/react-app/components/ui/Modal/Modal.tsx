@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import './Modal.css';
+import "../../../styles/.css";
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 

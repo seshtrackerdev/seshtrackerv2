@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './TagSelector.css';
+import "../../../styles/.css";
 
 export interface Tag {
   id: string;

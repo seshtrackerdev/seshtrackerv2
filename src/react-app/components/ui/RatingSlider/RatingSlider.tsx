@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Text } from '../Text';
-import './RatingSlider.css';
+import "../../../styles/.css";
 
 export interface RatingSliderProps {
   /**

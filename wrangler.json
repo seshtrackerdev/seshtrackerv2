@@ -10,8 +10,17 @@
   "upload_source_maps": true,
   "assets": {
     "binding": "ASSETS",
-    "directory": "dist/client",
+    "directory": "dist",
     "not_found_handling": "single-page-application"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "seshtracker-db",
+      "database_id": "5363986a-f8af-4b43-8936-c1be88ce4a34",
+      "migrations_table": "d1_migrations",
+      "migrations_dir": "migrations"
+    }
+  ],
   "custom_domains": ["sesh-tracker.com"]
-}
+} 

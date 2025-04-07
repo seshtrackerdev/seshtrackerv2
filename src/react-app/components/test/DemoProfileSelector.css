@@ -1,0 +1,234 @@
+/* DemoProfileSelector styles */
+
+.demo-profile-button-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.demo-profile-button {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-profile-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(var(--accent-color-rgb), 0.4);
+}
+
+.demo-icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.demo-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.demo-modal {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius);
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.demo-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.demo-modal-header h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.demo-modal-content {
+  padding: 1.5rem;
+}
+
+.demo-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.profile-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.profile-option {
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-option:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elevation);
+}
+
+.profile-option.selected {
+  border-color: var(--accent-color);
+  background-color: rgba(var(--accent-color-rgb), 0.05);
+}
+
+.profile-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.profile-option h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.profile-option p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.demo-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancel-button {
+  padding: 0.6rem 1.25rem;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+  background-color: var(--bg-secondary);
+}
+
+.generate-button {
+  padding: 0.6rem 1.25rem;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: var(--border-radius);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.generate-button:hover:not(:disabled) {
+  background-color: var(--accent-color-dark);
+}
+
+.generate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-spinner-small {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+/* Toast notification */
+.demo-toast {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--accent-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: bottom 0.3s ease-in-out;
+  z-index: 2000;
+  font-weight: 500;
+}
+
+.demo-toast.show {
+  bottom: 30px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .profile-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-actions {
+    flex-direction: column;
+  }
+  
+  .demo-profile-button-container {
+    bottom: 10px;
+    right: 10px;
+  }
+} 

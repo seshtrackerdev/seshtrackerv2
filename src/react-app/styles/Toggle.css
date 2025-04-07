@@ -1,0 +1,175 @@
+.toggle-container {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+.toggle-label-left {
+  flex-direction: row;
+}
+
+.toggle-label-right {
+  flex-direction: row-reverse;
+}
+
+.toggle-label {
+  font-size: var(--font-size-sm);
+  color: var(--toggle-text-color, var(--text-primary));
+  user-select: none;
+}
+
+.toggle-label-left .toggle-label {
+  margin-right: var(--spacing-sm);
+}
+
+.toggle-label-right .toggle-label {
+  margin-left: var(--spacing-sm);
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-track {
+  position: relative;
+  border-radius: 9999px;
+  background-color: rgba(128, 128, 128, 0.3);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  will-change: background-color, box-shadow;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  will-change: transform, background-color;
+  z-index: 1;
+}
+
+/* Toggle sizes */
+.toggle-sm {
+  height: 20px;
+}
+
+.toggle-sm .toggle-track {
+  width: 36px;
+  height: 20px;
+}
+
+.toggle-sm .toggle-thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.toggle-sm.toggle-checked .toggle-thumb {
+  transform: translateX(16px);
+}
+
+.toggle-md {
+  height: 24px;
+}
+
+.toggle-md .toggle-track {
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-md .toggle-thumb {
+  width: 20px;
+  height: 20px;
+}
+
+.toggle-md.toggle-checked .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.toggle-lg {
+  height: 30px;
+}
+
+.toggle-lg .toggle-track {
+  width: 56px;
+  height: 30px;
+}
+
+.toggle-lg .toggle-thumb {
+  width: 26px;
+  height: 26px;
+}
+
+.toggle-lg.toggle-checked .toggle-thumb {
+  transform: translateX(26px);
+}
+
+/* Checked state - Cannabis theme */
+.toggle-checked .toggle-track {
+  background-color: var(--cannabis-green, #43a047);
+  box-shadow: 0 0 8px rgba(67, 160, 71, 0.3);
+}
+
+.toggle-checked .toggle-thumb {
+  background-color: white;
+}
+
+/* Cannabis theme - leaf in the thumb when checked */
+.toggle-checked .toggle-thumb::before {
+  content: "🍃";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Hover effects for better UX */
+.toggle:hover:not(.toggle-disabled) .toggle-track {
+  background-color: rgba(128, 128, 128, 0.4);
+}
+
+.toggle-checked:hover:not(.toggle-disabled) .toggle-track {
+  background-color: var(--cannabis-green-light, #76d275);
+}
+
+/* Active/pressed state */
+.toggle:active:not(.toggle-disabled) .toggle-thumb {
+  transform: scale(0.95);
+}
+
+/* Disabled state */
+.toggle-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toggle-disabled .toggle-track {
+  background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Hide the actual input */
+.toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus state for accessibility */
+.toggle:focus-visible {
+  outline: 2px solid var(--cannabis-green, #43a047);
+  outline-offset: 2px;
+} 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import './Toggle.css';
+import "../../../styles/.css";
 
 export type ToggleSize = 'sm' | 'md' | 'lg';
 
