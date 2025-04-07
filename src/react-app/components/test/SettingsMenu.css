@@ -1,0 +1,155 @@
+/* src/react-app/components/SettingsMenu.css */
+
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay */
+  z-index: 1500; /* Above header */
+  display: flex;
+  justify-content: flex-end; /* Align menu to the right */
+}
+
+.settings-menu-react {
+  width: 350px; /* Or desired width */
+  height: 100%;
+  background-color: var(--settings-bg, #2c3e50); /* Dark blue/grey fallback */
+  color: var(--settings-text, #ecf0f1);
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  animation: slideInFromRight 0.3s ease-out;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--settings-border, #34495e);
+}
+
+.settings-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: var(--settings-icon, #bdc3c7);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #fff;
+}
+
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--settings-border, #34495e);
+  padding: 0 0.5rem; /* Add some horizontal padding */
+}
+
+.tab-button {
+  flex: 1; /* Distribute space equally */
+  background: none;
+  border: none;
+  color: var(--settings-tab, #bdc3c7);
+  padding: 0.8rem 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.tab-button.active,
+.tab-button:hover {
+  color: var(--settings-tab-active, #ecf0f1);
+  border-bottom-color: var(--accent-color, #3498db);
+}
+
+.settings-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.tab-content h4 {
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--settings-heading, #ecf0f1);
+}
+
+/* Basic React Form Styles (can be refined) */
+.form-group-react {
+    margin-bottom: 1rem;
+}
+
+.form-group-react label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--settings-label, #bdc3c7);
+    font-weight: 500;
+}
+
+.input-react,
+.settings-menu-react select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background-color: var(--input-bg, #34495e);
+    color: var(--input-text, #ecf0f1);
+    border: 1px solid var(--input-border, #4a6072);
+    border-radius: var(--border-radius-small);
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+.checkbox-group-react {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.checkbox-group-react label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--settings-text, #ecf0f1);
+    cursor: pointer;
+}
+
+.btn-react {
+    display: inline-block;
+    padding: 0.7rem 1.2rem;
+    background-color: var(--accent-color, #3498db);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-small);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-right: 0.5rem; /* Spacing between buttons */
+}
+
+.btn-react:hover {
+    background-color: var(--accent-hover, #2980b9);
+} 
