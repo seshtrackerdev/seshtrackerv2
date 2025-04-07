@@ -46,6 +46,12 @@ const app = new Hono<{
   Variables: Variables;
 }>();
 
+// Create a separate API router to handle all API requests
+const apiRouter = new Hono<{
+  Bindings: Env;
+  Variables: Variables;
+}>();
+
 // Initialize services
 const getSessionService = (c: any): SessionService => {
   return new SessionService(c.env.DB);
@@ -127,7 +133,7 @@ const authMiddleware = async (c: Context, next: Next) => {
 };
 
 // SeshTracker API - Returns branding information
-app.get("/api/", (c) => c.json({ 
+apiRouter.get("/", (c) => c.json({ 
   name: "SeshTracker", 
   version: "2.0", 
   emoji: "🌿",
@@ -135,7 +141,7 @@ app.get("/api/", (c) => c.json({
 }));
 
 // Auth-related endpoints that communicate with the kushobserver service
-app.post("/api/auth/login", async (c) => {
+apiRouter.post("/auth/login", async (c) => {
   const { email, password } = await c.req.json();
   
   console.log(`[LOGIN] Attempting login for email: ${email}`);
@@ -230,7 +236,7 @@ app.post("/api/auth/login", async (c) => {
   }
 });
 
-app.post("/api/auth/register", async (c) => {
+apiRouter.post("/auth/register", async (c) => {
   const userData = await c.req.json();
   
   console.log(`[REGISTER] Attempting registration for email: ${userData.email}`);
@@ -261,7 +267,7 @@ app.post("/api/auth/register", async (c) => {
 });
 
 // Token validation endpoint
-app.post("/api/auth/validate-token", async (c) => {
+apiRouter.post("/auth/validate-token", async (c) => {
   const { token } = await c.req.json();
   
   console.log(`[VALIDATE] Validating token: ${token ? token.substring(0, 10) + '...' : 'missing'}`);
@@ -302,7 +308,7 @@ app.post("/api/auth/validate-token", async (c) => {
 });
 
 // Token refresh endpoint
-app.post("/api/auth/refresh-token", async (c) => {
+apiRouter.post("/auth/refresh-token", async (c) => {
   const { token } = await c.req.json();
   
   console.log(`[REFRESH] Refreshing token: ${token ? token.substring(0, 10) + '...' : 'missing'}`);
@@ -348,7 +354,7 @@ app.post("/api/auth/refresh-token", async (c) => {
   }
 });
 
-app.post("/api/auth/reset-password", async (c) => {
+apiRouter.post("/auth/reset-password", async (c) => {
   const { email } = await c.req.json();
   
   interface ResetPasswordError {
@@ -383,7 +389,7 @@ app.post("/api/auth/reset-password", async (c) => {
 });
 
 // Complete password reset endpoint
-app.post("/api/auth/complete-password-reset", async (c) => {
+apiRouter.post("/auth/complete-password-reset", async (c) => {
   const { token, new_password } = await c.req.json();
   
   try {
@@ -411,7 +417,7 @@ app.post("/api/auth/complete-password-reset", async (c) => {
 });
 
 // Token verification endpoint
-app.post("/api/auth/verify", async (c) => {
+apiRouter.post("/auth/verify", async (c) => {
   const { token } = await c.req.json();
   
   console.log(`[VERIFY] Verifying token: ${token ? token.substring(0, 10) + '...' : 'missing'}`);
@@ -452,7 +458,7 @@ app.post("/api/auth/verify", async (c) => {
 });
 
 // Profile endpoint - get current user info
-app.get("/api/profile", authMiddleware, async (c) => {
+apiRouter.get("/profile", authMiddleware, async (c) => {
   console.log('[PROFILE] Getting user profile');
   
   try {
@@ -500,7 +506,7 @@ app.get("/api/profile", authMiddleware, async (c) => {
 });
 
 // Patch method for profile updates
-app.patch("/api/profile", authMiddleware, async (c) => {
+apiRouter.patch("/profile", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const updateData = await c.req.json();
   
@@ -526,7 +532,7 @@ app.patch("/api/profile", authMiddleware, async (c) => {
 });
 
 // User preferences endpoints
-app.get("/api/preferences", authMiddleware, async (c) => {
+apiRouter.get("/preferences", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   
   try {
@@ -548,7 +554,7 @@ app.get("/api/preferences", authMiddleware, async (c) => {
   }
 });
 
-app.put("/api/preferences", authMiddleware, async (c) => {
+apiRouter.put("/preferences", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const updateData = await c.req.json();
   
@@ -574,7 +580,7 @@ app.put("/api/preferences", authMiddleware, async (c) => {
 });
 
 // Advanced preferences endpoints
-app.get("/api/advanced-preferences", authMiddleware, async (c) => {
+apiRouter.get("/advanced-preferences", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   
   try {
@@ -596,7 +602,7 @@ app.get("/api/advanced-preferences", authMiddleware, async (c) => {
   }
 });
 
-app.put("/api/advanced-preferences", authMiddleware, async (c) => {
+apiRouter.put("/advanced-preferences", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const updateData = await c.req.json();
   
@@ -622,7 +628,7 @@ app.put("/api/advanced-preferences", authMiddleware, async (c) => {
 });
 
 // Subscription endpoint compatibility
-app.get("/api/subscription", authMiddleware, async (c) => {
+apiRouter.get("/subscription", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   
   try {
@@ -645,7 +651,7 @@ app.get("/api/subscription", authMiddleware, async (c) => {
 });
 
 // Password change endpoint compatibility
-app.post("/api/password-change", authMiddleware, async (c) => {
+apiRouter.post("/password-change", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const passwordData = await c.req.json();
   
@@ -671,7 +677,7 @@ app.post("/api/password-change", authMiddleware, async (c) => {
 });
 
 // Password reset with token endpoint compatibility
-app.post("/api/password-reset", async (c) => {
+apiRouter.post("/password-reset", async (c) => {
   const resetData = await c.req.json();
   
   // Ensure we're sending the domain information
@@ -702,7 +708,7 @@ app.post("/api/password-reset", async (c) => {
 });
 
 // User database provisioning endpoint
-app.post("/api/users/provision", authMiddleware, async (c) => {
+apiRouter.post("/users/provision", authMiddleware, async (c) => {
   const user = c.get('user');
   const { email, name } = user;
   const userId = user.id;
@@ -736,23 +742,23 @@ app.post("/api/users/provision", authMiddleware, async (c) => {
 });
 
 // Apply auth middleware to all paths under /api/protected
-app.use('/api/protected/*', authMiddleware);
+apiRouter.use('/protected/*', authMiddleware);
 
 // For debug purposes, log all requests to protected endpoints
-app.use('/api/protected/*', async (c, next) => {
+apiRouter.use('/protected/*', async (c, next) => {
   console.log('[DEBUG] Received request to protected endpoint:', c.req.path);
   await next();
 });
 
 // Protected routes
-app.get("/api/protected/user-profile", (c) => {
+apiRouter.get("/protected/user-profile", (c) => {
   // User data is available from the middleware
   const user = c.var.user;
   return c.json({ user });
 });
 
 // User preferences endpoint for dashboard selection
-app.post("/api/protected/user-preferences", authMiddleware, async (c) => {
+apiRouter.post("/protected/user-preferences", authMiddleware, async (c) => {
   const user = c.var.user;
   const preferenceData = await c.req.json();
   
@@ -784,7 +790,7 @@ app.post("/api/protected/user-preferences", authMiddleware, async (c) => {
 });
 
 // GET endpoint for user preferences
-app.get("/api/protected/user-preferences", authMiddleware, async (c) => {
+apiRouter.get("/protected/user-preferences", authMiddleware, async (c) => {
   const user = c.var.user;
   
   try {
@@ -813,7 +819,7 @@ app.get("/api/protected/user-preferences", authMiddleware, async (c) => {
 });
 
 // Sessions API endpoints
-app.get("/api/sessions", authMiddleware, async (c) => {
+apiRouter.get("/sessions", authMiddleware, async (c) => {
   console.log('[SESSIONS] Fetching sessions');
   
   // Return mock data for development
@@ -917,7 +923,7 @@ app.get("/api/sessions", authMiddleware, async (c) => {
   });
 });
 
-app.get("/api/sessions/:id", authMiddleware, async (c) => {
+apiRouter.get("/sessions/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const sessionId = c.req.param('id');
   
@@ -940,7 +946,7 @@ app.get("/api/sessions/:id", authMiddleware, async (c) => {
   }
 });
 
-app.post("/api/sessions", authMiddleware, async (c) => {
+apiRouter.post("/sessions", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const sessionData = await c.req.json();
   
@@ -965,7 +971,7 @@ app.post("/api/sessions", authMiddleware, async (c) => {
   }
 });
 
-app.put("/api/sessions/:id", authMiddleware, async (c) => {
+apiRouter.put("/sessions/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const sessionId = c.req.param('id');
   const sessionData = await c.req.json();
@@ -991,7 +997,7 @@ app.put("/api/sessions/:id", authMiddleware, async (c) => {
   }
 });
 
-app.delete("/api/sessions/:id", authMiddleware, async (c) => {
+apiRouter.delete("/sessions/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const sessionId = c.req.param('id');
   
@@ -1016,7 +1022,7 @@ app.delete("/api/sessions/:id", authMiddleware, async (c) => {
 });
 
 // Protected inventory endpoints - requires authentication
-app.get("/api/inventory", authMiddleware, async (c) => {
+apiRouter.get("/inventory", authMiddleware, async (c) => {
   console.log('[INVENTORY] Fetching inventory items');
   
   // Return mock data for development
@@ -1119,7 +1125,7 @@ app.get("/api/inventory", authMiddleware, async (c) => {
   });
 });
 
-app.get("/api/inventory/:id", authMiddleware, async (c) => {
+apiRouter.get("/inventory/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const itemId = c.req.param('id');
   
@@ -1142,7 +1148,7 @@ app.get("/api/inventory/:id", authMiddleware, async (c) => {
   }
 });
 
-app.post("/api/inventory", authMiddleware, async (c) => {
+apiRouter.post("/inventory", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const itemData = await c.req.json();
   
@@ -1167,7 +1173,7 @@ app.post("/api/inventory", authMiddleware, async (c) => {
   }
 });
 
-app.put("/api/inventory/:id", authMiddleware, async (c) => {
+apiRouter.put("/inventory/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const itemId = c.req.param('id');
   const itemData = await c.req.json();
@@ -1193,7 +1199,7 @@ app.put("/api/inventory/:id", authMiddleware, async (c) => {
   }
 });
 
-app.delete("/api/inventory/:id", authMiddleware, async (c) => {
+apiRouter.delete("/inventory/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const itemId = c.req.param('id');
   
@@ -1218,7 +1224,7 @@ app.delete("/api/inventory/:id", authMiddleware, async (c) => {
 });
 
 // KushObserver Inventory API proxy endpoint
-app.get("/api/inventory", authMiddleware, async (c) => {
+apiRouter.get("/inventory", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const url = new URL(c.req.url);
   const queryParams = url.search;
@@ -1243,7 +1249,7 @@ app.get("/api/inventory", authMiddleware, async (c) => {
 });
 
 // KushObserver Inventory by ID API proxy endpoint
-app.get("/api/inventory/:id", authMiddleware, async (c) => {
+apiRouter.get("/inventory/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const itemId = c.req.param('id');
   
@@ -1267,7 +1273,7 @@ app.get("/api/inventory/:id", authMiddleware, async (c) => {
 });
 
 // KushObserver Strains API proxy endpoint
-app.get("/api/strains", authMiddleware, async (c) => {
+apiRouter.get("/strains", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const url = new URL(c.req.url);
   const queryParams = url.search;
@@ -1292,7 +1298,7 @@ app.get("/api/strains", authMiddleware, async (c) => {
 });
 
 // Strain management endpoints
-app.get("/api/strains", authMiddleware, async (c) => {
+apiRouter.get("/strains", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   
   // Get query parameters for filtering
@@ -1335,7 +1341,7 @@ app.get("/api/strains", authMiddleware, async (c) => {
   }
 });
 
-app.get("/api/strains/:id", authMiddleware, async (c) => {
+apiRouter.get("/strains/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const strainId = c.req.param('id');
   
@@ -1358,7 +1364,7 @@ app.get("/api/strains/:id", authMiddleware, async (c) => {
   }
 });
 
-app.post("/api/strains", authMiddleware, async (c) => {
+apiRouter.post("/strains", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const strainData = await c.req.json();
   
@@ -1383,7 +1389,7 @@ app.post("/api/strains", authMiddleware, async (c) => {
   }
 });
 
-app.put("/api/strains/:id", authMiddleware, async (c) => {
+apiRouter.put("/strains/:id", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   const strainId = c.req.param('id');
   const strainData = await c.req.json();
@@ -1410,7 +1416,7 @@ app.put("/api/strains/:id", authMiddleware, async (c) => {
 });
 
 // Add test environment endpoints for development and testing
-app.post("/api/testing/create-sandbox-user", async (c) => {
+apiRouter.post("/testing/create-sandbox-user", async (c) => {
   const { admin_secret, email_prefix, password } = await c.req.json();
   
   try {
@@ -1434,7 +1440,7 @@ app.post("/api/testing/create-sandbox-user", async (c) => {
   }
 });
 
-app.post("/api/testing/reset-sandbox", async (c) => {
+apiRouter.post("/testing/reset-sandbox", async (c) => {
   const { admin_secret, user_id } = await c.req.json();
   
   try {
@@ -1459,7 +1465,7 @@ app.post("/api/testing/reset-sandbox", async (c) => {
 });
 
 // CORS test endpoint for debugging
-app.get("/api/cors-test", (c) => {
+apiRouter.get("/cors-test", (c) => {
   const origin = c.req.header('Origin') || 'No Origin header';
   const referer = c.req.header('Referer') || 'No Referer header';
   const userAgent = c.req.header('User-Agent') || 'No User-Agent header';
@@ -1484,7 +1490,7 @@ app.get("/api/cors-test", (c) => {
 });
 
 // Health check endpoint
-app.get("/api/health", (c) => {
+apiRouter.get("/health", (c) => {
   return c.json({
     success: true,
     status: "operational",
@@ -1494,7 +1500,7 @@ app.get("/api/health", (c) => {
 });
 
 // DEBUG ROUTE - Remove in production!
-app.get("/api/debug/inventory", async (c) => {
+apiRouter.get("/debug/inventory", async (c) => {
   console.log('[DEBUG] Debug inventory route accessed');
   try {
     return c.json({
@@ -1525,7 +1531,7 @@ app.get("/api/debug/inventory", async (c) => {
 });
 
 // MOCK AUTH ENDPOINTS FOR DEVELOPMENT
-app.post("/api/auth/mock-login", async (c) => {
+apiRouter.post("/auth/mock-login", async (c) => {
   console.log('[MOCK] Mock login endpoint called');
   try {
     const { email, password } = await c.req.json();
@@ -1563,7 +1569,7 @@ app.post("/api/auth/mock-login", async (c) => {
 });
 
 // Mock verify endpoint for development
-app.post("/api/auth/mock-verify", async (c) => {
+apiRouter.post("/auth/mock-verify", async (c) => {
   console.log('[MOCK] Mock verify endpoint called');
   try {
     const { token } = await c.req.json();
@@ -1594,7 +1600,7 @@ app.post("/api/auth/mock-verify", async (c) => {
 });
 
 // User profile endpoint
-app.get("/api/auth/user/profile", authMiddleware, async (c) => {
+apiRouter.get("/auth/user/profile", authMiddleware, async (c) => {
   const token = c.req.header('Authorization')?.substring(7) || '';
   
   try {
@@ -1628,13 +1634,36 @@ app.get("/api/auth/user/profile", authMiddleware, async (c) => {
   }
 });
 
-// Mount new inventory and sessions routers
-app.route("/api/v2/inventory", inventoryRouter);
-app.route("/api/v2/sessions", sessionsRouter);
+// Mount the API router under the /api path
+app.route("/api", apiRouter);
 
-// Fallback route for the SPA
-app.get("*", (c) => {
-  return c.env.ASSETS.fetch(c.req.raw);
+// Route for checking API health/status
+apiRouter.get("/health", (c) => {
+  return c.json({
+    success: true,
+    status: "operational",
+    version: "2.0",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Mount the sub-routers for different resource types
+apiRouter.route('/inventory', inventoryRouter);
+apiRouter.route('/sessions', sessionsRouter);
+
+// Auth verification endpoint
+apiRouter.get("/auth/check", authMiddleware, (c) => {
+  return c.json({
+    success: true,
+    authenticated: true,
+    user: c.get('user')
+  });
+});
+
+// Default handler for all other requests - serve frontend assets
+app.use("*", async (c) => {
+  const { ASSETS } = c.env;
+  return ASSETS.fetch(c.req.raw);
 });
 
 export default app;

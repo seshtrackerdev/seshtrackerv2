@@ -1,5 +1,6 @@
 import { AUTH_CONFIG } from "../../config/auth";
 import { Context, Next } from "hono";
+import { MiddlewareHandler } from "hono/types";
 import { createMiddleware } from "hono/factory";
 import { env } from "hono/adapter";
 import { API, ENDPOINTS } from "../../config/ecosystem";
@@ -14,13 +15,19 @@ interface AuthMiddlewareOptions {
   bypassAuth?: boolean;
 }
 
+type AuthMiddlewareVariables = {
+  userId?: string;
+}
+
 /**
  * Middleware to authenticate requests using JWT token from Kush.Observer
  */
 export const authMiddleware = createMiddleware<{
-  Variables: { userId?: string };
+  Variables: AuthMiddlewareVariables;
   Options: AuthMiddlewareOptions;
-}>(async (c, next, options) => {
+}>(async (c, next) => {
+  const options = c.env as unknown as AuthMiddlewareOptions;
+  
   // Get the authorization header
   const authHeader = c.req.header('Authorization');
   console.log('[AUTH] Request path:', c.req.path);
@@ -35,7 +42,8 @@ export const authMiddleware = createMiddleware<{
   console.log('[AUTH] Token length:', token.length);
 
   // Allow bypass in development mode if specified in options
-  const nodeEnv = typeof process !== 'undefined' ? process.env.NODE_ENV : undefined;
+  const envVars = typeof globalThis !== 'undefined' ? (globalThis as any).process?.env : {};
+  const nodeEnv = envVars.NODE_ENV;
   if (nodeEnv === 'development' && options?.devMode) {
     // This will accept any token and create a mock user
     const mockUserId = 'dev_user_123';
@@ -82,7 +90,8 @@ export async function verifyAuthToken(c: Context): Promise<string | null> {
   try {
     // Verify token with Kush.observer
     // Use the ecosystem config for the endpoint, falling back to environment variable
-    const nodeEnv = typeof process !== 'undefined' ? process.env.NODE_ENV : 'production';
+    const envVars = typeof globalThis !== 'undefined' ? (globalThis as any).process?.env : {};
+    const nodeEnv = envVars.NODE_ENV || 'production';
     const environment = nodeEnv === 'production' ? 'PRODUCTION' : 
                         nodeEnv === 'staging' ? 'STAGING' : 'DEVELOPMENT';
     
@@ -101,8 +110,20 @@ export async function verifyAuthToken(c: Context): Promise<string | null> {
       return null;
     }
 
-    const validationData = await validationResponse.json();
-    if (validationData && validationData.success && validationData.data && validationData.data.user) {
+    interface ValidationResponse {
+      success: boolean;
+      data?: {
+        user?: {
+          id: string;
+          [key: string]: any;
+        };
+        [key: string]: any;
+      };
+      [key: string]: any;
+    }
+
+    const validationData = await validationResponse.json() as ValidationResponse;
+    if (validationData.success && validationData.data?.user?.id) {
       // Return the user ID
       return validationData.data.user.id;
     }
@@ -134,7 +155,7 @@ export async function requireAuth(c: Context): Promise<boolean> {
  * Middleware to require authentication and set userId in context
  * This middleware can be used on routes to ensure user authentication
  */
-export const withUserContext = async (c: Context, next: Next) => {
+export const withUserContext: MiddlewareHandler = async (c, next) => {
   const userId = await verifyAuthToken(c);
   if (!userId) {
     return c.json({ 
